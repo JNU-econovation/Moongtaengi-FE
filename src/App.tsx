@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import './App.css'
+import KakaoLogin from './pages/KakaoLogin'
 
 function App() {
 
   return (
-    <>
-      <div style={{color: "white"}}>Test</div>
-    </>
+    <KakaoLogin />
   )
 }
 

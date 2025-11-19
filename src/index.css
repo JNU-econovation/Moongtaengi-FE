@@ -17,5 +17,14 @@ time, mark, audio, video {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
-  box-sizing: border-box;
+  	box-sizing: border-box;
+}
+
+@font-face {
+	font-family: "Pretendard-Medium";
+	src: url("./fonts/Pretendard-Medium.otf");
+}
+@font-face {
+	font-family: "Pretendard-SemiBold";
+	src: url("./fonts/Pretendard-SemiBold.otf");
 }
