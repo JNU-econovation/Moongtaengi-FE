@@ -14,7 +14,7 @@ time, mark, audio, video {
 	margin: 0;
 	padding: 0;
 	border: 0;
-	font-size: 100%;
+	font-size: 16px;
 	font: inherit;
 	vertical-align: baseline;
   	box-sizing: border-box;
@@ -27,4 +27,18 @@ time, mark, audio, video {
 @font-face {
 	font-family: "Pretendard-SemiBold";
 	src: url("./fonts/Pretendard-SemiBold.otf");
+}
+
+/*모바일*/
+@media (max-width: 768px) {
+	html {
+		font-size: 12px;
+	}
+}
+
+/*4k 모니터 이상 큰 화면*/
+@media (min-width: 2000px) {
+	html {
+		font-size: 24px;
+	}
 }
