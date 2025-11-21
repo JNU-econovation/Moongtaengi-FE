@@ -1,7 +1,11 @@
 import styles from './SignupCheck.module.css'
 import signupCheck from '../assets/signup-check.png'
+import { useNavigate } from 'react-router-dom'
 
 const SignupCheck = () => {
+
+    const navigate = useNavigate();
+
     return (
         <div className={styles["container"]}>
             <div className={styles["content-wrapper"]}>
@@ -17,7 +21,7 @@ const SignupCheck = () => {
                         이제 뭉탱이와 함께 한 걸음씩 성장해요.
                     </p>
                 </div>
-                <div className={styles["start-button"]}>회원가입 완료</div>
+                <div onClick={() => {navigate('/')}} className={styles["start-button"]}>회원가입 완료</div>
             </div>
         </div>
     )

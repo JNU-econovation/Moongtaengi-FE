@@ -3,8 +3,12 @@ import loginBg from '../assets/login-bg.png'
 import loginMoong from '../assets/login-moong.png'
 import moongShadow from '../assets/moong-shadow.png'
 import kakaoLogo from '../assets/kakao-logo.svg'
+import { useNavigate } from 'react-router-dom'
 
 const KakaoLogin = () => {
+
+    const navigate = useNavigate();
+
     return (
         <div className={styles["container"]}>
             <div className={styles["content-wrapper"]}>
@@ -20,7 +24,7 @@ const KakaoLogin = () => {
                     <img src={moongShadow} className={styles["moong-shadow"]}></img>
                 </div>
 
-                <div className={styles["login-button"]}>
+                <div onClick={() => {navigate('/signup')}} className={styles["login-button"]}>
                     <img src={kakaoLogo} className={styles["kakao-logo"]}></img>
                     카카오로 시작하기</div>
             </div>
