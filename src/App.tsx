@@ -6,7 +6,7 @@ import SignupCheck from './pages/SignupCheck'
 function App() {
 
   return (
-    <SignupCheck />
+    <KakaoLogin />
   )
 }
 

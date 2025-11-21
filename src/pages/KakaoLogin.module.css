@@ -1,4 +1,4 @@
-.module.container {
+.container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,12 +21,12 @@
     margin-bottom: 2.2rem;
 }
 
-.header>h1 {
+.title {
     font-family: "Pretendard-SemiBold";
     font-size: 3rem;
 }
 
-.header>p {
+.subtitle {
     font-family: "pretendard-Medium";
     font-size: 1.7rem;
 }
