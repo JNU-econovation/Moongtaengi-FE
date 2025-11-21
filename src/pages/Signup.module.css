@@ -75,6 +75,10 @@
     color: #A1A1A1;
 }
 
+.input-box:hover {
+    border: 0.8px solid #0CD1EF;
+}
+
 .input-box:focus {
     border: 0.8px solid #0CD1EF;
 }
