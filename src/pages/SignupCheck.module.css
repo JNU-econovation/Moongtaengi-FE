@@ -1,0 +1,77 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 29rem;
+}
+
+/* 헤더 */
+.header {
+    align-self: flex-start;
+    color: white;
+    margin-bottom: 3rem;
+}
+
+.title {
+    font-family: "Pretendard-SemiBold";
+    font-size: 3rem;
+}
+
+.subtitle {
+    font-family: "Pretendard-Medium";
+    font-size: 1.7rem;
+}
+
+/* 체크 */
+.check-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: "Pretendard-Medium";
+    margin-top: 2.8rem;
+    margin-bottom: 5.4rem;
+}
+
+.check-image {
+    width: 6.5rem;
+    margin-bottom: 3.3rem;
+}
+
+.check-confirm {
+    font-size: 2.4rem;
+    margin-bottom: 3.3rem;
+}
+
+.check-welcome {
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+/* 회원가입 버튼 */
+.start-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(to right, #03C4FF, #2BFFB8);
+    width: 100%;
+    height: 3rem;
+    color: black;
+    font-family: "Pretendard-Medium";
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.start-button:hover {
+    background: linear-gradient(to right, #03c4ffc9, #2bffb8d2);
+}
