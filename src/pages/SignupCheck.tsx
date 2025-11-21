@@ -21,7 +21,7 @@ const SignupCheck = () => {
                         이제 뭉탱이와 함께 한 걸음씩 성장해요.
                     </p>
                 </div>
-                <div onClick={() => {navigate('/')}} className={styles["start-button"]}>회원가입 완료</div>
+                <div onClick={() => {navigate('/')}} className={styles["start-button"]}>뭉탱이 시작하기</div>
             </div>
         </div>
     )
