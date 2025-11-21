@@ -6,15 +6,15 @@ import kakaoLogo from '../assets/kakao-logo.svg'
 
 const KakaoLogin = () => {
     return (
-        <div className={styles.container}>
+        <div className={styles["container"]}>
             <div className={styles["content-wrapper"]}>
-                <div className={styles["text-group"]}>
+                <div className={styles["header"]}>
                     <h1>뭉탱이</h1>
                     <p>작은 루틴이<br/>큰 성장을 만듭니다</p>
                 </div>
-                <div className={styles["img-box"]}>
-                    <img src={loginBg} className={styles.bg}></img>
-                    <img src={loginMoong} className={styles.moong}></img>
+                <div className={styles["banner-image"]}>
+                    <img src={loginBg} className={styles["moong-bg"]}></img>
+                    <img src={loginMoong} className={styles["moong"]}></img>
                     <img src={moongShadow} className={styles["moong-shadow"]}></img>
                 </div>
                 <div className={styles["login-button"]}>
