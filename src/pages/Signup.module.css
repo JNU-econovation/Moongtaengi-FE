@@ -76,7 +76,7 @@
 }
 
 .input-box:hover {
-    border: 0.8px solid #0CD1EF;
+    border-bottom: 0.8px solid #0CD1EF;
 }
 
 .input-box:focus {
