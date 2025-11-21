@@ -25,6 +25,10 @@ time, mark, audio, video {
 	src: url("./fonts/Pretendard-Medium.otf");
 }
 @font-face {
+	font-family: "Pretendard-Bold";
+	src: url("./fonts/Pretendard-Bold.otf");
+}
+@font-face {
 	font-family: "Pretendard-SemiBold";
 	src: url("./fonts/Pretendard-SemiBold.otf");
 }
@@ -32,7 +36,7 @@ time, mark, audio, video {
 /*모바일*/
 @media (max-width: 768px) {
 	html {
-		font-size: 12px;
+		font-size: 13px;
 	}
 }
 

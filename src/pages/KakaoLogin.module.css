@@ -1,4 +1,4 @@
-.container {
+.module.container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -9,8 +9,8 @@
 .content-wrapper {
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     width: 29rem;
 }
 
@@ -28,7 +28,7 @@
 
 .text-group>p {
     font-family: "pretendard-Medium";
-    font-size: 1.8rem;
+    font-size: 1.7rem;
 }
 
 
@@ -37,7 +37,7 @@
     position: relative;
     width: 100%;
     aspect-ratio: 13/9;
-    margin-bottom: 3.8rem;
+    margin-bottom: 3.2rem;
 }
 
 .img-box::after {
@@ -46,11 +46,11 @@
     inset: 0;
     z-index: 4;
     box-shadow:
-    inset 80px 0 40px -25px #121212,
-    inset -80px 0 40px -25px #121212;
+    inset 80px 0 45px -25px #121212,
+    inset -80px 0 45px -25px #121212;
 }
 
-.login-bg {
+.bg {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -66,7 +66,7 @@
     z-index: 2;
 }
 
-.login-moong {
+.moong {
     position: absolute;
     top: 10%;
     left: 25%;
@@ -81,10 +81,10 @@
     align-items: center;
     color: #000000 85%;
     font-family: "Pretendard-Medium";
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     background-color: #FEE500;
     width: 100%;
-    height: 3.2rem;
+    height: 3rem;
     border-radius: 0.6rem;
     cursor: pointer;
 }
@@ -94,6 +94,6 @@
 }
 
 .kakao-logo {
-    width: 1.6rem;
+    width: 1.5rem;
     margin-right: 0.5rem;
 }
