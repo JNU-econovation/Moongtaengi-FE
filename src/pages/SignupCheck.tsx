@@ -24,7 +24,7 @@ const SignupCheck = () => {
                     </p>
                 </div>
                 
-                <div onClick={() => {navigate('/')}} className={styles["start-button"]}>뭉탱이 시작하기</div>
+                <button onClick={() => {navigate('/')}} className={styles["start-button"]}>뭉탱이 시작하기</button>
             </div>
         </div>
     )

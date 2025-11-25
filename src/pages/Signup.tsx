@@ -2,10 +2,78 @@ import styles from './Signup.module.css'
 import signupBg from '../assets/signup-bg.png'
 import signupMoong from '../assets/signup-moong.png'
 import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 const Signup = () => {
 
     const navigate = useNavigate();
+
+    const [name, setName] = useState<string>("");
+    const [verified, setVerified] = useState<boolean>(false);
+    const [code, setCode] = useState<string>("");
+    const [codeStatus, setCodeStatus] = useState<boolean>(false);
+
+    const [nameBoxStyle, setNameBoxStyle] = useState<object>({});
+    const [nameButtonStyle, setNameButtonStyle] = useState<object>({});
+    const [codeBoxStyle, setCodeBoxStyle] = useState<object>({});
+    const [codeButtonStyle, setCodeButtonStyle] = useState<object>({});
+
+    const [nameAlert, setNameAlert] = useState<string>("");
+    const [codeAlert, setCodeAlert] = useState<string>("");
+
+    const checkName = () => {
+        const regex = /^[가-힣]+$/;
+
+        if (name.length <= 7 && regex.test(name)) {
+            setVerified(true);
+            setNameBoxStyle({});
+            setNameButtonStyle({
+                color: "#2C2C2C",
+                backgroundColor: "white",
+            })
+            setNameAlert("");
+        } else {
+            setVerified(false);
+            setNameBoxStyle({
+                border: "0.8px solid #C6343C",
+            });
+            setNameButtonStyle({});
+            setNameAlert("닉네임을 확인해주세요");
+        }
+    }
+
+    const checkCode = () => {
+        const regex = /^[a-zA-Z0-9]+$/;
+
+        if (regex.test(code)) {
+            setCodeStatus(true);
+            setCodeBoxStyle({});
+            setCodeButtonStyle({
+                color: "#2C2C2C",
+                backgroundColor: "white",
+            })
+            setCodeAlert("");
+        } else {
+            setCodeStatus(false);
+            setCodeBoxStyle({
+                border: "0.8px solid #C6343C",
+            });
+            setCodeButtonStyle({});
+            setCodeAlert("초대코드를 확인해주세요");
+        }
+    }
+
+    const sendDate = () => {
+        if (!verified) return;
+
+        if (codeStatus) {
+            confirm("닉네임, 코드 보냄");
+        } else {
+            confirm("닉네임만 보냄");
+        }
+
+        navigate('/signup/check');
+    }
 
     return (
         <div className={styles["container"]}>
@@ -22,9 +90,14 @@ const Signup = () => {
                         최대 한글 7자 이내로 등록해주세요 (특수기호 입력 불가능)
                     </p>
                     <div className={styles["input-wrapper"]}>
-                        <input type='text' placeholder='Ex. 뭉탱이' className={styles["input-box"]}></input>
-                        <div className={styles["input-button"]}>중복확인</div>
+                        <input type='text' value={name} placeholder='Ex. 뭉탱이' onChange={(e) => {
+                            setVerified(false);
+                            setName(e.target.value);
+                            setNameButtonStyle({});
+                        }} className={styles["input-box"]} style={nameBoxStyle}></input>
+                        <button onClick={checkName} className={styles["input-button"]} style={nameButtonStyle}>중복확인</button>
                     </div>
+                    <p className={styles["input-alert"]}>{nameAlert}</p>
                 </div>
                 <div className={styles["input-group"]}>
                     <p className={styles["input-label"]}>스터디 합류하기</p>
@@ -32,16 +105,21 @@ const Signup = () => {
                         초대 받은 경우 초대 코드를 입력 후 스터디를 바로 시작해보세요
                     </p>
                     <div className={styles["input-wrapper"]}>
-                        <input type='text' placeholder='(선택) 초대코드를 입력해주세요' className={styles["input-box"]}></input>
-                        <div className={styles["input-button"]}>스터디 등록</div>
+                        <input type='text' value={code} placeholder='(선택) 초대코드를 입력해주세요' onChange={(e) => {
+                            setCodeStatus(false);
+                            setCode(e.target.value);
+                            setCodeButtonStyle({});
+                        }} className={styles["input-box"]} style={codeBoxStyle}></input>
+                        <button onClick={checkCode} className={styles["input-button"]} style={codeButtonStyle}>초대코드 확인</button>
                     </div>
+                    <p className={styles["input-alert"]}>{codeAlert}</p>
                 </div>
 
                 <div className={styles["banner-card"]}>
                     <div className={styles["banner-text"]}>
-                        <p className={styles["banner-label"]}>함께 공부할 친구가<br/>당신을 초대했어요</p>
-                        <p className={styles["banner-helptext"]}>친구에게 받은 초대 코드를 입력하면<br/>
-                        스터디 뭉탱이를 드려요</p>
+                        <p className={styles["banner-label"]}>함께 공부할 친구가<br />당신을 초대했어요</p>
+                        <p className={styles["banner-helptext"]}>친구에게 받은 초대 코드를 입력하면<br />
+                            스터디 뭉탱이를 드려요</p>
                     </div>
                     <div className={styles["banner-image"]}>
                         <img src={signupBg} className={styles["moong-bg"]}></img>
@@ -49,7 +127,7 @@ const Signup = () => {
                     </div>
                 </div>
 
-                <div onClick={() => {navigate('/signup/check')}} className={styles["signup-button"]}>회원가입 완료</div>
+                <button onClick={sendDate} disabled={!verified} className={styles["signup-button"]}>회원가입 완료</button>
             </div>
         </div>
     )

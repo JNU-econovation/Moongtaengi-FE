@@ -59,14 +59,14 @@
 .input-box {
     width: 80%;
     background-color: #2C2C2C;
-    border: 1px solid #2C2C2C;
+    border: 0.8px solid #2C2C2C;
     height: 2rem;
     margin-right: 2%;
     outline: none;
     color: white;
     font-size: 0.7rem;
     font-family: "Pretendard=Medium";
-    padding-left: 0.3rem;
+    padding-left: 0.5rem;
     border-radius: 0.2rem;
 }
 
@@ -84,15 +84,29 @@
     border: 0.8px solid #0CD1EF;
 }
 
+.input-alert {
+    color: #C6343C;
+    font-style: "Pretendard-Medium";
+    font-size: 0.57rem;
+    margin-top: 0.25rem;
+}
+
 .input-button {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 30%;
     font-size: 0.7rem;
+    color: white;
     background-color: #2C2C2C;
+    border: none;
     border-radius: 0.2rem;
     cursor: pointer;
+}
+
+.input-button:hover {
+    color: #2C2C2C;
+    background-color: white;
 }
 
 /* 배너 */
@@ -169,6 +183,7 @@
     font-family: "Pretendard-Medium";
     font-size: 0.95rem;
     border-radius: 0.4rem;
+    border: none;
     cursor: pointer;
 }
 
