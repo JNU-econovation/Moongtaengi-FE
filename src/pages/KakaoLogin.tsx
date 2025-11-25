@@ -25,11 +25,12 @@ const KakaoLogin = () => {
                     <img src={moongShadow} className={styles["moong-shadow"]}></img>
                 </div>
 
-                <div onClick={() => {
+                <button onClick={() => {
                     window.location.href = KAKAO_AUTH_URL;
                 }} className={styles["login-button"]}>
                     <img src={kakaoLogo} className={styles["kakao-logo"]}></img>
-                    카카오로 시작하기</div>
+                    카카오로 시작하기
+                </button>
             </div>
         </div>
     )
