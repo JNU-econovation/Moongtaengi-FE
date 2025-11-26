@@ -23,17 +23,13 @@ const Signup = () => {
     const [nameAlert, setNameAlert] = useState<string>("");
     const [codeAlert, setCodeAlert] = useState<string>("");
 
+    // 닉네임 검사
     const checkName = () => {
         const regex = /^[가-힣]+$/;
 
         if (name.length <= 7 && regex.test(name)) {
-            setVerified(true);
-            setNameBoxStyle({});
-            setNameButtonStyle({
-                color: "#2C2C2C",
-                backgroundColor: "white",
-            })
-            setNameAlert("");
+            checkNameDuplicate();
+            return;
         } else {
             setVerified(false);
             setNameBoxStyle({
@@ -41,20 +37,48 @@ const Signup = () => {
             });
             setNameButtonStyle({});
             setNameAlert("닉네임을 확인해주세요");
+            return;
         }
     };
 
+    const checkNameDuplicate = () => {
+        const token = sessionStorage.getItem('JWT');
+
+        axios.post('http://localhost:8080/api/members/check-nickname',
+            name,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
+        .then(res => {
+            if (res.data["status"] == "success") {
+                setVerified(true);
+                setNameBoxStyle({});
+                setNameButtonStyle({
+                    color: "#2C2C2C",
+                    backgroundColor: "white",
+                })
+                setNameAlert("");
+            } else if (res.data["status"] == "fail") {
+                setVerified(false);
+                setNameBoxStyle({
+                    border: "0.8px solid #C6343C",
+                });
+                setNameButtonStyle({});
+                setNameAlert("이미 사용 중인 닉네임 입니다");
+            }
+        })
+    }
+
+    // 초대코드 검사
     const checkCode = () => {
         const regex = /^[a-zA-Z0-9]+$/;
 
         if (regex.test(code)) {
-            setCodeStatus(true);
-            setCodeBoxStyle({});
-            setCodeButtonStyle({
-                color: "#2C2C2C",
-                backgroundColor: "white",
-            })
-            setCodeAlert("");
+            checkCodeExist();
+            return;
         } else {
             setCodeStatus(false);
             setCodeBoxStyle({
@@ -62,9 +86,42 @@ const Signup = () => {
             });
             setCodeButtonStyle({});
             setCodeAlert("초대코드를 확인해주세요");
+            return;
         }
     };
 
+    const checkCodeExist = () => {
+        const token = sessionStorage.getItem('JWT');
+
+        axios.post('http://localhost:8080/api/members/check-code',
+            code,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
+        .then(res => {
+            if(res.data["status"] == "success") {
+                setCodeStatus(true);
+                setCodeBoxStyle({});
+                setCodeButtonStyle({
+                    color: "#2C2C2C",
+                    backgroundColor: "white",
+                })
+                setCodeAlert("");
+            } else if (res.data["status"] == "fail") {
+                setCodeStatus(false);
+                setCodeBoxStyle({
+                    border: "0.8px solid #C6343C",
+                });
+                setCodeButtonStyle({});
+                setCodeAlert("유효하지 않은 초대코드 입니다");
+            }
+        })
+    }
+
+    // 최종 유저 데이터 전송
     const sendDate = () => {
         if (!verified) return;
 
@@ -96,7 +153,7 @@ const Signup = () => {
                 }
             }
         )
-        .then (res => console.log("회원가입 완료: ", res.data));
+            .then(res => console.log("회원가입 완료: ", res.data));
 
         navigate('/signup/check');
     };
@@ -105,10 +162,10 @@ const Signup = () => {
     useEffect(() => {
         const token: string | null = searchParams.get('token');
 
-        if(token) {
+        if (token) {
             sessionStorage.setItem('JWT', token);
         } else {
-            navigate('/', {replace: true});
+            navigate('/', { replace: true });
             alert('로그인 실패');
         }
     }, [searchParams]);
