@@ -3,6 +3,7 @@ import signupBg from '../assets/signup-bg.png'
 import signupMoong from '../assets/signup-moong.png'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 const Signup = () => {
 
@@ -67,11 +68,35 @@ const Signup = () => {
     const sendDate = () => {
         if (!verified) return;
 
-        if (codeStatus) {
-            confirm("닉네임, 코드 보냄");
-        } else {
-            confirm("닉네임만 보냄");
+        const token = sessionStorage.getItem('JWT')
+
+        interface User {
+            nickname: string,
+            inviteCode?: string,
         }
+
+        let userInfo: User;
+
+        if (codeStatus) {
+            userInfo = {
+                nickname: name,
+                inviteCode: code,
+            }
+        } else {
+            userInfo = {
+                nickname: name,
+            }
+        }
+
+        axios.post('http://localhost:8080/auth/signUp',
+            userInfo,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
+        .then (res => console.log("회원가입 완료: ", res.data));
 
         navigate('/signup/check');
     };
