@@ -160,7 +160,7 @@ const Signup = () => {
 
     // 카카오 로그인 후 토큰 저장 (신규 회원)
     useEffect(() => {
-        const token: string | null = searchParams.get('token');
+        const token= searchParams.get('token');
 
         if (token) {
             sessionStorage.setItem('JWT', token);

@@ -1,37 +1,20 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom"
+import { useLogout } from "../hooks/useLogout";
+import { useIslogin } from "../hooks/useIslogin";
+import { useTokenSaveMain } from "../hooks/useTokenSaveMain";
 
 const Main = () => {
 
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
-    const [islogin, setIslogin] = useState<boolean>(false);
+    const [islogin, setIslogin] = useState<boolean>(!!sessionStorage.getItem('JWT'));
 
-    const logout = () => {
-        sessionStorage.removeItem('JWT');
-        setIslogin(false);
-        alert('로그아웃 되었습니다.');
-        navigate('/', {replace: true});
-    };
+    const logout = useLogout(setIslogin);
 
-    // 페이지 접속 시 로그인 확인
-    useEffect(() => {
-        let jwt: string | null = sessionStorage.getItem('JWT');
+    useIslogin(setIslogin);
 
-        if (jwt) {
-            setIslogin(true);
-        }
-    }, []);
-
-    // 로그인 후 이동 시 토큰 저장 (기존 회원)
-    useEffect(() => {
-        const token: string | null = searchParams.get('token');
-
-        if (token) {
-            sessionStorage.setItem('JWT', token);
-            setIslogin(true);
-        }
-    }, [searchParams]);
+    useTokenSaveMain(setIslogin, searchParams);
 
     return (
         <>
