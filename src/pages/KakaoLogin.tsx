@@ -3,11 +3,12 @@ import loginBg from '../assets/login-bg.png'
 import loginMoong from '../assets/login-moong.png'
 import moongShadow from '../assets/moong-shadow.png'
 import kakaoLogo from '../assets/kakao-logo.svg'
-import { useNavigate } from 'react-router-dom'
 
 const KakaoLogin = () => {
 
-    const navigate = useNavigate();
+    const CLIENT_ID = '939121dea7bd63570a956c235682cf83';
+    const REDIRECT_URI = 'http://localhost:8080/api/auth/kakao/callback';
+    const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
     return (
         <div className={styles["container"]}>
@@ -24,9 +25,12 @@ const KakaoLogin = () => {
                     <img src={moongShadow} className={styles["moong-shadow"]}></img>
                 </div>
 
-                <div onClick={() => {navigate('/signup')}} className={styles["login-button"]}>
+                <button onClick={() => {
+                    window.location.href = KAKAO_AUTH_URL;
+                }} className={styles["login-button"]}>
                     <img src={kakaoLogo} className={styles["kakao-logo"]}></img>
-                    카카오로 시작하기</div>
+                    카카오로 시작하기
+                </button>
             </div>
         </div>
     )

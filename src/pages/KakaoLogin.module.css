@@ -80,11 +80,12 @@
     justify-content: center;
     align-items: center;
     color: #000000 85%;
-    font-family: "Pretendard-Medium";
-    font-size: 1.1rem;
+    font-family: "Pretendard-SemiBold";
+    font-size: 0.95rem;
     background-color: #FEE500;
     width: 100%;
     height: 3rem;
+    border: none;
     border-radius: 0.6rem;
     cursor: pointer;
 }
@@ -94,6 +95,6 @@
 }
 
 .kakao-logo {
-    width: 1.5rem;
+    width: 1.2rem;
     margin-right: 0.5rem;
 }

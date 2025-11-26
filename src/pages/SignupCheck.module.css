@@ -40,7 +40,7 @@
     color: white;
     font-family: "Pretendard-Medium";
     margin-top: 2.8rem;
-    margin-bottom: 5.4rem;
+    margin-bottom: 5.2rem;
 }
 
 .check-image {
@@ -49,13 +49,13 @@
 }
 
 .check-confirm {
-    font-size: 2.4rem;
-    margin-bottom: 3.3rem;
+    font-size: 2.2rem;
+    margin-bottom: 2.7rem;
 }
 
 .check-welcome {
     text-align: center;
-    font-size: 1.1rem;
+    font-size: 1.25rem;
 }
 
 /* 회원가입 버튼 */
@@ -68,7 +68,9 @@
     height: 3rem;
     color: black;
     font-family: "Pretendard-Medium";
-    font-size: 1rem;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 0.4rem;
     cursor: pointer;
 }
 
