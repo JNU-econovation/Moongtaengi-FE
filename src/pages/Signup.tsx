@@ -1,12 +1,13 @@
 import styles from './Signup.module.css'
 import signupBg from '../assets/signup-bg.png'
 import signupMoong from '../assets/signup-moong.png'
-import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 
 const Signup = () => {
 
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const [name, setName] = useState<string>("");
     const [verified, setVerified] = useState<boolean>(false);
@@ -40,7 +41,7 @@ const Signup = () => {
             setNameButtonStyle({});
             setNameAlert("닉네임을 확인해주세요");
         }
-    }
+    };
 
     const checkCode = () => {
         const regex = /^[a-zA-Z0-9]+$/;
@@ -61,7 +62,7 @@ const Signup = () => {
             setCodeButtonStyle({});
             setCodeAlert("초대코드를 확인해주세요");
         }
-    }
+    };
 
     const sendDate = () => {
         if (!verified) return;
@@ -73,7 +74,19 @@ const Signup = () => {
         }
 
         navigate('/signup/check');
-    }
+    };
+
+    // 카카오 로그인 후 토큰 저장 (신규 회원)
+    useEffect(() => {
+        const token: string | null = searchParams.get('token');
+
+        if(token) {
+            sessionStorage.setItem('JWT', token);
+        } else {
+            navigate('/', {replace: true});
+            alert('로그인 실패');
+        }
+    }, [searchParams]);
 
     return (
         <div className={styles["container"]}>
