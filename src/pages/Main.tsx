@@ -12,26 +12,24 @@ const Main = () => {
         setIslogin(false);
         alert('로그아웃 되었습니다.');
         navigate('/', {replace: true});
-    }
+    };
 
+    // 페이지 접속 시 로그인 확인
     useEffect(() => {
         let jwt: string | null = sessionStorage.getItem('JWT');
 
         if (jwt) {
             setIslogin(true);
-            alert('로그인 되었습니다.');
         }
-    }, [])
+    }, []);
 
+    // 로그인 후 이동 시 토큰 저장 (기존 회원)
     useEffect(() => {
         const token: string | null = searchParams.get('token');
 
         if (token) {
             sessionStorage.setItem('JWT', token);
             setIslogin(true);
-            alert('회원가입 완료 후 토큰 저장 되었습니다.');
-
-            navigate('/', {replace: true});
         }
     }, [searchParams]);
 
