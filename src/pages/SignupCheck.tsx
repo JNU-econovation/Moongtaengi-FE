@@ -1,4 +1,4 @@
-import styles from './SignupCheck.module.css'
+import styles from '../styles/SignupCheck.module.css'
 import signupCheck from '../assets/signup-check.png'
 import { useNavigate } from 'react-router-dom'
 

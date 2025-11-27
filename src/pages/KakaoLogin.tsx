@@ -1,4 +1,4 @@
-import styles from './KakaoLogin.module.css'
+import styles from '../styles/KakaoLogin.module.css'
 import loginBg from '../assets/login-bg.png'
 import loginMoong from '../assets/login-moong.png'
 import moongShadow from '../assets/moong-shadow.png'
