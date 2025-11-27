@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom"
+import { useState } from "react";
+import { useNavigate } from "react-router-dom"
 import { useLogout } from "../hooks/useLogout";
 import { useIslogin } from "../hooks/useIslogin";
 import { useTokenSaveMain } from "../hooks/useTokenSaveMain";
@@ -7,14 +7,13 @@ import { useTokenSaveMain } from "../hooks/useTokenSaveMain";
 const Main = () => {
 
     const navigate = useNavigate();
-    const [searchParams, setSearchParams] = useSearchParams();
     const [islogin, setIslogin] = useState<boolean>(!!sessionStorage.getItem('JWT'));
 
     const logout = useLogout(setIslogin);
 
     useIslogin(setIslogin);
 
-    useTokenSaveMain(setIslogin, searchParams);
+    useTokenSaveMain(setIslogin);
 
     return (
         <>

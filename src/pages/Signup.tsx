@@ -1,14 +1,14 @@
 import styles from './Signup.module.css'
 import signupBg from '../assets/signup-bg.png'
 import signupMoong from '../assets/signup-moong.png'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 import axios from 'axios'
+import { useTokenSaveSignup } from '../hooks/useTokenSaveSignup'
 
 const Signup = () => {
 
     const navigate = useNavigate();
-    const [searchParams, setSearchParams] = useSearchParams();
 
     const [name, setName] = useState<string>("");
     const [verified, setVerified] = useState<boolean>(false);
@@ -158,17 +158,7 @@ const Signup = () => {
         navigate('/signup/check');
     };
 
-    // 카카오 로그인 후 토큰 저장 (신규 회원)
-    useEffect(() => {
-        const token= searchParams.get('token');
-
-        if (token) {
-            sessionStorage.setItem('JWT', token);
-        } else {
-            navigate('/', { replace: true });
-            alert('로그인 실패');
-        }
-    }, [searchParams]);
+    useTokenSaveSignup();
 
     return (
         <div className={styles["container"]}>

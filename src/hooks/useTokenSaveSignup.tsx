@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
-export const useTokenSaveMain = (setIslogin: (login: boolean) => void) => {
+export const useTokenSaveSignup = () => {
+    const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
@@ -9,7 +10,9 @@ export const useTokenSaveMain = (setIslogin: (login: boolean) => void) => {
 
         if (token) {
             sessionStorage.setItem('JWT', token);
-            setIslogin(true);
+        } else {
+            navigate('/', { replace: true });
+            alert('로그인 실패');
         }
     }, [searchParams]);
 }
