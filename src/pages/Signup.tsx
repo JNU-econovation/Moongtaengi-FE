@@ -44,7 +44,7 @@ const Signup = () => {
     const checkNameDuplicate = () => {
         const token = sessionStorage.getItem('JWT');
 
-        axios.post('http://localhost:8080/api/members/check-nickname',
+        axios.post(import.meta.env.VITE_API_CHECK_NAME,
             name,
             {
                 headers: {
@@ -93,7 +93,7 @@ const Signup = () => {
     const checkCodeExist = () => {
         const token = sessionStorage.getItem('JWT');
 
-        axios.post('http://localhost:8080/api/members/check-code',
+        axios.post(import.meta.env.VITE_API_CHECK_CODE,
             code,
             {
                 headers: {
@@ -145,7 +145,7 @@ const Signup = () => {
             }
         }
 
-        axios.post('http://localhost:8080/auth/signUp',
+        axios.post(import.meta.env.VITE_API_SIGNUP,
             userInfo,
             {
                 headers: {

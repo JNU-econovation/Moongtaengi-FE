@@ -6,8 +6,8 @@ import kakaoLogo from '../assets/kakao-logo.svg'
 
 const KakaoLogin = () => {
 
-    const CLIENT_ID = '939121dea7bd63570a956c235682cf83';
-    const REDIRECT_URI = 'http://localhost:8080/api/auth/kakao/callback';
+    const CLIENT_ID = import.meta.env.VITE_AUTH_KAKAO_REST_API_KEY;
+    const REDIRECT_URI = import.meta.env.VITE_AUTH_KAKAO_REDIRECT_URI;
     const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
     return (
