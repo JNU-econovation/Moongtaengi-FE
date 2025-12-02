@@ -25,7 +25,7 @@ const Signup = () => {
 
     // 닉네임 검사
     const checkName = () => {
-        const regex = /^[가-힣]+$/;
+        const regex = /^[가-힣0-9]+$/;
 
         if (name.length <= 7 && regex.test(name)) {
             checkNameDuplicate();
@@ -33,7 +33,7 @@ const Signup = () => {
         } else {
             setVerified(false);
             setNameBoxStyle({
-                border: "0.8px solid #C6343C",
+                border: "0.8px solid #C6343C", // 클래스 네임으로 바꿔서 이벤트 발생 시 뒤에 추가
             });
             setNameButtonStyle({});
             setNameAlert("닉네임을 확인해주세요");
@@ -44,16 +44,19 @@ const Signup = () => {
     const checkNameDuplicate = () => {
         const token = sessionStorage.getItem('JWT');
 
-        axios.post(import.meta.env.VITE_API_CHECK_NAME,
-            name,
+        axios.get(import.meta.env.VITE_API_CHECK_NAME,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
+                },
+                params: {
+                    nickname: name
                 }
             }
         )
         .then(res => {
-            if (res.data["status"] == "success") {
+            console.log(res.data)
+            if (res.data["isAvailable"]) {
                 setVerified(true);
                 setNameBoxStyle({});
                 setNameButtonStyle({
@@ -61,7 +64,7 @@ const Signup = () => {
                     backgroundColor: "white",
                 })
                 setNameAlert("");
-            } else if (res.data["status"] == "fail") {
+            } else if (!res.data["isAvailable"]) {
                 setVerified(false);
                 setNameBoxStyle({
                     border: "0.8px solid #C6343C",
@@ -70,6 +73,7 @@ const Signup = () => {
                 setNameAlert("이미 사용 중인 닉네임 입니다");
             }
         })
+        .catch(err => console.error(err))
     }
 
     // 초대코드 검사
@@ -141,7 +145,7 @@ const Signup = () => {
             }
         } else {
             userInfo = {
-                nickname: name,
+                nickname: name
             }
         }
 
@@ -153,9 +157,12 @@ const Signup = () => {
                 }
             }
         )
-            .then(res => console.log("회원가입 완료: ", res.data));
-
-        navigate('/signup/check');
+        .then(res => {
+            console.log("회원가입 완료: ", res.data)
+            navigate('/signup/check')
+        })
+        .catch(err => console.error(err))
+        
     };
 
     useTokenSaveSignup();
@@ -169,6 +176,7 @@ const Signup = () => {
                     <p className={styles["subtitle"]}>작은 루틴이<br />큰 성장을 만듭니다</p>
                 </div>
 
+                {/* 템플릿으로 만들어 놓고 데이터만 다르게 넣어서 적기 */}
                 <div className={styles["input-group"]}>
                     <p className={styles["input-label"]}>닉네임</p>
                     <p className={styles["input-helptext"]}>
@@ -180,6 +188,7 @@ const Signup = () => {
                             setName(e.target.value);
                             setNameButtonStyle({});
                         }} className={styles["input-box"]} style={nameBoxStyle}></input>
+                        {/* input하고 x(이미지로, 넣을 때는 button) 감싸는 div */}
                         <button onClick={checkName} className={styles["input-button"]} style={nameButtonStyle}>중복확인</button>
                     </div>
                     <p className={styles["input-alert"]}>{nameAlert}</p>
