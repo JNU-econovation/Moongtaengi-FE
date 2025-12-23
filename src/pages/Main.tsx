@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom"
 import { useLogout } from "../hooks/useLogout";
 import { useIslogin } from "../hooks/useIslogin";
 import { useTokenSaveMain } from "../hooks/useTokenSaveMain";
+import Navbar from "../components/Navbar";
+import MainHero from "../components/MainHero";
+import MainBottom from "../components/MainBottom";
 
 const Main = () => {
 
@@ -17,12 +20,11 @@ const Main = () => {
 
     return (
         <>
-            <p style={{ color: "white" }}>메인 화면임</p>
-            {
-                islogin
-                    ? <button onClick={() => { logout() }}>로그아웃 하기</button>
-                    : <button onClick={() => { navigate('/login') }}>로그인 하기</button>
-            }
+            <div className="min-h-full bg-[#121212] text-white font-sans overflow-x-hidden">
+                <Navbar />
+                <MainHero />
+                <MainBottom />
+            </div>
         </>
     )
 }

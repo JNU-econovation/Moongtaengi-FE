@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-html, body, div, span, applet, object, iframe,
+/* html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, img, ins, kbd, q, s, samp,
@@ -20,31 +20,35 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
   	box-sizing: border-box;
+} */
+
+@font-face {
+	font-family: 'Pretendard';
+	src: url('./fonts/Pretendard-Medium.otf') format('opentype');
+	font-weight: 400;
+	font-style: normal;
 }
 
 @font-face {
-	font-family: "Pretendard-Medium";
-	src: url("./fonts/Pretendard-Medium.otf");
-}
-@font-face {
-	font-family: "Pretendard-Bold";
-	src: url("./fonts/Pretendard-Bold.otf");
-}
-@font-face {
-	font-family: "Pretendard-SemiBold";
-	src: url("./fonts/Pretendard-SemiBold.otf");
+	font-family: 'Pretendard';
+	src: url('./fonts/Pretendard-SemiBold.otf') format('opentype');
+	font-weight: 500;
+	font-style: normal;
 }
 
-/*모바일*/
-@media (max-width: 768px) {
-	html {
-		font-size: 13px;
-	}
+@font-face {
+	font-family: 'Pretendard';
+	src: url('./fonts/Pretendard-Bold.otf') format('opentype');
+	font-weight: 600;
+	font-style: normal;
 }
 
-/*4k 모니터 이상 큰 화면*/
-@media (min-width: 2000px) {
-	html {
-		font-size: 24px;
-	}
+
+@theme {
+	--font-sans: 'Pretendard', system-ui, sans-serif;
+}
+
+@theme {
+	--color-custom-gray: #2C2C2C;
+	--color-custom-hover-gray: #1A1A1A;
 }
