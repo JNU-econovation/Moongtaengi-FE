@@ -1,9 +1,13 @@
-import { useNavigate } from "react-router-dom";
 import mainBg from "../assets/main-bg.png";
 import mainMoong from "../assets/main-moong.png";
+import MainButton from "./MainButton";
 
-export default function MainHero() {
-    const navigate = useNavigate();
+interface HeroProps {
+    islogin: boolean;
+    isStudy?: boolean;
+}
+
+export default function MainHero({ islogin, isStudy }: HeroProps) {
 
     return (
         <div className="relative w-full flex flex-col md:flex-row md:h-[500px] 2xl:h-[600px]">
@@ -19,9 +23,7 @@ export default function MainHero() {
                     오늘, 가볍게 시작해보세요.<br />
                     작은 학습이 쌓여 큰 성장을 만드는 스터디 플랫폼
                 </p>
-                <button className="w-80 px-10 md:py-3 2xl:py-4 text-2xl font-semibold text-black bg-gradient-to-b from-[#03C4FF] to-[#2BFFB8] rounded-full hover:opacity-80 transition border-2 border-white cursor-pointer">
-                    로그인하기
-                </button>
+                <MainButton islogin={islogin} isStudy={isStudy} />
             </div>
 
             {/* Right: Character Area */}

@@ -1,6 +1,10 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, type NavigateFunction } from 'react-router-dom'
 
-export default function Navbar() {
+interface NavbarProps {
+    islogin: boolean;
+}
+
+export default function Navbar({ islogin }: NavbarProps) {
     const navigate = useNavigate()
 
     return (
@@ -13,7 +17,7 @@ export default function Navbar() {
                 <h1 className="text-5xl font-semibold tracking-tighter cursor-pointer">뭉탱이</h1>
 
                 {/* Menu Items */}
-                <div className="hidden md:flex gap-2">
+                <div className="hidden md:flex gap-3">
                     <button className="flex items-center px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
                         나의 스터디
                         <svg className="w-3.5 h-3.5 ml-1 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,15 +37,36 @@ export default function Navbar() {
             </div>
 
             {/* Right Side */}
-            <div className="flex items-center gap-4 mr-10">
-                <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
-                    새로운 알림
-                </button>
-                <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
-                    로그아웃
-                </button>
+            <div className="flex items-center gap-3 mr-10">
+                <RightMenu islogin={islogin} navigate={navigate} />
             </div>
-
         </nav>
+    )
+}
+
+interface RightProps {
+    islogin: boolean;
+    navigate: NavigateFunction;
+}
+
+const RightMenu = ({ islogin, navigate }: RightProps) => {
+    if (!islogin) {
+        return (
+            <button className="px-3 py-1.5 text-sm text-black bg-white rounded-full hover:opacity-80 transition cursor-pointer"
+                onClick={() => {navigate('/login')}}>
+                로그인
+            </button>
+        )
+    }
+
+    return (
+        <>
+            <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
+                새로운 알림
+            </button>
+            <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
+                로그아웃
+            </button>
+        </>
     )
 }

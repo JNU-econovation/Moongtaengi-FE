@@ -11,6 +11,7 @@ const Main = () => {
 
     const navigate = useNavigate();
     const [islogin, setIslogin] = useState<boolean>(!!sessionStorage.getItem('JWT'));
+    const [isStudy, setIsStudy] = useState<boolean>(true);
 
     const logout = useLogout(setIslogin);
 
@@ -21,8 +22,8 @@ const Main = () => {
     return (
         <>
             <div className="min-h-full bg-[#121212] text-white font-sans overflow-x-hidden">
-                <Navbar />
-                <MainHero />
+                <Navbar islogin={islogin} />
+                <MainHero islogin={islogin} isStudy={isStudy} />
                 <MainBottom />
             </div>
         </>
