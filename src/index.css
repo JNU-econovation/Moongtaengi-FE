@@ -1,50 +1,44 @@
 @import "tailwindcss";
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 16px;
-	font: inherit;
-	vertical-align: baseline;
-  	box-sizing: border-box;
+/* 400 -> Regular (normal)
+기본은 400을 건너뛰고 500부터 등록 (Medium) */
+@font-face {
+	font-family: 'Pretendard';
+	src: url('./fonts/Pretendard-Medium.otf') format('opentype');
+	font-weight: 500;
+	font-style: normal;
 }
 
 @font-face {
-	font-family: "Pretendard-Medium";
-	src: url("./fonts/Pretendard-Medium.otf");
-}
-@font-face {
-	font-family: "Pretendard-Bold";
-	src: url("./fonts/Pretendard-Bold.otf");
-}
-@font-face {
-	font-family: "Pretendard-SemiBold";
-	src: url("./fonts/Pretendard-SemiBold.otf");
+	font-family: 'Pretendard';
+	src: url('./fonts/Pretendard-SemiBold.otf') format('opentype');
+	font-weight: 600;
+	font-style: normal;
 }
 
-/*모바일*/
-@media (max-width: 768px) {
-	html {
-		font-size: 13px;
-	}
+@font-face {
+	font-family: 'Pretendard';
+	src: url('./fonts/Pretendard-Bold.otf') format('opentype');
+	font-weight: 700;
+	font-style: normal;
 }
 
-/*4k 모니터 이상 큰 화면*/
-@media (min-width: 2000px) {
-	html {
-		font-size: 24px;
-	}
+
+@theme {
+	--font-sans: 'Pretendard', system-ui, sans-serif;
+}
+
+
+@theme {
+	--color-custom-bg: #121212;
+}
+
+@theme {
+	--color-custom-gray: #2C2C2C;
+	--color-custom-hover-gray: #1A1A1A;
+}
+
+@theme {
+	--color-custom-gradient-blue: #03C4FF;
+	--color-custom-gradient-green: #2BFFB8;
 }
