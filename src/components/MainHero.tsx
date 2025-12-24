@@ -4,7 +4,7 @@ import MainButton from "./MainButton";
 
 interface HeroProps {
     islogin: boolean;
-    isStudy?: boolean;
+    isStudy: boolean;
 }
 
 export default function MainHero({ islogin, isStudy }: HeroProps) {
@@ -33,6 +33,7 @@ export default function MainHero({ islogin, isStudy }: HeroProps) {
                     <img className="absolute md:right-48 2xl:right-55 z-10 md:w-100 md:h-100 2xl:w-130 2xl:h-130 flex items-center justify-center" src={mainMoong}></img>
                 </div>
             </div>
+            
         </div>
     )
 }
