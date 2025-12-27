@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { useTokenSaveSignup } from '../hooks/useTokenSaveSignup'; 
 import signupBg from '../assets/signup-bg.png';
 import signupMoong from '../assets/signup-moong.png';
+import { checkName } from '../utils/checkName';
+import { checkCode } from '../utils/checkCode';
+import { useSendData } from '../hooks/useSendData';
 
 export default function Signup() {
+    
     const navigate = useNavigate();
+    const {sendData} = useSendData();
 
     const [name, setName] = useState<string>("");
     const [verified, setVerified] = useState<boolean>(false);
@@ -15,97 +18,6 @@ export default function Signup() {
 
     const [nameAlert, setNameAlert] = useState<string>("");
     const [codeAlert, setCodeAlert] = useState<string>("");
-
-    useTokenSaveSignup(); // 훅 사용 시 주석 해제
-
-    // 닉네임 검사
-    const checkName = () => {
-        const regex = /^[가-힣0-9]+$/;
-
-        if (name.length <= 7 && regex.test(name)) {
-            checkNameDuplicate();
-        } else {
-            setVerified(false);
-            setNameAlert("닉네임을 확인해주세요");
-        }
-    };
-
-    const checkNameDuplicate = () => {
-        const token = sessionStorage.getItem('JWT');
-
-        
-        axios.get(import.meta.env.VITE_API_CHECK_NAME, {
-            headers: { Authorization: `Bearer ${token}` },
-            params: { nickname: name }
-          })
-          .then(res => {
-            if (res.data["isAvailable"]) {
-              setVerified(true);
-              setNameAlert("");
-            } else {
-              setVerified(false);
-              setNameAlert("이미 사용 중인 닉네임 입니다");
-            }
-          })
-          .catch(err => console.error(err));
-        
-
-        // UI 테스트를 위한 임시 로직
-        if (name !== "중복") {
-            setVerified(true);
-            setNameAlert("");
-        } else {
-            setVerified(false);
-            setNameAlert("이미 사용 중인 닉네임 입니다");
-        }
-    };
-
-    // 초대코드 검사
-    const checkCode = () => {
-        const regex = /^[a-zA-Z0-9]+$/;
-
-        if (regex.test(code)) {
-            checkCodeExist();
-        } else {
-            setCodeStatus(false);
-            setCodeAlert("초대코드를 확인해주세요");
-        }
-    };
-
-    const checkCodeExist = () => {
-        const token = sessionStorage.getItem('JWT');
-
-        axios.post(import.meta.env.VITE_API_CHECK_CODE, code, {
-            headers: { Authorization: `Bearer ${token}` }
-          })
-          .then(res => {
-            if(res.data["status"] === "success") {
-              setCodeStatus(true);
-              setCodeAlert("");
-            } else {
-              setCodeStatus(false);
-              setCodeAlert("유효하지 않은 초대코드 입니다");
-            }
-          });
-
-        // UI 테스트용
-        setCodeStatus(true);
-        setCodeAlert("");
-    };
-
-    // 최종 유저 데이터 전송
-    const sendDate = () => {
-        if (!verified) return;
-        const token = sessionStorage.getItem('JWT');
-
-        const userInfo = codeStatus
-            ? { nickname: name, inviteCode: code }
-            : { nickname: name };
-
-        console.log("전송 데이터:", userInfo);
-        // axios.post(...)
-        navigate('/signup/check');
-    };
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center bg-custom-bg p-4">
@@ -139,7 +51,7 @@ export default function Signup() {
                                 ${nameAlert && !verified ? 'border border-[#C6343C]' : 'border border-transparent'}`}
                         />
                         <button
-                            onClick={checkName}
+                            onClick={() => {checkName({name, setVerified, setNameAlert})}}
                             className={`h-11 w-40 whitespace-nowrap rounded text-xs transition-colors flex items-center justify-center cursor-pointer
                                 ${verified
                                     ? 'bg-white text-[#2C2C2C]'
@@ -170,7 +82,7 @@ export default function Signup() {
                                 ${codeAlert && !codeStatus ? 'border border-[#C6343C]' : 'border border-transparent'}`}
                         />
                         <button
-                            onClick={checkCode}
+                            onClick={() => {checkCode({code, setCodeStatus, setCodeAlert})}}
                             className={`h-11 w-40 whitespace-nowrap rounded text-xs transition-colors flex items-center justify-center cursor-pointer
                                 ${codeStatus
                                     ? 'bg-white text-[#2C2C2C]'
@@ -219,7 +131,7 @@ export default function Signup() {
 
                 {/* 회원가입 완료 버튼 */}
                 <button
-                    onClick={sendDate}
+                    onClick={() => {sendData({verified, codeStatus, name, code}) && navigate('/')}}
                     disabled={!verified}
                     className={`h-14 w-full rounded-lg text-[18px] text-[#191919] transition-all
                             ${verified

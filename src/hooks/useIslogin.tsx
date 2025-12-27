@@ -1,11 +1,13 @@
-import { useEffect } from "react";
+import { getTokenFromSession } from "../utils/getTokenFromSession";
 
-export const useIslogin = (setIslogin: (login: boolean) => void) => {
-    useEffect(() => {
-        const token = sessionStorage.getItem('JWT');
+export const useIslogin = () => {
+    const Islogin = (setIslogin: (login: boolean) => void) => {        
+        const token = getTokenFromSession();
 
         if (token) {
             setIslogin(true);
         }
-    }, []);
+    }
+
+    return { Islogin };
 }

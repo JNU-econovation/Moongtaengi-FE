@@ -2,10 +2,11 @@ import { useNavigate, type NavigateFunction } from 'react-router-dom'
 
 interface NavbarProps {
     islogin: boolean;
-    logout: () => void;
+    setIslogin: (arg: boolean) => void;
+    logout: (arg: (arg: boolean) => void) => boolean;
 }
 
-export default function Navbar({ islogin, logout }: NavbarProps) {
+export default function Navbar({ islogin, setIslogin, logout }: NavbarProps) {
     const navigate = useNavigate()
 
     return (
@@ -39,7 +40,7 @@ export default function Navbar({ islogin, logout }: NavbarProps) {
 
             {/* Right Side */}
             <div className="flex items-center gap-3 mr-10">
-                <RightMenu islogin={islogin} logout={logout} navigate={navigate} />
+                <RightMenu islogin={islogin} setIslogin={setIslogin} logout={logout} navigate={navigate} />
             </div>
             
         </nav>
@@ -50,7 +51,7 @@ interface RightProps extends NavbarProps{
     navigate: NavigateFunction;
 }
 
-const RightMenu = ({ islogin, logout, navigate }: RightProps) => {
+const RightMenu = ({ islogin, setIslogin, logout, navigate }: RightProps) => {
     if (!islogin) {
         return (
             <button className="px-3 py-1.5 text-sm text-black bg-white rounded-full hover:opacity-80 transition cursor-pointer"
@@ -66,9 +67,9 @@ const RightMenu = ({ islogin, logout, navigate }: RightProps) => {
                 새로운 알림
             </button>
             <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
-                onClick={() => {logout()}}>
+                onClick={() => {logout(setIslogin) && navigate('/', { replace: true });}}>
                 로그아웃
             </button>
         </>
-    )
+    )        
 }
