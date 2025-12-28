@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import MainHero from "../components/MainHero";
 import MainBottom from "../components/MainBottom";
 import { logout } from "../utils/logout";
+import { QuickCreateStudy } from "../components/QuickCreateStudy";
 
 const Main = () => {
 
@@ -15,6 +16,8 @@ const Main = () => {
 
     const [islogin, setIslogin] = useState<boolean>(!!sessionStorage.getItem('JWT'));
     const [isStudy, setIsStudy] = useState<boolean>(true);
+
+    const [showMode, setShowMode] = useState<boolean>(false);
 
     useEffect(() => {
         saveToken();
@@ -27,9 +30,10 @@ const Main = () => {
     return (
         <>
             <div className="min-h-full bg-custom-bg text-white font-sans overflow-x-hidden">
-                <Navbar islogin={islogin} setIslogin={setIslogin} logout={logout} />
+                <Navbar islogin={islogin} setIslogin={setIslogin} logout={logout} setShowMode={setShowMode} />
                 <MainHero islogin={islogin} isStudy={isStudy} />
                 <MainBottom />
+                {showMode && <QuickCreateStudy setShowMode={setShowMode} />}
             </div>
         </>
     )

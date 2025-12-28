@@ -1,0 +1,119 @@
+import { useState } from "react";
+import { createPortal } from "react-dom"
+
+interface QuickCreateStudy {
+    setShowMode: (arg: boolean) => void
+}
+
+export const QuickCreateStudy = ({ setShowMode }: QuickCreateStudy) => {
+    const [formData, setFormData] = useState({
+        name: '',
+        topic: '',
+        duration: '',
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        console.log('저장된 데이터:', formData);
+        // 저장 로직 추가
+        setShowMode(false);
+    };
+
+    return createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
+            <div className="relative w-full max-w-xl rounded-lg bg-custom-bg px-16 py-14 text-white shadow-xl md:scale-90 2xl:scale-100">
+                {/* 닫기 버튼 */}
+                <button
+                    onClick={() => {setShowMode(false)}}
+                    className="absolute right-4 top-4 text-white transition-colors hover:opacity-70 cursor-pointer"
+                    type="button"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+
+                {/* 타이틀 */}
+                <h2 className="mt-5 mb-12 text-center text-4xl font-semibold">스터디 생성하기</h2>
+
+                {/* 폼 */}
+                <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+                    {/* 스터디명 */}
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="name" className="text-lg text-white">
+                            스터디명
+                        </label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            placeholder="Ex. 뭉탱이"
+                            className="w-full rounded bg-custom-gray px-4 py-3 text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-gray-500"
+                        />
+                    </div>
+
+                    {/* 스터디 주제 */}
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="topic" className="text-lg text-white">
+                            스터디 주제
+                        </label>
+                        <input
+                            type="text"
+                            id="topic"
+                            name="topic"
+                            value={formData.topic}
+                            onChange={handleChange}
+                            placeholder="Ex. 뭉탱이"
+                            className="w-full rounded bg-custom-gray px-4 py-3 text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-gray-500"
+                        />
+                    </div>
+
+                    {/* 스터디 기간 */}
+                    <div className="flex flex-col gap-2">
+                        <label htmlFor="duration" className="text-lg text-white">
+                            스터디 기간
+                        </label>
+                        <input
+                            type="text"
+                            id="duration"
+                            name="duration"
+                            value={formData.duration}
+                            onChange={handleChange}
+                            placeholder="Ex. 뭉탱이"
+                            className="w-full rounded bg-custom-gray px-4 py-3 text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-gray-500"
+                        />
+                    </div>
+
+                    {/* 저장 버튼 */}
+                    <div className="mt-8 flex justify-center">
+                        <button
+                            type="submit"
+                            className="w-40 rounded-full bg-white py-3 text-lg text-black transition-colors hover:opacity-70 cursor-pointer"
+                        >
+                            저장
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>,
+        document.getElementById("modal-root")!
+    )
+}
