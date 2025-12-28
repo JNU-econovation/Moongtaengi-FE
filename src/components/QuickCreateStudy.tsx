@@ -2,10 +2,10 @@ import { useState } from "react";
 import { createPortal } from "react-dom"
 
 interface QuickCreateStudy {
-    setShowMode: (arg: boolean) => void
+    setModalMode: (arg: "createStudy" | "inviteCode" | null) => void
 }
 
-export const QuickCreateStudy = ({ setShowMode }: QuickCreateStudy) => {
+export const QuickCreateStudy = ({ setModalMode }: QuickCreateStudy) => {
     const [formData, setFormData] = useState({
         name: '',
         topic: '',
@@ -21,7 +21,7 @@ export const QuickCreateStudy = ({ setShowMode }: QuickCreateStudy) => {
         e.preventDefault();
         console.log('저장된 데이터:', formData);
         // 저장 로직 추가
-        setShowMode(false);
+        setModalMode(null);
     };
 
     return createPortal(
@@ -29,14 +29,14 @@ export const QuickCreateStudy = ({ setShowMode }: QuickCreateStudy) => {
             <div className="relative w-full max-w-xl rounded-lg bg-custom-bg px-16 py-14 text-white shadow-xl md:scale-90 2xl:scale-100">
                 {/* 닫기 버튼 */}
                 <button
-                    onClick={() => {setShowMode(false)}}
+                    onClick={() => {setModalMode(null)}}
                     className="absolute right-4 top-4 text-white transition-colors hover:opacity-70 cursor-pointer"
                     type="button"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        width="32"
-                        height="32"
+                        width="24"
+                        height="24"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -106,7 +106,7 @@ export const QuickCreateStudy = ({ setShowMode }: QuickCreateStudy) => {
                     <div className="mt-8 flex justify-center">
                         <button
                             type="submit"
-                            className="w-40 rounded-full bg-white py-3 text-lg text-black transition-colors hover:opacity-70 cursor-pointer"
+                            className="w-40 rounded-full bg-white py-3 text-lg text-gray-500 transition-colors hover:opacity-70 cursor-pointer"
                         >
                             저장
                         </button>
