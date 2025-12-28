@@ -8,6 +8,9 @@ import { logout } from "../utils/logout";
 import { QuickCreateStudy } from "../components/QuickCreateStudy";
 import MainHeroAfterLogin from "../components/MainHeroAfterLogin";
 import MainHeroBeforeLogin from "../components/MainHeroBeforeLogin";
+import { InviteCode } from "../components/InviteCode";
+
+type ModalMode = "createStudy" | "inviteCode" | null;
 
 const Main = () => {
 
@@ -18,7 +21,7 @@ const Main = () => {
     const [islogin, setIslogin] = useState<boolean>(!!sessionStorage.getItem('JWT'));
     const [isStudy, setIsStudy] = useState<boolean>(true);
 
-    const [showMode, setShowMode] = useState<boolean>(false);
+    const [modalMode, setModalMode] = useState<ModalMode>(null);
 
     useEffect(() => {
         saveToken();
@@ -31,12 +34,13 @@ const Main = () => {
     return (
         <>
             <div className="min-h-full bg-custom-bg text-white font-sans overflow-x-hidden">
-                <Navbar islogin={islogin} setIslogin={setIslogin} logout={logout} setShowMode={setShowMode} />
+                <Navbar islogin={islogin} setIslogin={setIslogin} logout={logout} setModalMode={setModalMode} />
                 {islogin 
                 ? <MainHeroAfterLogin islogin={islogin} isStudy={isStudy} />
                 : <MainHeroBeforeLogin islogin={islogin} isStudy={isStudy} />}
                 <MainBottom />
-                {showMode && <QuickCreateStudy setShowMode={setShowMode} />}
+                {modalMode === "createStudy" && <QuickCreateStudy setModalMode={setModalMode} />}
+                {modalMode === "inviteCode" && <InviteCode setModalMode={setModalMode} />}
             </div>
         </>
     )
