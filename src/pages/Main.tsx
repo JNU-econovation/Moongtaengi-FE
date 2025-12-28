@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom"
 import { useIslogin } from "../hooks/useIslogin";
 import { useSaveToken } from "../hooks/useSaveToken";
 import Navbar from "../components/Navbar";
-import MainHero from "../components/MainHero";
 import MainBottom from "../components/MainBottom";
 import { logout } from "../utils/logout";
 import { QuickCreateStudy } from "../components/QuickCreateStudy";
+import MainHeroAfterLogin from "../components/MainHeroAfterLogin";
+import MainHeroBeforeLogin from "../components/MainHeroBeforeLogin";
 
 const Main = () => {
 
@@ -31,7 +32,9 @@ const Main = () => {
         <>
             <div className="min-h-full bg-custom-bg text-white font-sans overflow-x-hidden">
                 <Navbar islogin={islogin} setIslogin={setIslogin} logout={logout} setShowMode={setShowMode} />
-                <MainHero islogin={islogin} isStudy={isStudy} />
+                {islogin 
+                ? <MainHeroAfterLogin islogin={islogin} isStudy={isStudy} />
+                : <MainHeroBeforeLogin islogin={islogin} isStudy={isStudy} />}
                 <MainBottom />
                 {showMode && <QuickCreateStudy setShowMode={setShowMode} />}
             </div>

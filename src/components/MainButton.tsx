@@ -10,7 +10,7 @@ export default function MainButton({ islogin, isStudy }: HeroProps) {
 
     if (!islogin) return <LoginButton navigate={navigate} />
     if (!isStudy) return <CreateStudyButton navigate={navigate} />
-    return <ProgressButton navigate={navigate} />
+    return <ProgressButton navigate={navigate} progress={20} />
 }
 
 
@@ -36,11 +36,21 @@ const CreateStudyButton = ({ navigate }: ButtonProps) => {
     )
 }
 
-const ProgressButton = ({ navigate }: ButtonProps) => {
+interface ProgressButton extends ButtonProps {
+    progress: number;
+}
+
+const ProgressButton = ({ navigate, progress }: ProgressButton) => {
     return (
-        <button className="w-80 px-10 md:py-3 2xl:py-4 text-2xl font-semibold text-white bg-gradient-to-b from-custom-gradient-blue to-custom-gradient-green rounded-full hover:opacity-70 transition md:border-1 2xl:border-2 border-white cursor-pointer"
+        <button className="relative w-80 rounded-full md:border-1 2xl:border-2 border-white cursor-pointer overflow-hidden bg-custom-bg hover:opacity-70 transition group"
             onClick={() => { navigate('/currentProject') }}>
-            프로젝트 바로가기
+            <div
+                className="absolute top-0 left-0 h-full bg-gradient-to-b from-custom-gradient-blue to-custom-gradient-green transition-all duration-500 ease-out"
+                style={{ width: `${progress}%` }}
+            ></div>
+            <span className="relative z-10 w-full h-full flex items-center justify-center px-10 md:py-3 2xl:py-4 text-2xl font-semibold text-white">
+                프로젝트 바로가기
+            </span>
         </button>
     )
 }

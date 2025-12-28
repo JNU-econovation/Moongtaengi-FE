@@ -17,7 +17,8 @@ export default function Navbar({ islogin, setIslogin, logout, setShowMode }: Nav
             <div className="flex items-center gap-8 ml-10">
 
                 {/* Logo */}
-                <h1 className="md:text-4xl 2xl:text-5xl font-semibold tracking-tighter cursor-pointer">뭉탱이</h1>
+                <h1 onClick={() => {navigate('/')}}
+                    className="md:text-4xl 2xl:text-5xl font-semibold tracking-tighter cursor-pointer">뭉탱이</h1>
 
                 {/* Menu Items */}
                 <div className="hidden md:flex gap-3">
@@ -49,7 +50,10 @@ export default function Navbar({ islogin, setIslogin, logout, setShowMode }: Nav
     )
 }
 
-interface RightProps extends NavbarProps{
+interface RightProps {
+    islogin: boolean;
+    setIslogin: (arg: boolean) => void;
+    logout: (arg: (arg: boolean) => void) => boolean;
     navigate: NavigateFunction;
 }
 

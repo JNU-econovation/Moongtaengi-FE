@@ -7,7 +7,7 @@ interface HeroProps {
     isStudy: boolean;
 }
 
-export default function MainHero({ islogin, isStudy }: HeroProps) {
+export default function MainHeroBeforeLogin({ islogin, isStudy }: HeroProps) {
 
     return (
         <div className="relative w-full flex flex-col md:flex-row md:h-[500px] 2xl:h-[600px]">
@@ -29,11 +29,13 @@ export default function MainHero({ islogin, isStudy }: HeroProps) {
             {/* Right: Character Area */}
             <div className="absolute inset-0 md:static md:flex-1">
                 <div className="w-full h-full relative flex items-center justify-center">
-                    <img className="absolute w-full h-full mr-40 object-cover" src={mainBg}></img>
-                    <img className="absolute md:right-48 2xl:right-55 z-10 md:w-100 md:h-100 2xl:w-130 2xl:h-130 flex items-center justify-center" src={mainMoong}></img>
+                    <img src={mainBg} className="absolute w-full h-full mr-40 object-cover"></img>
+                    <img src={mainMoong} className="absolute md:right-48 2xl:right-70 z-10 md:w-100 2xl:w-130 md:h-100 2xl:h-130 flex items-center justify-center"></img>
+                    <div className="absolute inset-y-0 md:-left-20 2xl:-left-20 md:w-30 2xl:w-50 bg-gradient-to-r from-custom-bg 2xl:via-custom-bg/70 to-transparent z-20"></div>
+                    <div className="absolute inset-y-0 md:left-113 2xl:left-160 md:w-30 2xl:w-50 bg-gradient-to-l from-custom-bg 2xl:via-custom-bg/70 to-transparent z-20"></div>
                 </div>
             </div>
-            
+
         </div>
     )
 }
