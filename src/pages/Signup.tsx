@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import signupBg from '../assets/signup/signup-bg.png';
 import signupMoong from '../assets/signup/signup-moong.png';
 import { useCheckCode } from '../hooks/useCheckCode';
-import { useSendData } from '../hooks/useSendData';
+import { useSendUserData } from '../hooks/useSendUserData';
 import { useCheckName } from '../hooks/useCheckName';
 
 export default function Signup() {
@@ -11,7 +11,7 @@ export default function Signup() {
     const navigate = useNavigate();
     const { checkName } = useCheckName();
     const { checkCode } = useCheckCode();
-    const { sendData } = useSendData();
+    const { sendData } = useSendUserData();
 
     const [name, setName] = useState<string>("");
     const [verified, setVerified] = useState<boolean>(false);
