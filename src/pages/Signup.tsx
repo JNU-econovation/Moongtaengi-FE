@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import signupBg from '../assets/signup-bg.png';
-import signupMoong from '../assets/signup-moong.png';
+import signupBg from '../assets/signup/signup-bg.png';
+import signupMoong from '../assets/signup/signup-moong.png';
 import { checkName } from '../utils/checkName';
 import { checkCode } from '../utils/checkCode';
 import { useSendData } from '../hooks/useSendData';
@@ -23,7 +23,7 @@ export default function Signup() {
         e.preventDefault();
         if (verified) {
             sendData({verified, codeStatus, name, code});
-            navigate('/');
+            navigate('/signup/check');
         }
     }
 

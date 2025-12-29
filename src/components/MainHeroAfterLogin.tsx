@@ -1,6 +1,8 @@
-import mainBg from "../assets/main-bg.png";
-import mainMoong from "../assets/main-moong.png";
-import mainMoongs from "../assets/main-moongs.png";
+import mainBg from "../assets/main/main-bg.png";
+import mainMoongs from "../assets/main/main-moongs.png";
+
+import mainMoongCompB from "../assets/main/main-moong-comp-a.png";
+import mainProfile from "../assets/main/main-profile.png";
 import MainButton from "./MainButton";
 
 interface HeroProps {
@@ -21,7 +23,7 @@ export default function MainHeroAfterLogin({ islogin, isStudy }: HeroProps) {
                 </h2>
                 
                 <div className="flex items-center mb-10">
-                    <img src={mainMoong} className="w-14 h-14 rounded-xl mr-6 object-cover" alt="study thumbnail" />
+                    <img src={mainProfile} className="w-14 h-14 rounded-xl mr-6 object-cover" alt="study thumbnail" />
                     <div className="flex flex-col">
                         <span className="font-semibold">퍼스트커밋: 사용자 시나리오 작성</span>
                         <span className="text-sm text-white/70">제출까지 18시간 남았어요!</span>
@@ -49,10 +51,12 @@ export default function MainHeroAfterLogin({ islogin, isStudy }: HeroProps) {
             {/* Right: Character Area */}
             <div className="absolute inset-0 md:static md:flex-1">
                 <div className="w-full h-full relative flex items-center justify-center">
-                    <img src={mainBg} className="absolute w-full h-full mr-40 object-cover"></img>
+                    <img src={mainMoongCompB} className="absolute w-full h-full mr-40 "></img>
+
+                    {/* <img src={mainBg} className="absolute w-full h-full mr-40 object-cover"></img>
                     <img src={mainMoongs} className="absolute md:right-48 2xl:right-70 z-10 md:w-100 2xl:w-130 md:h-100 2xl:h-130 flex items-center justify-center"></img>
                     <div className="absolute inset-y-0 md:-left-20 2xl:-left-20 md:w-30 2xl:w-50 bg-gradient-to-r from-custom-bg 2xl:via-custom-bg/70 to-transparent z-20"></div>
-                    <div className="absolute inset-y-0 md:left-113 2xl:left-160 md:w-30 2xl:w-50 bg-gradient-to-l from-custom-bg 2xl:via-custom-bg/70 to-transparent z-20"></div>
+                    <div className="absolute inset-y-0 md:left-113 2xl:left-160 md:w-30 2xl:w-50 bg-gradient-to-l from-custom-bg 2xl:via-custom-bg/70 to-transparent z-20"></div> */}
                 </div>
             </div>
 

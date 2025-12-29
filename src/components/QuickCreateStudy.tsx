@@ -26,7 +26,7 @@ export const QuickCreateStudy = ({ setModalMode }: QuickCreateStudy) => {
 
     return createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-            <div className="relative w-full max-w-xl rounded-lg bg-custom-bg px-16 py-14 text-white shadow-xl md:scale-90 2xl:scale-100">
+            <div className="relative w-full max-w-3xl rounded-lg bg-custom-bg px-36 py-14 text-white shadow-xl md:scale-90 2xl:scale-100">
                 {/* 닫기 버튼 */}
                 <button
                     onClick={() => {setModalMode(null)}}

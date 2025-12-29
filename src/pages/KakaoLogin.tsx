@@ -1,7 +1,7 @@
-import loginBg from '../assets/login-bg.png'
-import loginMoong from '../assets/login-moong.png'
-import moongShadow from '../assets/moong-shadow.png'
-import kakaoLogo from '../assets/kakao-logo.svg'
+import loginBg from '../assets/login/login-bg.png'
+import loginMoong from '../assets/login/login-moong.png'
+import loginMoongShadow from '../assets/login/login-moong-shadow.png'
+import kakaoLogo from '../assets/login/kakao-logo.svg'
 
 const KakaoLogin = () => {
 
@@ -23,7 +23,7 @@ const KakaoLogin = () => {
                 <div className="bg-white relative w-full aspect-[13/9] md:mb-[3.1rem] 2xl:mb-[3.5rem] after:content-[''] after:absolute after:z-[4] after:inset-0 after:shadow-[inset_80px_0_45px_-25px_#121212,inset_-80px_0_45px_-25px_#121212]">
                     <img src={loginBg} className="absolute w-full h-full object-cover z-[1]" alt="bg" />
                     <img src={loginMoong} className="absolute top-[10%] left-[25%] w-[50%] z-[3]" alt="moong" />
-                    <img src={moongShadow} className="absolute top-[78%] left-[20%] w-[60%] z-[2]" alt="shadow" />
+                    <img src={loginMoongShadow} className="absolute top-[78%] left-[20%] w-[60%] z-[2]" alt="shadow" />
                 </div>
 
                 {/* 로그인 버튼 */}
