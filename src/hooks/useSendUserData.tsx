@@ -1,3 +1,4 @@
+import axios from "axios";
 import { getTokenFromSession } from "../utils/getTokenFromSession";
 import { useSaveToken } from "./useSaveToken";
 
@@ -9,28 +10,29 @@ interface SendData {
 }
 
 // 최종 유저 데이터 전송
-export const useSendData = () => {
-    const { saveToken } = useSaveToken();
+export const useSendUserData = () => {
+    const {saveToken} = useSaveToken();
 
     const sendData = ({ verified, codeStatus, name, code }: SendData) => {
 
         if (!verified) return;
 
+        saveToken();
+
         const userInfo = codeStatus
             ? { nickname: name, inviteCode: code }
             : { nickname: name };
 
-
         console.log("전송 데이터:", userInfo);
-
-        // axios.post(...)
-        // 구현 전엔 회원가입 성공으로 가정
-        saveToken();
+        
         const token = getTokenFromSession();
-        if (token) {
-            sessionStorage.setItem('JWT', token);
-            return true;
-        }
+
+        axios.post(import.meta.env.VITE_API_REGISTRATION, 
+            userInfo,
+            { 
+                headers: {Authorization: `Bearer ${token}`}
+            }
+        );
     }
 
     return {sendData};

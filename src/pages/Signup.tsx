@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import signupBg from '../assets/signup-bg.png';
-import signupMoong from '../assets/signup-moong.png';
-import { checkName } from '../utils/checkName';
-import { checkCode } from '../utils/checkCode';
-import { useSendData } from '../hooks/useSendData';
+import signupBg from '../assets/signup/signup-bg.png';
+import signupMoong from '../assets/signup/signup-moong.png';
+import { useCheckCode } from '../hooks/useCheckCode';
+import { useSendUserData } from '../hooks/useSendUserData';
+import { useCheckName } from '../hooks/useCheckName';
 
 export default function Signup() {
 
     const navigate = useNavigate();
-    const { sendData } = useSendData();
+    const { checkName } = useCheckName();
+    const { checkCode } = useCheckCode();
+    const { sendData } = useSendUserData();
 
     const [name, setName] = useState<string>("");
     const [verified, setVerified] = useState<boolean>(false);
@@ -22,8 +24,8 @@ export default function Signup() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (verified) {
-            sendData({verified, codeStatus, name, code});
-            navigate('/');
+            sendData({ verified, codeStatus, name, code });
+            navigate('/signup/check');
         }
     }
 
@@ -40,7 +42,7 @@ export default function Signup() {
                     </p>
                 </div>
 
-                <form onSubmit={ handleSubmit } className='flex w-full flex-col'>
+                <form onSubmit={handleSubmit} className='flex w-full flex-col'>
                     {/* 닉네임 입력 그룹 */}
                     <div className="mb-5 flex flex-col">
                         <label className="text-[15px] text-white">닉네임</label>

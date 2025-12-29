@@ -1,4 +1,4 @@
-import signupCheck from '../assets/signup-check.png'
+import signupCheck from '../assets/signup/signup-check.png'
 import { useNavigate } from 'react-router-dom'
 
 const SignupCheck = () => {
