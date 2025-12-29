@@ -1,3 +1,4 @@
+
 import { useGetTokenFromUrl } from "./useGetTokenFromUrl";
 
 export const useSaveToken = () => {
@@ -6,7 +7,6 @@ export const useSaveToken = () => {
     const saveToken = () => {
         if (token) {
             sessionStorage.setItem('JWT', token);
-            return true;
         }
     }
 
