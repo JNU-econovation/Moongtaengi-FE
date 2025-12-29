@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createPortal } from "react-dom"
+import cross from "../assets/icons/cross.svg";
 
 interface QuickCreateStudy {
     setModalMode: (arg: "createStudy" | "inviteCode" | null) => void
@@ -33,20 +34,7 @@ export const QuickCreateStudy = ({ setModalMode }: QuickCreateStudy) => {
                     className="absolute right-4 top-4 text-white transition-colors hover:opacity-70 cursor-pointer"
                     type="button"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    >
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
+                    <img src={cross} className="w-3.5 mt-1 mr-1 invert" />
                 </button>
 
                 {/* 타이틀 */}
