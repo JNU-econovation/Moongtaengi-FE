@@ -1,4 +1,5 @@
 import { useNavigate, type NavigateFunction } from 'react-router-dom'
+import downArrow from "../assets/icons/down-arrow.svg";
 
 interface NavbarProps {
     islogin: boolean;
@@ -25,9 +26,7 @@ export default function Navbar({ islogin, setIslogin, logout, setModalMode }: Na
                     <button className="flex items-center px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
                         onClick={() => {setModalMode("createStudy")}}>
                         나의 스터디
-                        <svg className="w-3.5 h-3.5 ml-1 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                        </svg>
+                        <img src={downArrow} className='w-3.5 ml-1.5 mt-0.5 invert' />
                     </button>
                     <button className="px-3 2xl:py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
                         마이페이지

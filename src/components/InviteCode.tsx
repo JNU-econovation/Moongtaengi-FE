@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createPortal } from "react-dom"
+import cross from "../assets/icons/cross.svg";
 
 interface InviteCode {
     setModalMode: (arg: "createStudy" | "inviteCode" | null) => void;
@@ -28,24 +29,11 @@ export const InviteCode = ({ setModalMode }: InviteCode) => {
                     className="absolute right-3 top-3 text-white transition-colors hover:opacity-70 cursor-pointer"
                     type="button"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    >
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
+                    <img src={cross} className="w-3.5 mt-1 mr-1 invert" />
                 </button>
 
                 {/* 타이틀 */}
-                <h2 className="mb-4 text-center text-4xl font-semibold">초대코드 입력하기</h2>
+                <h2 className="mt-2 mb-4 text-center text-4xl font-semibold">초대코드 입력하기</h2>
 
                 {/* 설명 */}
                 <span className="flex items-center justify-center text-md text-[#0CD1EF] mb-10">
