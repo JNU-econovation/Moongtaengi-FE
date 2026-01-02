@@ -5,19 +5,24 @@ import KakaoLogin from './pages/KakaoLogin'
 import Signup from './pages/Signup'
 import SignupCheck from './pages/SignupCheck'
 import { AuthCallback } from './pages/AuthCallback'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient();
 
 function App() {
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/tempMain' element={<Main />} />
-        <Route path='/' element={<AuthCallback />} />
-        <Route path='/login' element={<KakaoLogin />} />
-        <Route path='/signup' element={<Signup />} />
-        <Route path='/signup/check' element={<SignupCheck />} />
-      </Routes>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/tempMain' element={<Main />} />
+          <Route path='/' element={<AuthCallback />} />
+          <Route path='/login' element={<KakaoLogin />} />
+          <Route path='/signup' element={<Signup />} />
+          <Route path='/signup/check' element={<SignupCheck />} />
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   )
 }
 

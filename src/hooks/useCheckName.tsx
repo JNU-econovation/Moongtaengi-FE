@@ -1,27 +1,40 @@
-import { checkNamePolicy } from "../utils/checkNamePolicy";
+import { useCheckNamePolicy } from "./useCheckNamePolicy";
 import { useGetTokenFromUrl } from "../hooks/useGetTokenFromUrl";
 
-interface CheckName {
+export interface CheckName {
     name: string;
     setVerified: (arg: boolean) => void;
     setNameAlert: (args: string) => void;
 }
 
-// 닉네임 유효문자 확인
 export const useCheckName = () => {
+    const { mutate } = useCheckNamePolicy();
     const token = useGetTokenFromUrl();
 
     const checkName = ({ name, setVerified, setNameAlert }: CheckName) => {
         const regex = /^[가-힣0-9]+$/;
 
-        if (name.length <= 7 && regex.test(name)) {
-            checkNamePolicy({ token, name, setVerified, setNameAlert });
-        } else {
+        // 닉네임 유효문자 확인
+        if (name.length > 7 || !regex.test(name)) {
             setVerified(false);
             setNameAlert("닉네임을 확인해주세요");
+            return;
         }
+        
+        // 닉네임 중복, 비속어 확인
+        mutate({ token, name }, {
+            onSuccess: (data) => {
+                if (!data.isAvailable) {
+                    setVerified(false);
+                    setNameAlert(data.message);
+                    return;
+                }
+                setVerified(true);
+                setNameAlert("");
+            },
+        })
     }
 
-    return {checkName};
+    return { checkName };
 };
 
