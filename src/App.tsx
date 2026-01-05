@@ -15,8 +15,8 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          <Route path='/tempMain' element={<Main />} />
-          <Route path='/' element={<AuthCallback />} />
+          <Route path='/' element={<Main />} />
+          <Route path='/auth/callback' element={<AuthCallback />} />
           <Route path='/login' element={<KakaoLogin />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/signup/check' element={<SignupCheck />} />
