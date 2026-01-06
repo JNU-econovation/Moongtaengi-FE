@@ -1,169 +1,194 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import NavbarPure from '../components/NavbarPure';
+import { tempData } from './tempStudyData.ts';
+import processMoong from '../assets/process/process-moong.png';
 
-// 타입 정의
-interface Week {
-  weekNum: number;
-  topic: string;
-  status: 'active' | 'hidden';
-  date?: string; // 날짜는 없을 수도 있다고 가정하거나 필수라면 제거
+// 데이터 스키마
+interface ProcessItem {
+  id: number;
+  processOrder: number;
+  title: string;
+  startDate: string;
+  endDate: string;
+  durationDays: number;
+  memo: string;
+  assignmentDescription: string;
+  status: 'complete' | 'active' | 'todo';
 }
 
-interface StudyData {
-  studyId: string;
-  currentStep: number;
-  totalWeeks: Week[];
-}
+// 날짜 포맷팅 헬퍼 함수 (예: 2024-03-01 -> 03월 01일)
+const formatDate = (dateString: string) => {
+  const parts = dateString.split('-');
+  if (parts.length === 3) {
+    return `${parts[1]}월 ${parts[2]}일`;
+  }
+  return dateString;
+};
 
-
-// 메인 페이지 컴포넌트
 const Process: React.FC = () => {
-  // useParams 제네릭 타입 명시 (react-router-dom 버전에 따라 다를 수 있음)
-  const { studyId } = useParams<{ studyId: string }>();
-  
-  // 각 주차별 DOM 요소 참조를 위한 Ref (Key: weekNum, Value: div element)
-  const weekRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  const { studyId = '23' } = useParams<{ studyId: string }>();
 
-  // 초기 데이터
-  const [studyData, setStudyData] = useState<StudyData>({
-    studyId: studyId || "23",
-    currentStep: 2,
-    totalWeeks: [
-      { weekNum: 1, topic: "기본 문법", status: "active", date: "10월 23일 / 10월 29일" },
-      { weekNum: 2, topic: "컴포넌트", status: "active", date: "10월 30일 / 11월 7일" },
-      { weekNum: 3, topic: "훅(Hooks)", status: "hidden", date: "11월 8일 / 11월 14일" },
-      { weekNum: 4, topic: "리덕스", status: "hidden", date: "11월 15일 / 11월 21일" }
-    ]
-  });
+  // 전체 프로세스 항목 Refs
+  const itemRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
-  // 페이지 진입 시 혹은 currentStep 변경 시 해당 주차로 스크롤 이동
-  useEffect(() => {
-    const currentWeekElement = weekRefs.current[studyData.currentStep];
-    if (currentWeekElement) {
-      setTimeout(() => {
-        currentWeekElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
-    }
-  }, [studyData.currentStep]);
+  // 하단 과제 카드 가로 스크롤 Refs
+  const scrollRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
-  // 페이지 추가 핸들러
-  const handleAddPage = () => {
-    if (studyData.currentStep < studyData.totalWeeks.length) {
-      setStudyData((prev) => ({
-        ...prev,
-        currentStep: prev.currentStep + 1
-      }));
+  const [processes, setProcesses] = useState<ProcessItem[]>(tempData);
+
+  // 스크롤 핸들러
+  const handleScroll = (processId: number, direction: 'left' | 'right') => {
+    const container = scrollRefs.current[processId];
+    if (container) {
+      const scrollAmount = container.clientWidth; // 한 화면(3개 분량)만큼 이동
+      container.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
     }
   };
 
-  // 현재 진행 상황(currentStep)까지 보여주되, 순서는 오름차순
-  const visibleWeeks = studyData.totalWeeks
-    .filter((week) => week.weekNum <= studyData.currentStep)
-    .sort((a, b) => a.weekNum - b.weekNum);
+  useEffect(() => {
+    const activeProcess = processes.find(p => p.status === 'active');
+    if (activeProcess) {
+      const activeElement = itemRefs.current[activeProcess.processOrder];
+      if (activeElement) {
+        setTimeout(() => {
+          activeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
+    }
+  }, [processes]);
 
   return (
     <div className="min-h-screen bg-custom-bg text-white flex flex-col items-center">
-      {/* 네비게이션 바: 상단 고정 및 블러 처리 */}
       <div className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/50 rounded-full">
         <NavbarPure />
       </div>
 
       <div className="w-full max-w-6xl px-4 py-10 flex flex-col gap-24 mb-40">
-        {/* 주차별 리스트 렌더링 */}
-        {visibleWeeks.map((week) => (
-          <div 
-            key={week.weekNum} 
-            ref={(el) => { weekRefs.current[week.weekNum] = el; }} // Ref 할당
-            className="w-full md:mb-10 2xl:mb-20 md:scale-85 2xl:scale-100"
+        {processes.map((process) => (
+          <div
+            key={process.id}
+            ref={(el) => { itemRefs.current[process.processOrder] = el; }}
+            className={`w-full md:mb-10 2xl:mb-20 md:scale-85 2xl:scale-100 transition-opacity duration-500 ${process.status === 'todo' ? 'opacity-50 hover:opacity-100' : 'opacity-100'
+              }`}
           >
-            
-            {/* 날짜 및 상단 컨트롤 */}
+
+            {/* 날짜 정보 */}
             <div className="flex justify-between items-end mb-4 px-2">
-              <h2 className="text-3xl font-bold">{week.date || `Week ${week.weekNum}`}</h2>
-              <div className="flex gap-2 text-sm text-gray-400">
-                <button className="bg-[#2C2C2C] px-3 py-1 rounded-full hover:bg-gray-700">수정하기</button>
-                <button className="bg-[#2C2C2C] px-3 py-1 rounded-full hover:bg-gray-700">나의 과제 모아보기</button>
+              <div className="flex flex-col">
+                <h2 className="text-3xl font-semibold">
+                  {formatDate(process.startDate)} / {formatDate(process.endDate)}
+                </h2>
+              </div>
+              <div className="flex gap-2 text-sm text-white font-semibold">
+                <button className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70">수정하기</button>
+                <button className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70">나의 과제 모아보기</button>
               </div>
             </div>
 
-            {/* 그리드 레이아웃 */}
             <div className="flex flex-col gap-4">
-              
-              {/* 상단: 메인 주제 카드 + 첫 번째 과제 카드 */}
+              {/* 프로세스 메인 */}
               <div className="flex flex-col md:flex-row gap-4 h-auto md:h-80">
-                
-                {/* 메인 주제 카드 (발견하기) */}
-                <div className="flex-1 bg-[#1F1F1F] rounded-2xl p-6 relative flex flex-col justify-between overflow-hidden group">
-                  <div className="z-10">
-                    <span className="text-black text-xs font-bold px-2 py-1 rounded-full bg-gradient-to-b from-custom-gradient-blue to-custom-gradient-green">TRACK 3</span>
-                    <p className="text-gray-400 text-sm mt-4">AI 추천</p>
-                    <h3 className="text-5xl font-bold mt-1 mb-2">발견하기</h3>
-                    <p className="text-gray-400 text-lg">{week.topic} 설명</p>
+                {/* 메인 주제와 아이콘 */}
+                <div className="flex-1 bg-[#272727] text-white rounded-2xl p-6 relative flex flex-col justify-between overflow-hidden group">
+                  <div className="z-10 relative">
+                    <span className="text-black text-xs font-semibold px-2 py-1 rounded-full bg-gradient-to-b from-custom-gradient-blue to-custom-gradient-green">
+                      Week {process.processOrder}
+                    </span>
+                    <div className='flex justify-between mt-10'>
+                      <div>
+                        <p className="text-sm mt-4">AI 추천</p>
+                        <h3 className="text-5xl font-semibold mt-1 mb-2 leading-tight">{process.title}</h3>
+                        <p className="text-lg font-semibold mt-2">{process.memo || "메모가 없습니다."}</p>
+                      </div>
+                      <div className='flex items-end justify-center absolute top-10 right-1 bg-white rounded-2xl w-50 h-50 '>
+                        <img src={processMoong} className='w-[90%]' />
+                      </div>
+                    </div>
                   </div>
 
-                  {/* 캐릭터 영역 (흰색 박스) */}
-                  <div className="absolute top-1/2 right-4 transform -translate-y-1/2 w-48 h-48 bg-white rounded-2xl shadow-lg"></div>
-
-                  {/* 하단 진행도 바 */}
-                  <div className="w-full flex gap-1 mt-6 h-2">
-                    {studyData.totalWeeks.map((w) => (
-                      <div 
-                        key={w.weekNum} 
-                        className={`flex-1 rounded-full h-full ${w.weekNum <= week.weekNum ? 'bg-white' : 'bg-gray-600'}`}
+                  <div className="w-full flex gap-1 mt-6 h-3 z-10">
+                    {processes.map((p, i) => (
+                      <div
+                        key={p.id}
+                        className={`flex-1 rounded h-full mt-2 transition-colors ${(i + 1) === process.id ? 'bg-gradient-to-r from-custom-gradient-blue to-custom-gradient-green' : 'bg-white'}`}
                       ></div>
                     ))}
                   </div>
                 </div>
 
-                {/* 첫 번째 과제 카드 */}
-                <div className="w-full md:w-1/3 bg-[#1F1F1F] rounded-2xl p-6 flex flex-col justify-between hover:bg-[#2a2a2a] transition-colors cursor-pointer">
+                {/* 나의 과제 제출 카드 */}
+                <div className="md:w-80 md:shrink-0 aspect-square bg-[#272727] rounded-2xl p-6 flex flex-col justify-between hover:opacity-70 transition-colors cursor-pointer">
                   <div>
-                    <h4 className="text-2xl font-bold mb-2">이번 주<br />부여 받은 과제</h4>
+                    <h4 className="text-3xl font-semibold mt-6">
+                      이번 주<br /> 부여 받은 과제
+                    </h4>
                   </div>
-                  <div className="flex items-center gap-3 mt-4">
-                    <div className="w-10 h-10 bg-gray-600 rounded-full"></div> 
+                  <div className="flex items-center gap-3 mt-4 pt-4">
+                    <div className="w-10 h-10 bg-[#AFAEAE] rounded-full flex items-center justify-center">Me</div>
                     <div className="flex flex-col">
-                      <span className="text-sm font-bold">닉네임</span>
-                      <span className="text-xs text-gray-400">이번 주 과제 파일명 1</span>
+                      <span className="text-sm font-semibold">나</span>
+                      <span className="text-xs text-[#F9F9F9]">이번 주 과제 파일명</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* 하단: 과제 카드 리스트 (3개) */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-64">
-                {[2, 3, 4].map((idx) => (
-                  <div key={idx} className="bg-[#1F1F1F] rounded-2xl p-6 flex flex-col justify-between hover:bg-[#2a2a2a] transition-colors cursor-pointer">
-                    <div>
-                       <h4 className="text-xl font-bold mb-2">이번 주<br />부여 받은 과제</h4>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center text-xs">아이콘</div>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold">닉네임</span>
-                        <span className="text-xs text-gray-400">이번 주 과제 파일명 {idx}</span>
+              {/* 다른 사람의 과제 제출 카드 (가로 스크롤 적용) */}
+              <div className="relative group/list">
+                {/* 왼쪽 스크롤 버튼 */}
+                <button
+                  onClick={() => handleScroll(process.id, 'left')}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-20 w-10 h-10 bg-black/80 rounded-full flex items-center justify-center text-white opacity-0 group-hover/list:opacity-100 transition-opacity hover:bg-gray-700"
+                >
+                  &lt;
+                </button>
+
+                {/* 스크롤 컨테이너 */}
+                <div
+                  ref={(el) => { scrollRefs.current[process.id] = el; }}
+                  className="flex gap-4 overflow-x-hidden scroll-smooth"
+                >
+                  {/* 예시 데이터 6개로 늘려서 스크롤 테스트 가능하게 함 */}
+                  {[1, 2, 3, 4, 5, 6].map((idx) => (
+                    <div
+                      key={idx}
+                      className="shrink-0 w-80 aspect-square bg-[#272727] rounded-2xl p-6 flex flex-col justify-between hover:opacity-70 transition-colors cursor-pointer"
+                    >
+                      <div>
+                        <h4 className="text-3xl font-semibold mt-6">
+                          이번 주<br /> 부여 받은 과제
+                        </h4>
+                      </div>
+                      <div className="flex items-center gap-3 mt-4 pt-4">
+                        <div className="w-10 h-10 bg-[#AFAEAE] rounded-full flex items-center justify-center">Me</div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-semibold">닉네임</span>
+                          <span className="text-xs text-[#F9F9F9]">이번 주 과제 파일명</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+                <div className="absolute inset-y-0 right-0 md:w-30 2xl:w-50 bg-gradient-to-l from-custom-bg 2xl:via-custom-bg/70 to-transparent z-20"></div>
+
+                {/* 오른쪽 스크롤 버튼 */}
+                <button
+                  onClick={() => handleScroll(process.id, 'right')}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-20 w-10 h-10 bg-black/80 rounded-full flex items-center justify-center text-white opacity-0 group-hover/list:opacity-100 transition-opacity hover:bg-gray-700"
+                >
+                  &gt;
+                </button>
               </div>
 
             </div>
           </div>
         ))}
       </div>
-      
-      {/* 페이지 추가 버튼 (테스트용) */}
-      <div className="fixed bottom-10 z-50">
-        <button 
-          onClick={handleAddPage}
-          className="bg-[#2C2C2C] text-white px-6 py-3 rounded-full hover:bg-gray-600 transition-colors font-bold shadow-lg border border-gray-700"
-        >
-          페이지 추가
-        </button>
-      </div>
-    </div>
+    </div >
   );
 };
 
