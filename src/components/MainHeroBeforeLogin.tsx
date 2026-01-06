@@ -32,7 +32,7 @@ export default function MainHeroBeforeLogin({ islogin, isStudy }: HeroProps) {
             <div className="absolute inset-0 static flex-1">
                 <div className="relative md:w-[110%] 2xl:w-full h-full flex items-center justify-center">
                     <img src={mainMoongCompA} className="absolute w-full h-full mr-60"></img>
-                    
+
                     {/* <img src={mainBg} className="absolute w-full h-full mr-40 object-cover"></img>
                     <img src={mainMoong} className="absolute md:right-48 2xl:right-70 z-10 md:w-100 2xl:w-130 md:h-100 2xl:h-130 flex items-center justify-center"></img>
                     <div className="absolute inset-y-0 md:-left-20 2xl:-left-20 md:w-30 2xl:w-50 bg-gradient-to-r from-custom-bg 2xl:via-custom-bg/70 to-transparent z-20"></div>

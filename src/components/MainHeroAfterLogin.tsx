@@ -21,7 +21,7 @@ export default function MainHeroAfterLogin({ islogin, isStudy }: HeroProps) {
                 <h2 className="md:text-6xl 2xl:text-7xl font-semibold leading-tight mb-8">
                     뭉탱이 뭉치
                 </h2>
-                
+
                 <div className="flex items-center mb-10">
                     <img src={mainProfile} className="w-14 h-14 rounded-xl mr-6 object-cover" alt="study thumbnail" />
                     <div className="flex flex-col">

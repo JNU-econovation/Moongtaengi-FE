@@ -1,5 +1,8 @@
 import { useNavigate, type NavigateFunction } from 'react-router-dom'
 import downArrow from "../assets/icons/down-arrow.svg";
+import { getTokenFromSession } from '../utils/getTokenFromSession';
+import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
 
 interface NavbarProps {
     islogin: boolean;
@@ -10,6 +13,35 @@ interface NavbarProps {
 
 export default function Navbar({ islogin, setIslogin, logout, setModalMode }: NavbarProps) {
     const navigate = useNavigate()
+    const token = getTokenFromSession();
+
+    const createProcessApi = async () => {
+        await axios.post(`${import.meta.env.VITE_API_CREATE_STUDY}/3/processes/generate`,
+            {
+                additionalDescription: "뭉탱이에 대해 알아보자"
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": 'application/json'
+                },
+            },
+        )
+    }
+
+    const {mutate, isPending} = useMutation({
+        mutationFn: createProcessApi,
+        onSuccess: () => {
+            console.log(`${import.meta.env.VITE_API_CREATE_STUDY}/3/processes/generate}`)
+        },
+        onError: (error) => {
+            console.log(error);
+        }
+    })
+
+    const createProcess = () => {
+        mutate();
+    }
 
     return (
         <nav className="flex items-center justify-between px-6 md:py-2 2xl:py-3 bg-black sticky top-0 z-50 text-white rounded-full mt-7">
@@ -18,23 +50,24 @@ export default function Navbar({ islogin, setIslogin, logout, setModalMode }: Na
             <div className="flex items-center gap-8 ml-10">
 
                 {/* Logo */}
-                <h1 onClick={() => {navigate('/')}}
+                <h1 onClick={() => { navigate('/') }}
                     className="md:text-4xl 2xl:text-5xl font-semibold tracking-tighter cursor-pointer">뭉탱이</h1>
 
                 {/* Menu Items */}
                 <div className="hidden md:flex gap-3">
                     <button className="flex items-center px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
-                        onClick={() => {setModalMode("createStudy")}}>
+                        onClick={() => { setModalMode("createStudy") }}>
                         나의 스터디
                         <img src={downArrow} className='w-3.5 ml-1.5 mt-0.5 invert' />
                     </button>
                     <button className="px-3 2xl:py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
                         마이페이지
                     </button>
-                    <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
-                        컬렉션
+                    <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
+                        onClick={ createProcess }>
+                        {isPending ? '생성 중...' : '컬렉션'}
                     </button>
-                    <button onClick={() => {setModalMode("inviteCode")}} 
+                    <button onClick={() => { setModalMode("inviteCode") }}
                         className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
                         초대코드 입력
                     </button>
@@ -45,7 +78,7 @@ export default function Navbar({ islogin, setIslogin, logout, setModalMode }: Na
             <div className="flex items-center gap-3 mr-10">
                 <RightMenu islogin={islogin} setIslogin={setIslogin} logout={logout} navigate={navigate} />
             </div>
-            
+
         </nav>
     )
 }
@@ -61,7 +94,7 @@ const RightMenu = ({ islogin, setIslogin, logout, navigate }: RightProps) => {
     if (!islogin) {
         return (
             <button className="px-3 py-1.5 text-sm text-black bg-white rounded-full hover:opacity-80 transition cursor-pointer"
-                onClick={() => {navigate('/login')}}>
+                onClick={() => { navigate('/login') }}>
                 로그인
             </button>
         )
@@ -73,9 +106,9 @@ const RightMenu = ({ islogin, setIslogin, logout, navigate }: RightProps) => {
                 새로운 알림
             </button>
             <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
-                onClick={() => {logout(setIslogin) && navigate('/', { replace: true });}}>
+                onClick={() => { logout(setIslogin) && navigate('/', { replace: true }); }}>
                 로그아웃
             </button>
         </>
-    )        
+    )
 }
