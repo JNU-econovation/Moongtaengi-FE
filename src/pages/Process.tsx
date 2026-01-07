@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { tempData } from './tempStudyData.ts';
 import processMoong from '../assets/process/process-moong.png';
@@ -70,11 +70,11 @@ const Process = () => {
         <Navbar />
       </div>
 
-      <div className="w-full max-w-6xl px-4 py-10 flex flex-col gap-24 mb-40 md:scale-90 2xl:scale-100">
+      <div className="w-full max-w-6xl px-4 py-10 flex flex-col gap-24 mb-40 md:scale-90 2xl:scale-98">
         {processes.map((process) => (
           <div
             key={process.id}
-            ref={(el) => { itemRefs.current[process.processOrder] = el; }}
+            
             className={`w-full md:mb-10 2xl:mb-20 md:scale-85 2xl:scale-100 transition-opacity duration-500 ${process.status === 'todo' ? 'opacity-50 hover:opacity-100' : 'opacity-100'
               }`}
           >
@@ -132,7 +132,8 @@ const Process = () => {
                       이번 주<br /> 부여 받은 과제
                     </h4>
                   </div>
-                  <div className="flex items-center gap-3 mt-4 pt-4">
+                  <div ref={(el) => { itemRefs.current[process.processOrder] = el; }}
+                    className="flex items-center gap-3 mt-4 pt-4">
                     <div className="w-10 h-10 bg-[#AFAEAE] rounded-full flex items-center justify-center">Me</div>
                     <div className="flex flex-col">
                       <span className="text-sm font-semibold">나</span>
