@@ -39,10 +39,10 @@ const ProcessSetting = () => {
     };
 
     return (
-        <div className="min-h-screen bg-custom-bg text-white font-sans pb-10 overflow-hidden flex flex-col">
+        <div className="min-h-screen bg-custom-bg text-white font-sans md:pb-0 2xl:pb-10 overflow-hidden flex flex-col">
             <NavbarPure />
 
-            <main className="max-w-[1400px] mx-auto mt-8 p-8 w-full flex-1">
+            <main className="max-w-[1400px] w-full mx-auto md:mt-0 2xl:mt-8 md:p-0 2xl:p-8 flex-1 md:scale-85 2xl:scale-100">
 
                 {/* Header Section */}
                 <div className="flex justify-between items-center font-semibold mb-4">
