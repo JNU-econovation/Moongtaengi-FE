@@ -3,16 +3,15 @@ import downArrow from "../assets/icons/down-arrow.svg";
 import { getTokenFromSession } from '../utils/getTokenFromSession';
 import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
+import { useAuthStore } from '../stores/useAuthStore';
+import { useModalModeStore } from '../stores/useModalModeStore';
 
-interface NavbarProps {
-    islogin: boolean;
-    setIslogin: (arg: boolean) => void;
-    logout: (arg: (arg: boolean) => void) => boolean;
-    setModalMode: (arg: "createStudy" | "inviteCode" | null) => void
-}
+export default function Navbar() {
 
-export default function Navbar({ islogin, setIslogin, logout, setModalMode }: NavbarProps) {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const {isLogin, setIsLogin, logout} = useAuthStore();
+    const {setModalMode} = useModalModeStore();
+
     const token = getTokenFromSession();
 
     const createProcessApi = async () => {
@@ -76,7 +75,7 @@ export default function Navbar({ islogin, setIslogin, logout, setModalMode }: Na
 
             {/* Right Side */}
             <div className="flex items-center gap-3 mr-10">
-                <RightMenu islogin={islogin} setIslogin={setIslogin} logout={logout} navigate={navigate} />
+                <RightMenu isLogin={isLogin} setIsLogin={setIsLogin} logout={logout} navigate={navigate} />
             </div>
 
         </nav>
@@ -84,14 +83,14 @@ export default function Navbar({ islogin, setIslogin, logout, setModalMode }: Na
 }
 
 interface RightProps {
-    islogin: boolean;
-    setIslogin: (arg: boolean) => void;
+    isLogin: boolean;
+    setIsLogin: (arg: boolean) => void;
     logout: (arg: (arg: boolean) => void) => boolean;
     navigate: NavigateFunction;
 }
 
-const RightMenu = ({ islogin, setIslogin, logout, navigate }: RightProps) => {
-    if (!islogin) {
+const RightMenu = ({ isLogin, setIsLogin, logout, navigate }: RightProps) => {
+    if (!isLogin) {
         return (
             <button className="px-3 py-1.5 text-sm text-black bg-white rounded-full hover:opacity-80 transition cursor-pointer"
                 onClick={() => { navigate('/login') }}>
@@ -106,7 +105,7 @@ const RightMenu = ({ islogin, setIslogin, logout, navigate }: RightProps) => {
                 새로운 알림
             </button>
             <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
-                onClick={() => { logout(setIslogin) && navigate('/', { replace: true }); }}>
+                onClick={() => { logout(setIsLogin) && navigate('/', { replace: true }); }}>
                 로그아웃
             </button>
         </>

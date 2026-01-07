@@ -4,12 +4,11 @@ import cross from "../assets/icons/cross.svg";
 import { getTokenFromSession } from "../utils/getTokenFromSession";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
+import { useModalModeStore } from "../stores/useModalModeStore";
 
-interface QuickCreateStudy {
-    setModalMode: (arg: "createStudy" | "inviteCode" | null) => void
-}
+export const QuickCreateStudy = () => {
 
-export const QuickCreateStudy = ({ setModalMode }: QuickCreateStudy) => {
+    const {setModalMode} = useModalModeStore();
 
     const [formData, setFormData] = useState({
         name: '',

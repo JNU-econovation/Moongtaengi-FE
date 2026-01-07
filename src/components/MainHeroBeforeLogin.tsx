@@ -6,11 +6,11 @@ import MainButton from "./MainButton";
 
 
 interface HeroProps {
-    islogin: boolean;
+    isLogin: boolean;
     isStudy: boolean;
 }
 
-export default function MainHeroBeforeLogin({ islogin, isStudy }: HeroProps) {
+export default function MainHeroBeforeLogin({ isLogin, isStudy }: HeroProps) {
 
     return (
         <div className="relative w-full flex flex-col md:flex-row md:h-[500px] 2xl:h-[600px]">
@@ -26,7 +26,7 @@ export default function MainHeroBeforeLogin({ islogin, isStudy }: HeroProps) {
                     오늘, 가볍게 시작해보세요.<br />
                     작은 학습이 쌓여 큰 성장을 만드는 스터디 플랫폼
                 </p>
-                <MainButton islogin={islogin} isStudy={isStudy} />
+                <MainButton islogin={isLogin} isStudy={isStudy} />
             </div>
 
             {/* Right: Character Area */}

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { createPortal } from "react-dom"
 import cross from "../assets/icons/cross.svg";
+import { useModalModeStore } from "../stores/useModalModeStore";
 
-interface InviteCode {
-    setModalMode: (arg: "createStudy" | "inviteCode" | null) => void;
-}
+export const InviteCode = () => {
+    
+    const {setModalMode} = useModalModeStore();
 
-export const InviteCode = ({ setModalMode }: InviteCode) => {
     const [formData, setFormData] = useState("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
