@@ -1,6 +1,5 @@
-import axios from "axios";
-import { getTokenFromSession } from "../utils/getTokenFromSession";
 import { useSaveToken } from "./useSaveToken";
+import { useSendUserDataApi } from "./useSendUserDataApi";
 
 interface SendData {
     verified: boolean;
@@ -12,8 +11,9 @@ interface SendData {
 // 최종 유저 데이터 전송
 export const useSendUserData = () => {
     const {saveToken} = useSaveToken();
+    const {mutate, isPending} = useSendUserDataApi();
 
-    const sendData = ({ verified, codeStatus, name, code }: SendData) => {
+    const sendUserData = ({ verified, codeStatus, name, code }: SendData) => {
 
         if (!verified) return;
 
@@ -23,17 +23,12 @@ export const useSendUserData = () => {
             ? { nickname: name, inviteCode: code }
             : { nickname: name };
 
-        console.log("전송 데이터:", userInfo);
-        
-        const token = getTokenFromSession();
-
-        axios.post(import.meta.env.VITE_API_REGISTRATION, 
-            userInfo,
-            { 
-                headers: {Authorization: `Bearer ${token}`}
+        mutate(userInfo, {
+            onError: (error) => {
+                console.log(error);
             }
-        );
+        })
     }
 
-    return {sendData};
+    return {sendUserData, isPending};
 };

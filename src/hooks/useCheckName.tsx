@@ -1,5 +1,4 @@
 import { useCheckNamePolicy } from "./useCheckNamePolicy";
-import { useGetTokenFromUrl } from "../hooks/useGetTokenFromUrl";
 
 export interface CheckName {
     name: string;
@@ -8,8 +7,7 @@ export interface CheckName {
 }
 
 export const useCheckName = () => {
-    const { mutate } = useCheckNamePolicy();
-    const token = useGetTokenFromUrl();
+    const { mutate, isPending } = useCheckNamePolicy();
 
     const checkName = ({ name, setVerified, setNameAlert }: CheckName) => {
         const regex = /^[가-힣0-9]+$/;
@@ -22,7 +20,7 @@ export const useCheckName = () => {
         }
         
         // 닉네임 중복, 비속어 확인
-        mutate({ token, name }, {
+        mutate(name, {
             onSuccess: (data) => {
                 if (!data.isAvailable) {
                     setVerified(false);
@@ -32,9 +30,12 @@ export const useCheckName = () => {
                 setVerified(true);
                 setNameAlert("");
             },
+            onError: (error) => {
+                console.log(error);
+            }
         })
     }
 
-    return { checkName };
+    return { checkName, isPending };
 };
 

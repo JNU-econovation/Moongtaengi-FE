@@ -9,9 +9,9 @@ import { useCheckName } from '../hooks/useCheckName';
 export default function Signup() {
 
     const navigate = useNavigate();
-    const { checkName } = useCheckName();
-    const { checkCode } = useCheckCode();
-    const { sendData } = useSendUserData();
+    const { checkName, isPending: isCheckNameLoading } = useCheckName();
+    const { checkCode, isPending: isCheckCodeLoading } = useCheckCode();
+    const { sendUserData, isPending: isSendUserDataLoading } = useSendUserData();
 
     const [name, setName] = useState<string>("");
     const [verified, setVerified] = useState<boolean>(false);
@@ -24,7 +24,7 @@ export default function Signup() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (verified) {
-            sendData({ verified, codeStatus, name, code });
+            sendUserData({ verified, codeStatus, name, code });
             navigate('/signup/check');
         }
     }
@@ -69,7 +69,7 @@ export default function Signup() {
                                         ? 'bg-white text-[#2C2C2C]'
                                         : 'bg-[#2C2C2C] text-white hover:bg-white hover:text-[#2C2C2C]'
                                     }`}>
-                                중복확인
+                                {isCheckNameLoading  ? '확인 중...' : '중복확인'}
                             </button>
                         </div>
                         {nameAlert && <p className="mt-1 text-[11px] text-[#C6343C]">{nameAlert}</p>}
@@ -102,7 +102,7 @@ export default function Signup() {
                                         : 'bg-[#2C2C2C] text-white hover:bg-white hover:text-[#2C2C2C]'
                                     }`}
                             >
-                                초대코드 확인
+                                {isCheckCodeLoading  ? '확인 중...' : '초대코드 확인'}
                             </button>
                         </div>
                         {codeAlert && <p className="mt-1 text-[11px] text-[#C6343C]">{codeAlert}</p>}
@@ -152,7 +152,7 @@ export default function Signup() {
                                 : 'bg-gray-600 text-gray-400 cursor-not-allowed'
                             }`}
                     >
-                        회원가입 완료
+                        {isSendUserDataLoading ? '가입 중...' : '회원가입 완료'}
                     </button>
                 </form>
             </div>
