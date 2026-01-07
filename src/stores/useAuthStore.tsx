@@ -4,16 +4,20 @@ import { deleteToken } from "../utils/deleteToken";
 
 interface AuthState {
     isLogin: boolean;
-    setIsLogin: (status: boolean) => void;
+    setIsLogin: () => void;
     logout: () => boolean;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
     isLogin: !!getTokenFromSession(),
 
-    setIsLogin: (status) => {
+    setIsLogin: () => {
         const token = getTokenFromSession();
-        if (token) set({isLogin: status});
+        if (!token) {
+            set({isLogin: false});
+            return;
+        }
+        set({isLogin: true});
     },
 
     logout: () => {

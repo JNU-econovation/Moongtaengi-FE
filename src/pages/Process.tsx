@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import NavbarPure from '../components/NavbarPure';
 import { tempData } from './tempStudyData.ts';
 import processMoong from '../assets/process/process-moong.png';
+import Navbar from '../components/Navbar.tsx';
 
 // 데이터 스키마
 interface ProcessItem {
@@ -67,10 +67,10 @@ const Process = () => {
   return (
     <div className="min-h-screen bg-custom-bg text-white flex flex-col items-center">
       <div className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/50 rounded-full">
-        <NavbarPure />
+        <Navbar />
       </div>
 
-      <div className="w-full max-w-6xl px-4 py-10 flex flex-col gap-24 mb-40">
+      <div className="w-full max-w-6xl px-4 py-10 flex flex-col gap-24 mb-40 md:scale-90 2xl:scale-100">
         {processes.map((process) => (
           <div
             key={process.id}
@@ -82,7 +82,7 @@ const Process = () => {
             {/* 날짜 정보 */}
             <div className="flex justify-between items-end mb-4 px-2">
               <div className="flex flex-col">
-                <h2 className="text-3xl font-semibold">
+                <h2 className="text-4xl font-semibold">
                   {formatDate(process.startDate)} / {formatDate(process.endDate)}
                 </h2>
               </div>

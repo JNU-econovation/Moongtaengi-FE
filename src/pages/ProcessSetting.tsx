@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { tempData } from './tempStudyData';
-import NavbarPure from '../components/NavbarPure';
+import Navbar from '../components/Navbar';
 
 // 데이터 타입 정의
 interface StudyProcess {
@@ -40,7 +40,7 @@ const ProcessSetting = () => {
 
     return (
         <div className="min-h-screen bg-custom-bg text-white font-sans md:pb-0 2xl:pb-10 overflow-hidden flex flex-col">
-            <NavbarPure />
+            <Navbar />
 
             <main className="max-w-[1400px] w-full mx-auto md:mt-0 2xl:mt-8 md:p-0 2xl:p-8 flex-1 md:scale-85 2xl:scale-100">
 
