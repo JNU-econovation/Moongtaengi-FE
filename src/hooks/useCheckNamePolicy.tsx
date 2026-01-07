@@ -1,10 +1,6 @@
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
-
-interface CheckNameParams {
-    token: string | null;
-    name: string;
-}
+import { useGetTokenFromUrl } from "./useGetTokenFromUrl";
 
 interface Data {
     nickname: string;
@@ -12,7 +8,8 @@ interface Data {
     message: string;
 }
 
-const fetchCheckName = async ({ token, name }: CheckNameParams) => {
+const checkNameApi = async (name: string) => {
+    const token = useGetTokenFromUrl();
     const { data } = await axios.get<Data>(import.meta.env.VITE_API_CHECK_NAME,
         {
             headers: { Authorization: `Bearer ${token}` },
@@ -24,9 +21,6 @@ const fetchCheckName = async ({ token, name }: CheckNameParams) => {
 
 export const useCheckNamePolicy = () => {
     return useMutation({
-        mutationFn: fetchCheckName,
-        onError: (error) => {
-            console.error(error);
-        }
+        mutationFn: checkNameApi,
     })
 }
