@@ -8,7 +8,7 @@ export const AuthCallback = () => {
 
     useEffect(() => {
         saveToken();
-        navigate('/tempMain', {replace: true});
+        navigate('/', {replace: true});
     }, [])
         
     return (

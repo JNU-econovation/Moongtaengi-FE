@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { createPortal } from "react-dom"
 import cross from "../assets/icons/cross.svg";
+import { getTokenFromSession } from "../utils/getTokenFromSession";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+import { useModalModeStore } from "../stores/useModalModeStore";
 
-interface QuickCreateStudy {
-    setModalMode: (arg: "createStudy" | "inviteCode" | null) => void
-}
+export const QuickCreateStudy = () => {
 
-export const QuickCreateStudy = ({ setModalMode }: QuickCreateStudy) => {
+    const {setModalMode} = useModalModeStore();
+
     const [formData, setFormData] = useState({
         name: '',
         topic: '',
-        duration: '',
+        startDate: '',
+        endDate: ''
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,31 +22,48 @@ export const QuickCreateStudy = ({ setModalMode }: QuickCreateStudy) => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    const createStudyApi = async () => {
+        const token = getTokenFromSession();
+        await axios.post(import.meta.env.VITE_API_CREATE_STUDY, formData, 
+            {
+                headers: { 
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": 'application/json' 
+                },
+            }
+        )
+    }
+
+    const {mutate, isPending} = useMutation({
+        mutationFn: createStudyApi,
+        onSuccess: () => {
+            setModalMode(null);
+        },
+        onError: (error) => {
+            console.log(error);
+        }
+    })
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         console.log('저장된 데이터:', formData);
-        // 저장 로직 추가
-        setModalMode(null);
+        mutate();
     };
 
     return createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
             <div className="relative w-full max-w-3xl rounded-lg bg-custom-bg px-36 py-14 text-white shadow-xl md:scale-90 2xl:scale-100">
-                {/* 닫기 버튼 */}
                 <button
-                    onClick={() => {setModalMode(null)}}
+                    onClick={() => { setModalMode(null) }}
                     className="absolute right-4 top-4 text-white transition-colors hover:opacity-70 cursor-pointer"
                     type="button"
                 >
                     <img src={cross} className="w-3.5 mt-1 mr-1 invert" />
                 </button>
 
-                {/* 타이틀 */}
                 <h2 className="mt-5 mb-12 text-center text-4xl font-semibold">스터디 생성하기</h2>
 
-                {/* 폼 */}
                 <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-                    {/* 스터디명 */}
                     <div className="flex flex-col gap-2">
                         <label htmlFor="name" className="text-lg text-white">
                             스터디명
@@ -53,12 +74,11 @@ export const QuickCreateStudy = ({ setModalMode }: QuickCreateStudy) => {
                             name="name"
                             value={formData.name}
                             onChange={handleChange}
-                            placeholder="Ex. 뭉탱이"
+                            placeholder="Ex. 퍼스트커밋"
                             className="w-full rounded bg-custom-gray px-4 py-3 text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-gray-500"
                         />
                     </div>
 
-                    {/* 스터디 주제 */}
                     <div className="flex flex-col gap-2">
                         <label htmlFor="topic" className="text-lg text-white">
                             스터디 주제
@@ -69,34 +89,42 @@ export const QuickCreateStudy = ({ setModalMode }: QuickCreateStudy) => {
                             name="topic"
                             value={formData.topic}
                             onChange={handleChange}
-                            placeholder="Ex. 뭉탱이"
+                            placeholder="Ex. 스터디 플랫폼 개발"
                             className="w-full rounded bg-custom-gray px-4 py-3 text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-gray-500"
                         />
                     </div>
 
-                    {/* 스터디 기간 */}
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="duration" className="text-lg text-white">
+                        <label htmlFor="startDate" className="text-lg text-white">
                             스터디 기간
                         </label>
-                        <input
-                            type="text"
-                            id="duration"
-                            name="duration"
-                            value={formData.duration}
-                            onChange={handleChange}
-                            placeholder="Ex. 뭉탱이"
-                            className="w-full rounded bg-custom-gray px-4 py-3 text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-gray-500"
-                        />
+                        <div className="flex gap-2 items-center justify-center" >
+                            <input
+                                type="date"
+                                id="startDate"
+                                name="startDate"
+                                value={formData.startDate}
+                                onChange={handleChange}
+                                className="w-full rounded bg-custom-gray px-4 py-3 text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-gray-500"
+                            />
+                            ~
+                            <input
+                                type="date"
+                                id="endDate"
+                                name="endDate"
+                                value={formData.endDate}
+                                onChange={handleChange}
+                                className="w-full rounded bg-custom-gray px-4 py-3 text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-gray-500"
+                            />
+                        </div>
                     </div>
 
-                    {/* 저장 버튼 */}
                     <div className="mt-8 flex justify-center">
                         <button
                             type="submit"
-                            className="w-40 rounded-full bg-white py-3 text-lg text-gray-500 transition-colors hover:opacity-70 cursor-pointer"
+                            className="w-40 rounded-full bg-white py-2 text-lg text-gray-500 transition-colors hover:opacity-70 cursor-pointer"
                         >
-                            저장
+                            {isPending ? '생성 중...' : '저장'}
                         </button>
                     </div>
                 </form>

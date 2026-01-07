@@ -6,11 +6,11 @@ import mainProfile from "../assets/main/main-profile.png";
 import MainButton from "./MainButton";
 
 interface HeroProps {
-    islogin: boolean;
+    isLogin: boolean;
     isStudy: boolean;
 }
 
-export default function MainHeroAfterLogin({ islogin, isStudy }: HeroProps) {
+export default function MainHeroAfterLogin({ isLogin, isStudy }: HeroProps) {
 
     return (
         <div className="relative w-full flex flex-col md:flex-row md:h-[500px] 2xl:h-[600px]">
@@ -21,7 +21,7 @@ export default function MainHeroAfterLogin({ islogin, isStudy }: HeroProps) {
                 <h2 className="md:text-6xl 2xl:text-7xl font-semibold leading-tight mb-8">
                     뭉탱이 뭉치
                 </h2>
-                
+
                 <div className="flex items-center mb-10">
                     <img src={mainProfile} className="w-14 h-14 rounded-xl mr-6 object-cover" alt="study thumbnail" />
                     <div className="flex flex-col">
@@ -45,7 +45,7 @@ export default function MainHeroAfterLogin({ islogin, isStudy }: HeroProps) {
                     </div>
                 </div>
 
-                <MainButton islogin={islogin} isStudy={isStudy} />
+                <MainButton islogin={isLogin} isStudy={isStudy} />
             </div>
 
             {/* Right: Character Area */}
