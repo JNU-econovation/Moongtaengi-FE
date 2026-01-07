@@ -2,10 +2,13 @@ import { useState } from "react";
 import { createPortal } from "react-dom"
 import cross from "../assets/icons/cross.svg";
 import { useModalModeStore } from "../stores/useModalModeStore";
+import { getTokenFromSession } from "../utils/getTokenFromSession";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
 
 export const InviteCode = () => {
-    
-    const {setModalMode} = useModalModeStore();
+
+    const { setModalMode } = useModalModeStore();
 
     const [formData, setFormData] = useState("");
 
@@ -13,11 +16,35 @@ export const InviteCode = () => {
         setFormData(e.target.value);
     };
 
+    const joinStudyApi = async () => {
+        const token = getTokenFromSession();
+        await axios.post(import.meta.env.VITE_API_JOIN_STUDY, 
+            {
+                inviteCode: formData
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": 'application/json',
+                },
+            }
+        )
+    }
+
+    const {mutate, isPending} = useMutation({
+        mutationFn: joinStudyApi,
+        onSuccess: () => {
+            setModalMode(null);
+        },
+        onError: (error) => {
+            console.log(error);
+        }
+    })
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         console.log('저장된 데이터:', formData);
-        // 저장 로직 추가
-        setModalMode(null);
+        mutate();
     };
 
     return createPortal(
@@ -55,7 +82,7 @@ export const InviteCode = () => {
                             type="submit"
                             className="w-30 rounded-full bg-white py-1 text-lg text-gray-500 transition-colors hover:opacity-70 cursor-pointer"
                         >
-                            저장
+                            {isPending ? '가입 중...' : '가입'}
                         </button>
                     </div>
                 </form>
