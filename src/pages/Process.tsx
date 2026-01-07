@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import NavbarPure from '../components/NavbarPure';
 import { tempData } from './tempStudyData.ts';
 import processMoong from '../assets/process/process-moong.png';
@@ -26,7 +26,7 @@ const formatDate = (dateString: string) => {
   return dateString;
 };
 
-const Process: React.FC = () => {
+const Process = () => {
   const { studyId = '23' } = useParams<{ studyId: string }>();
 
   // 전체 프로세스 항목 Refs
@@ -35,9 +35,11 @@ const Process: React.FC = () => {
   // 하단 과제 카드 가로 스크롤 Refs
   const scrollRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
+  const navigate = useNavigate();
+
   const [processes, setProcesses] = useState<ProcessItem[]>(tempData);
 
-  // 스크롤 핸들러
+  // 하단 과제 카드 스크롤 핸들러
   const handleScroll = (processId: number, direction: 'left' | 'right') => {
     const container = scrollRefs.current[processId];
     if (container) {
@@ -49,6 +51,7 @@ const Process: React.FC = () => {
     }
   };
 
+  // 페이지 접속 시 스크롤
   useEffect(() => {
     const activeProcess = processes.find(p => p.status === 'active');
     if (activeProcess) {
@@ -84,13 +87,15 @@ const Process: React.FC = () => {
                 </h2>
               </div>
               <div className="flex gap-2 text-sm text-white font-semibold">
-                <button className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70">수정하기</button>
-                <button className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70">나의 과제 모아보기</button>
+                <button onClick={() => {navigate(`/study/${studyId}/setting`)}}
+                  className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70 cursor-pointer">수정하기</button>
+                <button onClick={() => {}}
+                  className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70 cursor-pointer">나의 과제 모아보기</button>
               </div>
             </div>
 
             <div className="flex flex-col gap-4">
-              {/* 프로세스 메인 */}
+              {/* 프로세스 위 라인 */}
               <div className="flex flex-col md:flex-row gap-4 h-auto md:h-80">
                 {/* 메인 주제와 아이콘 */}
                 <div className="flex-1 bg-[#272727] text-white rounded-2xl p-6 relative flex flex-col justify-between overflow-hidden group">
@@ -137,7 +142,7 @@ const Process: React.FC = () => {
                 </div>
               </div>
 
-              {/* 다른 사람의 과제 제출 카드 (가로 스크롤 적용) */}
+              {/* 프로세스 아래 라인 */}
               <div className="relative group/list">
                 {/* 왼쪽 스크롤 버튼 */}
                 <button
@@ -152,7 +157,7 @@ const Process: React.FC = () => {
                   ref={(el) => { scrollRefs.current[process.id] = el; }}
                   className="flex gap-4 overflow-x-hidden scroll-smooth"
                 >
-                  {/* 예시 데이터 6개로 늘려서 스크롤 테스트 가능하게 함 */}
+                  {/* 다른 사람의 과제 제출 카드 */}
                   {[1, 2, 3, 4, 5, 6].map((idx) => (
                     <div
                       key={idx}
@@ -173,6 +178,7 @@ const Process: React.FC = () => {
                     </div>
                   ))}
                 </div>
+                {/* 오른쪽 그라데이션 */}
                 <div className="absolute inset-y-0 right-0 md:w-30 2xl:w-50 bg-gradient-to-l from-custom-bg 2xl:via-custom-bg/70 to-transparent z-20"></div>
 
                 {/* 오른쪽 스크롤 버튼 */}

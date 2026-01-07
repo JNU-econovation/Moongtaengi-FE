@@ -5,7 +5,7 @@ export default function NavbarPure() {
     const navigate = useNavigate()
 
     return (
-        <nav className="w-full flex items-center justify-between px-6 md:py-2 2xl:py-3 bg-black sticky top-7 z-50 text-white rounded-full mt-7">
+        <nav className="w-full flex items-center justify-between px-6 md:py-2 2xl:py-3 bg-black sticky top-7 z-50 mt-7 text-white rounded-full">
 
             {/* Left Side */}
             <div className="flex items-center gap-8 ml-10">

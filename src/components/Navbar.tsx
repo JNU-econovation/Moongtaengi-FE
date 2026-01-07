@@ -16,9 +16,9 @@ export default function Navbar({ islogin, setIslogin, logout, setModalMode }: Na
     const token = getTokenFromSession();
 
     const createProcessApi = async () => {
-        await axios.post(`${import.meta.env.VITE_API_CREATE_STUDY}/3/processes/generate`,
+        await axios.post(`${import.meta.env.VITE_API_CREATE_STUDY}/1/processes/generate`,
             {
-                additionalDescription: "뭉탱이에 대해 알아보자"
+                additionalDescription: "장난전화의 역사"
             },
             {
                 headers: {
@@ -32,7 +32,7 @@ export default function Navbar({ islogin, setIslogin, logout, setModalMode }: Na
     const {mutate, isPending} = useMutation({
         mutationFn: createProcessApi,
         onSuccess: () => {
-            console.log(`${import.meta.env.VITE_API_CREATE_STUDY}/3/processes/generate}`)
+            console.log(`${import.meta.env.VITE_API_CREATE_STUDY}/1/processes/generate}`)
         },
         onError: (error) => {
             console.log(error);
