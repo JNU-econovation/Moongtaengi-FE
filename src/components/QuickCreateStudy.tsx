@@ -5,8 +5,11 @@ import { getTokenFromSession } from "../utils/getTokenFromSession";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useModalModeStore } from "../stores/useModalModeStore";
+import { useNavigate } from "react-router-dom";
 
 export const QuickCreateStudy = () => {
+
+    const navigate = useNavigate();
 
     const {setModalMode} = useModalModeStore();
     
@@ -27,7 +30,7 @@ export const QuickCreateStudy = () => {
 
     const createStudyApi = async () => {
         const token = getTokenFromSession();
-        await axios.post(import.meta.env.VITE_API_CREATE_STUDY, formData, 
+        const response = await axios.post(import.meta.env.VITE_API_CREATE_STUDY, formData, 
             {
                 headers: { 
                     Authorization: `Bearer ${token}`,
@@ -35,14 +38,23 @@ export const QuickCreateStudy = () => {
                 },
             }
         )
+
+        return response;
     }
 
     const {mutate, isPending} = useMutation({
         mutationFn: createStudyApi,
-        onSuccess: () => {
+        onSuccess: (response) => {
+            const location = response.headers['location'];
+
             queryClient.invalidateQueries({queryKey: ['operatingStudyList']});
             queryClient.invalidateQueries({queryKey: ['participatingStudyList']});
+
             setModalMode(null);
+            
+            if (location) {
+                navigate(location.replace(/^\/api/, ''));
+            }
         },
         onError: (error) => {
             console.log(error);

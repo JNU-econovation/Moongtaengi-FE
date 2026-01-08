@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { tempData } from './tempStudyData.ts';
 import processMoong from '../assets/process/process-moong.png';
 import Navbar from '../components/Navbar.tsx';
+import { formatDateToWord } from '../utils/formatDateToWord.tsx';
 
 // 데이터 스키마
 interface ProcessItem {
@@ -17,15 +18,6 @@ interface ProcessItem {
   status: 'complete' | 'active' | 'todo';
 }
 
-// 날짜 포맷팅 헬퍼 함수 (예: 2024-03-01 -> 03월 01일)
-const formatDate = (dateString: string) => {
-  const parts = dateString.split('-');
-  if (parts.length === 3) {
-    return `${parts[1]}월 ${parts[2]}일`;
-  }
-  return dateString;
-};
-
 const Process = () => {
   const { studyId = '23' } = useParams<{ studyId: string }>();
 
@@ -39,6 +31,7 @@ const Process = () => {
 
   const [processes, setProcesses] = useState<ProcessItem[]>(tempData);
 
+
   // 하단 과제 카드 스크롤 핸들러
   const handleScroll = (processId: number, direction: 'left' | 'right') => {
     const container = scrollRefs.current[processId];
@@ -50,6 +43,7 @@ const Process = () => {
       });
     }
   };
+
 
   // 페이지 접속 시 스크롤
   useEffect(() => {
@@ -83,11 +77,11 @@ const Process = () => {
             <div className="flex justify-between items-end mb-4 px-2">
               <div className="flex flex-col">
                 <h2 className="text-4xl font-semibold">
-                  {formatDate(process.startDate)} / {formatDate(process.endDate)}
+                  {formatDateToWord(process.startDate)} / {formatDateToWord(process.endDate)}
                 </h2>
               </div>
               <div className="flex gap-2 text-sm text-white font-semibold">
-                <button onClick={() => {navigate(`/study/${studyId}/setting`)}}
+                <button onClick={() => {navigate(`/studies/${studyId}/setting`)}}
                   className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70 cursor-pointer">수정하기</button>
                 <button onClick={() => {}}
                   className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70 cursor-pointer">나의 과제 모아보기</button>

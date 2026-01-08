@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { tempData } from './tempStudyData';
+import { formatDateToDot } from '../utils/formatDateToDot';
 
 // 데이터 타입 정의
 interface StudyProcess {
@@ -31,10 +32,6 @@ const ProcessSetting = () => {
             status: 'todo'
         };
         setScheduleList([...scheduleList, newRow]);
-    };
-
-    const formatDate = (dateString: string): string => {
-        return dateString.replace(/-/g, '. ');
     };
 
     return (
@@ -139,7 +136,7 @@ const ProcessSetting = () => {
 
                                     {/* Date */}
                                     <div className="col-span-4 bg-[#393939] font-semibold flex items-center justify-center rounded">
-                                        {formatDate(item.startDate)} - {formatDate(item.endDate)}
+                                        {formatDateToDot(item.startDate)} - {formatDateToDot(item.endDate)}
                                     </div>
 
                                     {/* Process (Track + Title) */}
