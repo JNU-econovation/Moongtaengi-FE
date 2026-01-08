@@ -3,12 +3,14 @@ import { createPortal } from "react-dom"
 import cross from "../assets/icons/cross.svg";
 import { getTokenFromSession } from "../utils/getTokenFromSession";
 import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useModalModeStore } from "../stores/useModalModeStore";
 
 export const QuickCreateStudy = () => {
 
     const {setModalMode} = useModalModeStore();
+    
+    const queryClient = useQueryClient();
 
     const [formData, setFormData] = useState({
         name: '',
@@ -16,6 +18,7 @@ export const QuickCreateStudy = () => {
         startDate: '',
         endDate: ''
     });
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -37,6 +40,8 @@ export const QuickCreateStudy = () => {
     const {mutate, isPending} = useMutation({
         mutationFn: createStudyApi,
         onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['operatingStudyList']});
+            queryClient.invalidateQueries({queryKey: ['participatingStudyList']});
             setModalMode(null);
         },
         onError: (error) => {
@@ -51,7 +56,7 @@ export const QuickCreateStudy = () => {
     };
 
     return createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 ignore-outside-clicks">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
             <div className="relative w-full max-w-3xl rounded-lg bg-custom-bg px-36 py-14 text-white shadow-xl md:scale-90 2xl:scale-100">
                 <button
                     onClick={() => { setModalMode(null) }}

@@ -136,7 +136,7 @@ export default function Navbar() {
                                 !myStudyMode ? setMyStudyMode(true) : setMyStudyMode(false)
                             }}>
                             나의 스터디
-                            <img src={downArrow} 
+                            <img src={downArrow}
                                 className={`w-3.5 ml-1.5 mt-0.5 invert ${myStudyMode && 'rotate-180'}`} />
                         </button>
 
@@ -157,23 +157,38 @@ export default function Navbar() {
                                 </div>
 
                                 {/* Right Items */}
-                                <div className='relative flex-1 p-1'>
-                                    <p className='px-3 py-1 rounded-full mt-1 bg-[#393939]'>스터디명</p>
-                                    <div className='flex flex-col gap-1 mt-2'>
+                                <div className='flex-1 p-1 flex flex-col h-full'>
+
+                                    <p className='px-3 py-1 rounded-full mt-1 bg-[#393939] shrink-0'>스터디명</p>
+
+                                    <div className='flex-1 flex flex-col gap-1 mt-2 overflow-y-auto
+                                        [&::-webkit-scrollbar]:w-1
+                                        hover:[&::-webkit-scrollbar]:w-2
+                                        [&::-webkit-scrollbar-track]:bg-transparent
+                                        [&::-webkit-scrollbar-thumb]:bg-[#555]
+                                        [&::-webkit-scrollbar-thumb]:rounded-full
+                                        [&::-webkit-scrollbar-button]:hidden'
+                                    >
                                         {
                                             studyList[studyMode].map((study, index) => (
-                                                <div key={index} className='px-3 py-1 rounded-md bg-[#2C2C2C] cursor-pointer'>
+                                                <div key={index}
+                                                    onClick={() => { navigate(`/study/${study["studyId"]}`) }}
+                                                    className='px-3 py-1 rounded-md bg-[#2C2C2C] cursor-pointer shrink-0 hover:bg-white/10 transition'>
                                                     {study["studyName"]}
                                                 </div>
                                             ))
                                         }
                                     </div>
-                                    <button
-                                        onClick={() => { setModalMode("createStudy"); }}
-                                        className='absolute bottom-1 right-1 px-3 py-1 text-[10px] bg-[#393939] rounded-full hover:opacity-70 cursor-pointer'
-                                    >
-                                        스터디 생성
-                                    </button>
+
+                                    <div className='mt-2 shrink-0 flex justify-end'>
+                                        <button
+                                            onClick={() => { setModalMode("createStudy"); }}
+                                            className='px-3 py-1 text-[10px] bg-[#393939] rounded-full hover:opacity-70 cursor-pointer'
+                                        >
+                                            스터디 생성
+                                        </button>
+                                    </div>
+
                                 </div>
                             </div>
                         )}
