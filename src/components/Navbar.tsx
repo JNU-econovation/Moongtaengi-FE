@@ -5,17 +5,66 @@ import axios from 'axios';
 import { useMutation } from '@tanstack/react-query';
 import { useAuthStore } from '../stores/useAuthStore';
 import { useModalModeStore } from '../stores/useModalModeStore';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+type DropdownMode = "myStudy" | "Notification" | null;
+
+type StudyMode = "operating" | "participating";
 
 export default function Navbar() {
 
     const navigate = useNavigate();
-    const {isLogin, setIsLogin, logout} = useAuthStore();
-    const {setModalMode} = useModalModeStore();
+
+    const { isLogin, setIsLogin, logout } = useAuthStore();
+
+    const [dropdownMode, setDropdownMode] = useState<DropdownMode>(null);
+    const [studyMode, setStudyMode] = useState<StudyMode>('operating');
+
+    const { setModalMode } = useModalModeStore();
+
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    // 임시 데이터
+    const studyList = {
+        operating: [
+            {
+                "studyId": 1,
+                "studyName": "스프링부트 정복"
+            },
+            {
+                "studyId": 2,
+                "studyName": "스프링부트 정복2"
+            }
+        ],
+        participating: [
+            {
+                "studyId": 1,
+                "studyName": "리액트 정복"
+            },
+            {
+                "studyId": 2,
+                "studyName": "리액트 정복2"
+            }
+        ],
+    }
 
     useEffect(() => {
         setIsLogin();
     }, [isLogin]);
+
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+                setDropdownMode(null);
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+    }, [dropdownRef]);
 
     const token = getTokenFromSession();
 
@@ -33,7 +82,7 @@ export default function Navbar() {
         )
     }
 
-    const {mutate, isPending} = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: createProcessApi,
         onSuccess: () => {
             console.log(`${import.meta.env.VITE_API_CREATE_STUDY}/1/processes/generate}`)
@@ -59,18 +108,64 @@ export default function Navbar() {
 
                 {/* Menu Items */}
                 <div className="hidden md:flex gap-3">
-                    <button className="flex items-center px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
-                        onClick={() => { setModalMode("createStudy") }}>
-                        나의 스터디
-                        <img src={downArrow} className='w-3.5 ml-1.5 mt-0.5 invert' />
-                    </button>
+                    <div className='relative group'>
+                        <button className="flex items-center px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
+                            onClick={() => {
+                                setDropdownMode("myStudy");
+                            }}>
+                            나의 스터디
+                            <img src={downArrow} className='w-3.5 ml-1.5 mt-0.5 invert' />
+                        </button>
+
+                        {dropdownMode === "myStudy" && (
+                            <div ref={dropdownRef}
+                                className='absolute flex top-10 left-0 w-70 h-42 bg-[#2C2C2C]/80 text-white text-[12px] border border-gray-600 rounded-xl overflow-hidden z-50'>
+                                {/* Left Menu */}
+                                <div className='flex flex-col gap-2 font-semibold border-r border-r-gray-600 p-1'>
+                                    <button onClick={() => { setStudyMode('operating') }}
+                                        className={`px-3 py-1 rounded-full mt-1 cursor-pointer 
+                                        ${studyMode === "operating" ? 'bg-[#393939]' : 'text-[#A0A0A0]'}`}>
+                                        운영 중인 스터디 &gt;
+                                    </button>
+                                    <button onClick={() => { setStudyMode('participating') }}
+                                        className={`px-3 py-1 rounded-full cursor-pointer
+                                        ${studyMode === "participating" ? 'bg-[#393939]' : 'text-[#A0A0A0]'}`}>
+                                        참여 중인 스터디 &gt;
+                                    </button>
+                                </div>
+
+                                {/* Right Items */}
+                                <div className='relative flex-1 p-1'>
+                                    <p className='px-3 py-1 rounded-full mt-1 bg-[#393939]'>스터디명</p>
+                                    <div className='flex flex-col gap-1 mt-2'>
+                                        {
+                                            studyList[studyMode].map((study, index) => (
+                                                <div key={index} className='px-3 py-1 rounded-md bg-[#2C2C2C] cursor-pointer'>
+                                                    {study["studyName"]}
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
+                                    <button
+                                        onClick={() => { setModalMode("createStudy"); }}
+                                        className='absolute bottom-1 right-1 px-3 py-1 text-[10px] bg-[#393939] rounded-full hover:opacity-70 cursor-pointer'
+                                    >
+                                        스터디 생성
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                     <button className="px-3 2xl:py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
                         마이페이지
                     </button>
+
                     <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
-                        onClick={ createProcess }>
+                        onClick={createProcess}>
                         {isPending ? '생성 중...' : '컬렉션'}
                     </button>
+
                     <button onClick={() => { setModalMode("inviteCode") }}
                         className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
                         초대코드 입력
