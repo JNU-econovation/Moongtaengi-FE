@@ -20,10 +20,10 @@ function App() {
         <Routes>
           <Route element={<NavLayout />}>
             <Route path='/' element={<Main />} />
-            <Route path='/study/:studyId/setting' element={<ProcessSetting />} />
+            <Route path='/studies/:studyId/setting' element={<ProcessSetting />} />
           </Route>
 
-          <Route path='/study/:studyId' element={<Process />} />
+          <Route path='/studies/:studyId' element={<Process />} />
 
           <Route path='/login' element={<KakaoLogin />} />
           <Route path='/signup' element={<Signup />} />

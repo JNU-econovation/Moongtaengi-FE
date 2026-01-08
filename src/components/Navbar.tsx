@@ -172,7 +172,7 @@ export default function Navbar() {
                                         {
                                             studyList[studyMode].map((study, index) => (
                                                 <div key={index}
-                                                    onClick={() => { navigate(`/study/${study["studyId"]}`) }}
+                                                    onClick={() => { navigate(`/studies/${study["studyId"]}`) }}
                                                     className='px-3 py-1 rounded-md bg-[#2C2C2C] cursor-pointer shrink-0 hover:bg-white/10 transition'>
                                                     {study["studyName"]}
                                                 </div>
