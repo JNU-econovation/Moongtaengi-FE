@@ -2,14 +2,22 @@ import { useNavigate, type NavigateFunction } from 'react-router-dom'
 import downArrow from "../assets/icons/down-arrow.svg";
 import { getTokenFromSession } from '../utils/getTokenFromSession';
 import axios from 'axios';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../stores/useAuthStore';
 import { useModalModeStore } from '../stores/useModalModeStore';
 import { useEffect, useRef, useState } from 'react';
 
-type DropdownMode = "myStudy" | "Notification" | null;
+type StudyMenu = "operating" | "participating";
 
-type StudyMode = "operating" | "participating";
+interface StudyItem {
+    studyId: number;
+    studyName: string;
+}
+
+interface StudyList {
+    operating: StudyItem[];
+    participating: StudyItem[];
+}
 
 export default function Navbar() {
 
@@ -17,45 +25,57 @@ export default function Navbar() {
 
     const { isLogin, setIsLogin, logout } = useAuthStore();
 
-    const [dropdownMode, setDropdownMode] = useState<DropdownMode>(null);
-    const [studyMode, setStudyMode] = useState<StudyMode>('operating');
+    const [myStudyMode, setMyStudyMode] = useState<boolean>(false);
+    const [myNotificationMode, setNotificationMode] = useState<boolean>(false);
+
+    const [studyMode, setStudyMode] = useState<StudyMenu>('operating');
 
     const { setModalMode } = useModalModeStore();
 
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    // 임시 데이터
-    const studyList = {
-        operating: [
+
+    const studyListApi = async (arg: string) => {
+        const token = getTokenFromSession();
+
+        const response = await axios.get(`${import.meta.env.VITE_API}${arg}`,
             {
-                "studyId": 1,
-                "studyName": "스프링부트 정복"
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             },
-            {
-                "studyId": 2,
-                "studyName": "스프링부트 정복2"
-            }
-        ],
-        participating: [
-            {
-                "studyId": 1,
-                "studyName": "리액트 정복"
-            },
-            {
-                "studyId": 2,
-                "studyName": "리액트 정복2"
-            }
-        ],
+        )
+
+        return response.data;
     }
+
+    const { data: operatingStudyList = [] } = useQuery<StudyItem[]>({
+        queryKey: ['operatingStudyList'],
+        queryFn: () => studyListApi('/studies/me/managed')
+    })
+
+    const { data: participatingStudyList = [] } = useQuery<StudyItem[]>({
+        queryKey: ['participatingStudyList'],
+        queryFn: () => studyListApi('/studies/me/joined')
+    })
+
+    const studyList: StudyList = {
+        operating: operatingStudyList,
+        participating: participatingStudyList
+    }
+
+    console.log(studyList);
+
 
     useEffect(() => {
         setIsLogin();
-    }, [isLogin]);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-                setDropdownMode(null);
+                setMyStudyMode(false);
+                setNotificationMode(false);
             }
         }
 
@@ -65,6 +85,7 @@ export default function Navbar() {
             document.removeEventListener('mousedown', handleClickOutside);
         }
     }, [dropdownRef]);
+
 
     const token = getTokenFromSession();
 
@@ -108,18 +129,19 @@ export default function Navbar() {
 
                 {/* Menu Items */}
                 <div className="hidden md:flex gap-3">
-                    <div className='relative group'>
+                    <div ref={dropdownRef}
+                        className='relative group'>
                         <button className="flex items-center px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
                             onClick={() => {
-                                setDropdownMode("myStudy");
+                                !myStudyMode ? setMyStudyMode(true) : setMyStudyMode(false)
                             }}>
                             나의 스터디
-                            <img src={downArrow} className='w-3.5 ml-1.5 mt-0.5 invert' />
+                            <img src={downArrow} 
+                                className={`w-3.5 ml-1.5 mt-0.5 invert ${myStudyMode && 'rotate-180'}`} />
                         </button>
 
-                        {dropdownMode === "myStudy" && (
-                            <div ref={dropdownRef}
-                                className='absolute flex top-10 left-0 w-70 h-42 bg-[#2C2C2C]/80 text-white text-[12px] border border-gray-600 rounded-xl overflow-hidden z-50'>
+                        {myStudyMode && (
+                            <div className='absolute flex top-10 left-0 w-70 h-38 bg-[#2C2C2C]/80 text-white text-[12px] border border-gray-600 rounded-xl overflow-hidden z-50'>
                                 {/* Left Menu */}
                                 <div className='flex flex-col gap-2 font-semibold border-r border-r-gray-600 p-1'>
                                     <button onClick={() => { setStudyMode('operating') }}
