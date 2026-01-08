@@ -162,7 +162,9 @@ export default function Navbar() {
                                     <div className='flex flex-col gap-1 mt-2'>
                                         {
                                             studyList[studyMode].map((study, index) => (
-                                                <div key={index} className='px-3 py-1 rounded-md bg-[#2C2C2C] cursor-pointer'>
+                                                <div key={index} 
+                                                    onClick={() => {navigate(`/study/${study["studyId"]}`)}}
+                                                    className='px-3 py-1 rounded-md bg-[#2C2C2C] cursor-pointer'>
                                                     {study["studyName"]}
                                                 </div>
                                             ))
