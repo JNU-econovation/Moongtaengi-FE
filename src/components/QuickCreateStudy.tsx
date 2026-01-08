@@ -51,7 +51,7 @@ export const QuickCreateStudy = () => {
     };
 
     return createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 ignore-outside-clicks">
             <div className="relative w-full max-w-3xl rounded-lg bg-custom-bg px-36 py-14 text-white shadow-xl md:scale-90 2xl:scale-100">
                 <button
                     onClick={() => { setModalMode(null) }}
