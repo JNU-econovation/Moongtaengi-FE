@@ -168,7 +168,14 @@ const ProcessSetting = () => {
                         </div>
 
                         {/* Table Body (Scrollable Area) */}
-                        <div className="overflow-y-auto h-[235px] space-y-2">
+                        <div className={`overflow-y-auto h-[235px] space-y-2
+                                [&::-webkit-scrollbar]:w-1
+                                hover:[&::-webkit-scrollbar]:w-2
+                                [&::-webkit-scrollbar-track]:bg-transparent
+                                [&::-webkit-scrollbar-thumb]:bg-[#555]
+                                [&::-webkit-scrollbar-thumb]:rounded-full
+                                [&::-webkit-scrollbar-button]:hidden    
+                            `}>
                             {scheduleList.map((item) => (
 
                                 <div key={item.id} className="grid grid-cols-17 gap-2 text-sm h-10 shrink-0">

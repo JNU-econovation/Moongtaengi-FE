@@ -4,8 +4,22 @@ import { tempData } from './tempStudyData.ts';
 import processMoong from '../assets/process/process-moong.png';
 import Navbar from '../components/Navbar.tsx';
 import { formatDateToWord } from '../utils/formatDateToWord.tsx';
+import { getTokenFromSession } from '../utils/getTokenFromSession.tsx';
+import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 
-// 데이터 스키마
+interface StudyItem {
+  studyId: number;
+  studyName: string;
+  studyPeriod: {
+    startDate: string;
+    endDate: string;
+  };
+  studyTopic: string;
+  studyInviteCode: string;
+  myRole: 'HOST' | 'GUEST';
+}
+
 interface ProcessItem {
   id: number;
   processOrder: number;
@@ -15,11 +29,14 @@ interface ProcessItem {
   durationDays: number;
   memo: string;
   assignmentDescription: string;
-  status: 'complete' | 'active' | 'todo';
+  status: 'COMPLETED' | 'IN_PROGRESS' | 'NOT_STARTED';
 }
 
 const Process = () => {
-  const { studyId = '23' } = useParams<{ studyId: string }>();
+
+  const navigate = useNavigate();
+
+  const { studyId } = useParams<{ studyId: string }>();
 
   // 전체 프로세스 항목 Refs
   const itemRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
@@ -27,9 +44,47 @@ const Process = () => {
   // 하단 과제 카드 가로 스크롤 Refs
   const scrollRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
-  const navigate = useNavigate();
 
-  const [processes, setProcesses] = useState<ProcessItem[]>(tempData);
+  const getStudyApi = async () => {
+    const token = getTokenFromSession();
+
+    const response = await axios.get(`${import.meta.env.VITE_API_CREATE_STUDY}/${studyId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+
+    return response.data;
+  }
+
+  const getProcessApi = async () => {
+    const token = getTokenFromSession();
+
+    const response = await axios.get(`${import.meta.env.VITE_API_CREATE_STUDY}/${studyId}/processes`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+
+    return response.data;
+  }
+
+  // 스터디 조회 -> 프로세스 전체 조회
+  const { data: studyData } = useQuery<StudyItem>({
+    queryKey: ['studyInfo', studyId],
+    queryFn: getStudyApi,
+    enabled: !!getTokenFromSession()
+  })
+
+  const { data: processData = [] } = useQuery<ProcessItem[]>({
+    queryKey: ['processInfo', studyId],
+    queryFn: getProcessApi,
+    enabled: !!getTokenFromSession()
+  })
 
 
   // 하단 과제 카드 스크롤 핸들러
@@ -47,7 +102,7 @@ const Process = () => {
 
   // 페이지 접속 시 스크롤
   useEffect(() => {
-    const activeProcess = processes.find(p => p.status === 'active');
+    const activeProcess = processData.find(p => p.status === 'IN_PROGRESS');
     if (activeProcess) {
       const activeElement = itemRefs.current[activeProcess.processOrder];
       if (activeElement) {
@@ -56,7 +111,7 @@ const Process = () => {
         }, 100);
       }
     }
-  }, [processes]);
+  }, [processData]);
 
   return (
     <div className="min-h-screen bg-custom-bg text-white flex flex-col items-center">
@@ -65,11 +120,11 @@ const Process = () => {
       </div>
 
       <div className="w-full max-w-6xl px-4 py-10 flex flex-col gap-24 mb-40 md:scale-90 2xl:scale-98">
-        {processes.map((process) => (
+        {processData.map((process) => (
           <div
             key={process.id}
-            
-            className={`w-full md:mb-10 2xl:mb-20 md:scale-85 2xl:scale-100 transition-opacity duration-500 ${process.status === 'todo' ? 'opacity-50 hover:opacity-100' : 'opacity-100'
+
+            className={`w-full md:mb-10 2xl:mb-20 md:scale-85 2xl:scale-100 transition-opacity duration-500 ${process.status === 'NOT_STARTED' ? 'opacity-50 hover:opacity-100' : 'opacity-100'
               }`}
           >
 
@@ -81,9 +136,11 @@ const Process = () => {
                 </h2>
               </div>
               <div className="flex gap-2 text-sm text-white font-semibold">
-                <button onClick={() => {navigate(`/studies/${studyId}/setting`)}}
-                  className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70 cursor-pointer">수정하기</button>
-                <button onClick={() => {}}
+                {studyData.myRole === 'HOST' && (
+                  <button onClick={() => { navigate(`/studies/${studyId}/setting`) }}
+                    className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70 cursor-pointer">수정하기</button>
+                )}
+                <button onClick={() => { }}
                   className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70 cursor-pointer">나의 과제 모아보기</button>
               </div>
             </div>
@@ -93,27 +150,31 @@ const Process = () => {
               <div className="flex flex-col md:flex-row gap-4 h-auto md:h-80">
                 {/* 메인 주제와 아이콘 */}
                 <div className="flex-1 bg-[#272727] text-white rounded-2xl p-6 relative flex flex-col justify-between overflow-hidden group">
-                  <div className="z-10 relative">
-                    <span className="text-black text-xs font-semibold px-2 py-1 rounded-full bg-gradient-to-b from-custom-gradient-blue to-custom-gradient-green">
-                      Week {process.processOrder}
-                    </span>
-                    <div className='flex justify-between mt-10'>
+                  <div className="z-10 relative h-full flex flex-col">
+                    <div className='shrink-0'>
+                      <span className="text-black text-xs font-semibold px-2 py-1 rounded-full bg-gradient-to-b from-custom-gradient-blue to-custom-gradient-green">
+                        Week {process.processOrder}
+                      </span>
+                    </div>
+
+                    <div className='flex-1 flex flex-col justify-center z-10'>
                       <div>
-                        <p className="text-sm mt-4">AI 추천</p>
-                        <h3 className="text-5xl font-semibold mt-1 mb-2 leading-tight">{process.title}</h3>
+                        <p className="text-sm">AI 추천</p>
+                        <h3 className="text-5xl max-w-130 font-semibold mt-1 mb-2 leading-tight">{process.title}</h3>
                         <p className="text-lg font-semibold mt-2">{process.memo || "메모가 없습니다."}</p>
                       </div>
-                      <div className='flex items-end justify-center absolute top-10 right-1 bg-white rounded-2xl w-50 h-50 '>
-                        <img src={processMoong} className='w-[90%]' />
-                      </div>
+                    </div>
+
+                    <div className='flex items-end justify-center absolute top-10 right-1 bg-white rounded-2xl w-50 h-50 '>
+                      <img src={processMoong} className='w-[90%]' />
                     </div>
                   </div>
 
-                  <div className="w-full flex gap-1 mt-6 h-3 z-10">
-                    {processes.map((p, i) => (
+                  <div className="absolute bottom-6 left-6 right-6 max-w-full flex gap-1 mt-6 h-3 z-10">
+                    {processData.map((p, i) => (
                       <div
                         key={p.id}
-                        className={`flex-1 rounded h-full mt-2 transition-colors ${(i + 1) === process.id ? 'bg-gradient-to-r from-custom-gradient-blue to-custom-gradient-green' : 'bg-white'}`}
+                        className={`flex-1 rounded h-full mt-2 transition-colors ${(i + 1) === process.processOrder ? 'bg-gradient-to-r from-custom-gradient-blue to-custom-gradient-green' : 'bg-white'}`}
                       ></div>
                     ))}
                   </div>
