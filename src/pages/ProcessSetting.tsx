@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 import { formatDateToDot } from '../utils/formatDateToDot';
-import { getTokenFromSession } from '../utils/getTokenFromSession';
-import axios from 'axios';
-import { useMutation } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useStudyQuery } from '../hooks/useStudyQuery';
 import { useProcessQuery } from '../hooks/useProcessQuery';
+import { useCreateProcessMutation } from '../hooks/useCreateProcessMutation';
 
 const ProcessSetting = () => {
 
@@ -15,6 +13,8 @@ const ProcessSetting = () => {
 
     const { data: studyData, isLoading: isStudyLoading } = useStudyQuery(studyId ?? '');
     const { data: processData, isLoading: isProcessLoading } = useProcessQuery(studyId ?? '');
+
+    const { mutate, isPending: isCreateProcessPending } = useCreateProcessMutation();
 
     const [recommendProcess, setRecommendProcess] = useState('');
 
@@ -51,34 +51,8 @@ const ProcessSetting = () => {
     //     setScheduleList([...scheduleList, newRow]);
     // };
 
-
-    const createProcessApi = async () => {
-        const token = getTokenFromSession();
-        await axios.post(`${import.meta.env.VITE_API_CREATE_STUDY}/14/processes/generate`,
-            {
-                additionalDescription: recommendProcess
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": 'application/json'
-                },
-            },
-        )
-    }
-
-    const { mutate, isPending: isRdProcessPending } = useMutation({
-        mutationFn: createProcessApi,
-        onSuccess: () => {
-            console.log("성공적으로 스터디가 생성되었습니다.")
-        },
-        onError: (error) => {
-            console.log(error);
-        }
-    })
-
     const createProcess = () => {
-        mutate();
+        mutate({studyId, recommendProcess});
     }
 
 
@@ -120,7 +94,7 @@ const ProcessSetting = () => {
                                 navigate(`/studies/${studyId}`);
                             }}
                                 className="text-xs font-semibold bg-[#393939] px-4 py-1 rounded hover:opacity-70">
-                                등록하기
+                                나가기
                             </button>
                         </div>
                         <div className="bg-[#393939] p-4 rounded text-sm h-40 flex flex-col justify-center gap-6">
@@ -136,13 +110,13 @@ const ProcessSetting = () => {
                             <h2 className="text-2xl font-semibold">추천 프로세스</h2>
                             <button
                                 onClick={createProcess}
-                                disabled={isRdProcessPending}
+                                disabled={isCreateProcessPending}
                                 className={`text-xs px-3 py-1 rounded bg-[#393939]
-                                    ${isRdProcessPending
+                                    ${isCreateProcessPending
                                         ? 'opacity-70'
                                         : 'hover:opacity-70 cursor-pointer'}`}
                             >
-                                {isRdProcessPending ? '등록 중...' : '등록하기'}
+                                {isCreateProcessPending ? '등록 중...' : '등록하기'}
                             </button>
                         </div>
                         <input
