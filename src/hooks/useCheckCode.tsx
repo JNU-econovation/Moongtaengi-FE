@@ -1,4 +1,4 @@
-import { useCheckCodeExist } from "./useCheckCodeExist";
+import { useCheckCodeMutation } from "./useCheckCodeMutation";
 
 interface CheckCode {
     code: string;
@@ -7,7 +7,7 @@ interface CheckCode {
 }
 
 export const useCheckCode = () => {
-    const {mutate, isPending} = useCheckCodeExist();
+    const {mutate, isPending} = useCheckCodeMutation();
 
     const checkCode = ({ code, setCodeStatus, setCodeAlert }: CheckCode) => {
         const regex = /^[a-zA-Z0-9]+$/;

@@ -1,5 +1,6 @@
+import { useNavigate } from "react-router-dom";
 import { useSaveToken } from "./useSaveToken";
-import { useSendUserDataApi } from "./useSendUserDataApi";
+import { useSendUserDataMutation } from "./useSendUserDataMutation";
 
 interface SendData {
     verified: boolean;
@@ -8,13 +9,12 @@ interface SendData {
     code: string;
 }
 
-// 최종 유저 데이터 전송
 export const useSendUserData = () => {
+    const navigate = useNavigate();
     const {saveToken} = useSaveToken();
-    const {mutate, isPending} = useSendUserDataApi();
+    const {mutate, isPending} = useSendUserDataMutation();
 
     const sendUserData = ({ verified, codeStatus, name, code }: SendData) => {
-
         if (!verified) return;
 
         saveToken();
@@ -24,6 +24,9 @@ export const useSendUserData = () => {
             : { nickname: name };
 
         mutate(userInfo, {
+            onSuccess: () => {
+                navigate('/signup/check', {replace: true});
+            },
             onError: (error) => {
                 console.log(error);
             }

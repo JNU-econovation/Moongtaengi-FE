@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import signupBg from '../assets/signup/signup-bg.png';
 import signupMoong from '../assets/signup/signup-moong.png';
 import { useCheckCode } from '../hooks/useCheckCode';
@@ -8,7 +7,6 @@ import { useCheckName } from '../hooks/useCheckName';
 
 export default function Signup() {
 
-    const navigate = useNavigate();
     const { checkName, isPending: isCheckNameLoading } = useCheckName();
     const { checkCode, isPending: isCheckCodeLoading } = useCheckCode();
     const { sendUserData, isPending: isSendUserDataLoading } = useSendUserData();
@@ -25,7 +23,6 @@ export default function Signup() {
         e.preventDefault();
         if (verified) {
             sendUserData({ verified, codeStatus, name, code });
-            navigate('/signup/check');
         }
     }
 
@@ -149,7 +146,7 @@ export default function Signup() {
                         className={`h-14 w-full rounded-lg text-[18px] text-[#191919] transition-all
                             ${verified
                                 ? 'bg-gradient-to-r from-custom-gradient-blue to-custom-gradient-green hover:opacity-70 cursor-pointer'
-                                : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                                : 'bg-gray-600 text-gray-400'
                             }`}
                     >
                         {isSendUserDataLoading ? '가입 중...' : '회원가입 완료'}

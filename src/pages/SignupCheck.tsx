@@ -1,5 +1,5 @@
 import signupCheck from '../assets/signup/signup-check.png'
-import { useNavigate } from 'react-router-dom'
+import { replace, useNavigate } from 'react-router-dom'
 
 const SignupCheck = () => {
 
@@ -27,7 +27,7 @@ const SignupCheck = () => {
                 </div>
                 
                 <button className='w-full h-14 rounded-md flex items-center justify-center bg-gradient-to-r from-custom-gradient-blue to-custom-gradient-green hover:opacity-70 cursor-pointer'
-                    onClick={() => {navigate('/')}}>
+                    onClick={() => {navigate('/', {replace: true})}}>
                     뭉탱이 시작하기
                 </button>
 

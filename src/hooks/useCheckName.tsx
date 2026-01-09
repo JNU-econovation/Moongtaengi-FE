@@ -1,13 +1,13 @@
-import { useCheckNamePolicy } from "./useCheckNamePolicy";
+import { useCheckNameMutation } from "./useCheckNameMutation";
 
-export interface CheckName {
+interface CheckName {
     name: string;
     setVerified: (arg: boolean) => void;
     setNameAlert: (args: string) => void;
 }
 
 export const useCheckName = () => {
-    const { mutate, isPending } = useCheckNamePolicy();
+    const { mutate, isPending } = useCheckNameMutation();
 
     const checkName = ({ name, setVerified, setNameAlert }: CheckName) => {
         const regex = /^[가-힣0-9]+$/;
