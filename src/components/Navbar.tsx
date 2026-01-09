@@ -51,12 +51,14 @@ export default function Navbar() {
 
     const { data: operatingStudyList = [] } = useQuery<StudyItem[]>({
         queryKey: ['operatingStudyList'],
-        queryFn: () => studyListApi('/studies/me/managed')
+        queryFn: () => studyListApi('/studies/me/managed'),
+        enabled: !!getTokenFromSession()
     })
 
     const { data: participatingStudyList = [] } = useQuery<StudyItem[]>({
         queryKey: ['participatingStudyList'],
-        queryFn: () => studyListApi('/studies/me/joined')
+        queryFn: () => studyListApi('/studies/me/joined'),
+        enabled: !!getTokenFromSession()
     })
 
     const studyList: StudyList = {
