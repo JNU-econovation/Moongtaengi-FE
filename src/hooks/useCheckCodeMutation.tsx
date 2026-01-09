@@ -13,7 +13,7 @@ const checkCodeApi = async (code: string) => {
     return data;
 }
 
-export const useCheckCodeExist = () => {
+export const useCheckCodeMutation = () => {
     return useMutation({
         mutationFn: checkCodeApi,
     })

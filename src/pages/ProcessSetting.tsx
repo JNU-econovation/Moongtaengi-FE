@@ -1,75 +1,73 @@
-import { useState } from 'react';
-import { tempData } from './tempStudyData';
+import { useEffect, useState } from 'react';
 import { formatDateToDot } from '../utils/formatDateToDot';
-import { getTokenFromSession } from '../utils/getTokenFromSession';
-import axios from 'axios';
-import { useMutation } from '@tanstack/react-query';
-
-// 데이터 타입 정의
-interface StudyProcess {
-    id: number;
-    processOrder: number;
-    title: string;
-    startDate: string;
-    endDate: string;
-    durationDays: number;
-    memo: string;
-    assignmentDescription: string;
-    status: 'complete' | 'active' | 'todo' | string;
-}
+import { useNavigate, useParams } from 'react-router-dom';
+import { useStudyQuery } from '../hooks/useStudyQuery';
+import { useProcessQuery } from '../hooks/useProcessQuery';
+import { useCreateProcessMutation } from '../hooks/useCreateProcessMutation';
 
 const ProcessSetting = () => {
 
-    const [rdProcess, setRdProcess] = useState('');
+    const navigate = useNavigate();
+
+    const { studyId } = useParams<{ studyId: string }>();
+
+    const { data: studyData, isLoading: isStudyLoading } = useStudyQuery(studyId ?? '');
+    const { data: processData, isLoading: isProcessLoading } = useProcessQuery(studyId ?? '');
+
+    const { mutate, isPending: isCreateProcessPending } = useCreateProcessMutation();
+
+    const [recommendProcess, setRecommendProcess] = useState('');
 
 
-    const [scheduleList, setScheduleList] = useState<StudyProcess[]>(tempData);
+    // const [scheduleList, setScheduleList] = useState<ProcessItem[]>();
 
+    // {
+    //     "processes": [
+    //         {
+    //             "id": 1,
+    //             "title": "운영체제 기초 및 개요 (수정됨)",
+    //             "startDate": "2025-01-01",
+    //             "endDate": "2025-01-05",
+    //             "memo": "첫 주차 메모 추가",
+    //             "assignmentDescription": "다양한 운영체제 유형을 조사하고 주요 특징을 비교 분석하여 문서로 요약하세요."
+    //         },
+    //         ...
+    //     ]
+    // }
 
-    const handleAddRow = () => {
-        const newId = scheduleList.length + 1;
-        const newRow: StudyProcess = {
-            id: newId,
-            processOrder: newId,
-            title: "새로운 프로세스",
-            startDate: "2025-01-01",
-            endDate: "2025-01-01",
-            durationDays: 1,
-            memo: "",
-            assignmentDescription: "",
-            status: 'todo'
-        };
-        setScheduleList([...scheduleList, newRow]);
-    };
-
-    const createProcessApi = async () => {
-        const token = getTokenFromSession();
-        await axios.post(`${import.meta.env.VITE_API_CREATE_STUDY}/14/processes/generate`,
-            {
-                additionalDescription: rdProcess
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": 'application/json'
-                },
-            },
-        )
-    }
-
-    const { mutate, isPending: isRdProcessPending } = useMutation({
-        mutationFn: createProcessApi,
-        onSuccess: () => {
-            console.log("성공적으로 스터디가 생성되었습니다.")
-        },
-        onError: (error) => {
-            console.log(error);
-        }
-    })
+    // const handleAddRow = () => {
+    //     const newId = scheduleList.length + 1;
+    //     const newRow: ProcessItem = {
+    //         id: newId,
+    //         processOrder: newId,
+    //         title: "새로운 프로세스",
+    //         startDate: "2025-01-01",
+    //         endDate: "2025-01-01",
+    //         durationDays: 1,
+    //         memo: "",
+    //         assignmentDescription: "",
+    //         status: 'NOT_STARTED'
+    //     };
+    //     setScheduleList([...scheduleList, newRow]);
+    // };
 
     const createProcess = () => {
-        mutate();
+        mutate({studyId, recommendProcess});
     }
+
+
+    // 데이터 없으면 메인 화면으로 이동
+    useEffect(() => {
+        if (isStudyLoading || isProcessLoading) return;
+
+        if (!studyData || !processData) {
+            navigate('/', { replace: true });
+        }
+    }, [isStudyLoading, isProcessLoading, studyData, processData]);
+
+
+    if (isStudyLoading || isProcessLoading) return <div>로딩 중...</div>
+    if (!studyData || !processData) return null
 
     return (
         <div className="max-w-[1400px] w-full mx-auto md:mt-0 2xl:mt-8 md:p-0 2xl:p-8 flex-1 md:scale-85 2xl:scale-100">
@@ -92,8 +90,11 @@ const ProcessSetting = () => {
                     <div>
                         <div className="flex justify-between items-center mb-2">
                             <h2 className="text-2xl font-semibold">스터디 소개</h2>
-                            <button className="text-xs font-semibold bg-[#393939] px-4 py-1 rounded hover:opacity-70">
-                                등록하기
+                            <button onClick={() => {
+                                navigate(`/studies/${studyId}`);
+                            }}
+                                className="text-xs font-semibold bg-[#393939] px-4 py-1 rounded hover:opacity-70">
+                                나가기
                             </button>
                         </div>
                         <div className="bg-[#393939] p-4 rounded text-sm h-40 flex flex-col justify-center gap-6">
@@ -109,20 +110,20 @@ const ProcessSetting = () => {
                             <h2 className="text-2xl font-semibold">추천 프로세스</h2>
                             <button
                                 onClick={createProcess}
-                                disabled={isRdProcessPending}
+                                disabled={isCreateProcessPending}
                                 className={`text-xs px-3 py-1 rounded bg-[#393939]
-                                    ${isRdProcessPending 
+                                    ${isCreateProcessPending
                                         ? 'opacity-70'
                                         : 'hover:opacity-70 cursor-pointer'}`}
                             >
-                                {isRdProcessPending ? '등록 중...' : '등록하기'}
+                                {isCreateProcessPending ? '등록 중...' : '등록하기'}
                             </button>
                         </div>
                         <input
                             type='text'
-                            value={rdProcess}
+                            value={recommendProcess}
                             onChange={(e) => {
-                                setRdProcess(e.target.value);
+                                setRecommendProcess(e.target.value);
                             }}
                             placeholder='스터디 주제를 상세히 입력해주세요.'
                             className="bg-[#393939] h-60 w-full p-4 pb-50 rounded text-sm placeholder:text-[#A1A1A1]">
@@ -176,16 +177,16 @@ const ProcessSetting = () => {
                                 [&::-webkit-scrollbar-thumb]:rounded-full
                                 [&::-webkit-scrollbar-button]:hidden    
                             `}>
-                            {scheduleList.map((item) => (
+                            {processData.map((process) => (
 
-                                <div key={item.id} className="grid grid-cols-17 gap-2 text-sm h-10 shrink-0">
+                                <div key={process.id} className="grid grid-cols-17 gap-2 text-sm h-10 shrink-0">
 
                                     {/* Status Badge */}
                                     <div className="col-span-2 bg-[#393939] flex items-center justify-center text-lg rounded">
-                                        {item.status === 'complete' && (
+                                        {process.status === 'COMPLETED' && (
                                             <span>완료</span>
                                         )}
-                                        {item.status === 'active' && (
+                                        {process.status === 'IN_PROGRESS' && (
                                             <span>진행 중</span>
                                         )}
 
@@ -193,20 +194,20 @@ const ProcessSetting = () => {
 
                                     {/* Date */}
                                     <div className="col-span-4 bg-[#393939] font-semibold flex items-center justify-center rounded">
-                                        {formatDateToDot(item.startDate)} - {formatDateToDot(item.endDate)}
+                                        {formatDateToDot(process.startDate)} - {formatDateToDot(process.endDate)}
                                     </div>
 
                                     {/* Process (Track + Title) */}
                                     <div className="col-span-6 bg-[#393939] font-semibold flex items-center px-4 rounded">
                                         <span className="text-black text-[10px] px-2 py-0.5 rounded-full mr-2 min-w-fit bg-gradient-to-r from-custom-gradient-blue to-custom-gradient-green">
-                                            Track {item.processOrder}
+                                            Track {process.processOrder}
                                         </span>
-                                        <span className="truncate">{item.title}</span>
+                                        <span className="truncate">{process.title}</span>
                                     </div>
 
                                     {/* Memo */}
                                     <div className="col-span-5 bg-[#393939] font-semibold flex items-center px-2 rounded">
-                                        <span className="truncate text-xs">{item.memo}</span>
+                                        <span className="truncate text-xs">{process.memo}</span>
                                     </div>
                                 </div>
                             ))}
@@ -214,7 +215,7 @@ const ProcessSetting = () => {
 
                         {/* Add Button */}
                         <button
-                            onClick={handleAddRow}
+
                             className="w-full bg-[#393939] hover:opacity-70 h-10 mt-1.5 rounded flex items-center justify-center transition-colors text-4xl shrink-0"
                         >
                             +

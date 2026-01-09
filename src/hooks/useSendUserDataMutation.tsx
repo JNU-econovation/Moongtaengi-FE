@@ -9,7 +9,6 @@ interface UserInfo {
 
 const sendUserDataApi = async (userInfo: UserInfo) => {
     const token = getTokenFromSession();
-    console.log("전송 데이터:", userInfo);
     axios.post(import.meta.env.VITE_API_REGISTRATION,
         userInfo,
         {
@@ -18,7 +17,7 @@ const sendUserDataApi = async (userInfo: UserInfo) => {
     )
 }
 
-export const useSendUserDataApi = () => {
+export const useSendUserDataMutation = () => {
     return useMutation({
         mutationFn: sendUserDataApi,
     })

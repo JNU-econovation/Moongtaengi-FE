@@ -8,7 +8,7 @@ interface Data {
     message: string;
 }
 
-const checkNameApi = async (name: string) => {
+const checkNameApi = async (name: string): Promise<Data> => {
     const token = useGetTokenFromUrl();
     const { data } = await axios.get<Data>(import.meta.env.VITE_API_CHECK_NAME,
         {
@@ -19,7 +19,7 @@ const checkNameApi = async (name: string) => {
     return data;
 }
 
-export const useCheckNamePolicy = () => {
+export const useCheckNameMutation = () => {
     return useMutation({
         mutationFn: checkNameApi,
     })
