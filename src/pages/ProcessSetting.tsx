@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { tempData } from './tempStudyData';
 import { formatDateToDot } from '../utils/formatDateToDot';
+import { getTokenFromSession } from '../utils/getTokenFromSession';
+import axios from 'axios';
+import { useMutation } from '@tanstack/react-query';
 
 // 데이터 타입 정의
 interface StudyProcess {
@@ -16,7 +19,12 @@ interface StudyProcess {
 }
 
 const ProcessSetting = () => {
+
+    const [rdProcess, setRdProcess] = useState('');
+
+
     const [scheduleList, setScheduleList] = useState<StudyProcess[]>(tempData);
+
 
     const handleAddRow = () => {
         const newId = scheduleList.length + 1;
@@ -33,6 +41,35 @@ const ProcessSetting = () => {
         };
         setScheduleList([...scheduleList, newRow]);
     };
+
+    const createProcessApi = async () => {
+        const token = getTokenFromSession();
+        await axios.post(`${import.meta.env.VITE_API_CREATE_STUDY}/14/processes/generate`,
+            {
+                additionalDescription: rdProcess
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": 'application/json'
+                },
+            },
+        )
+    }
+
+    const { mutate, isPending: isRdProcessPending } = useMutation({
+        mutationFn: createProcessApi,
+        onSuccess: () => {
+            console.log("성공적으로 스터디가 생성되었습니다.")
+        },
+        onError: (error) => {
+            console.log(error);
+        }
+    })
+
+    const createProcess = () => {
+        mutate();
+    }
 
     return (
         <div className="max-w-[1400px] w-full mx-auto md:mt-0 2xl:mt-8 md:p-0 2xl:p-8 flex-1 md:scale-85 2xl:scale-100">
@@ -70,13 +107,26 @@ const ProcessSetting = () => {
                     <div>
                         <div className="flex justify-between items-center mb-2">
                             <h2 className="text-2xl font-semibold">추천 프로세스</h2>
-                            <button className="text-xs bg-[#393939] px-3 py-1 rounded hover:opacity-70">
-                                등록하기
+                            <button
+                                onClick={createProcess}
+                                disabled={isRdProcessPending}
+                                className={`text-xs px-3 py-1 rounded bg-[#393939]
+                                    ${isRdProcessPending 
+                                        ? 'opacity-70'
+                                        : 'hover:opacity-70 cursor-pointer'}`}
+                            >
+                                {isRdProcessPending ? '등록 중...' : '등록하기'}
                             </button>
                         </div>
-                        <div className="bg-[#393939] p-4 rounded text-sm h-60">
-                            <p>스터디 주제를 상세히 입력해주세요.</p>
-                        </div>
+                        <input
+                            type='text'
+                            value={rdProcess}
+                            onChange={(e) => {
+                                setRdProcess(e.target.value);
+                            }}
+                            placeholder='스터디 주제를 상세히 입력해주세요.'
+                            className="bg-[#393939] h-60 w-full p-4 pb-50 rounded text-sm placeholder:text-[#A1A1A1]">
+                        </input>
                     </div>
                 </div>
 
