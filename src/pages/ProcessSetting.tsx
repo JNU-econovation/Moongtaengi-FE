@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { tempData } from './tempStudyData';
+import { useEffect, useState } from 'react';
 import { formatDateToDot } from '../utils/formatDateToDot';
 import { getTokenFromSession } from '../utils/getTokenFromSession';
 import axios from 'axios';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { type StudyItem, type ProcessItem } from './Process';
+import { useStudyQuery } from '../hooks/useStudyQuery';
+import { useProcessQuery } from '../hooks/useProcessQuery';
 
 const ProcessSetting = () => {
 
@@ -13,12 +13,10 @@ const ProcessSetting = () => {
 
     const { studyId } = useParams<{ studyId: string }>();
 
-    const queryClient = useQueryClient();
+    const { data: studyData, isLoading: isStudyLoading } = useStudyQuery(studyId ?? '');
+    const { data: processData, isLoading: isProcessLoading } = useProcessQuery(studyId ?? '');
 
     const [recommendProcess, setRecommendProcess] = useState('');
-
-    const studyData = queryClient.getQueryData<StudyItem>(['studyInfo', studyId]);
-    const processData = queryClient.getQueryData<ProcessItem[]>(['processInfo', studyId]);
 
 
     // const [scheduleList, setScheduleList] = useState<ProcessItem[]>();
@@ -36,8 +34,6 @@ const ProcessSetting = () => {
     //         ...
     //     ]
     // }
-
-
 
     // const handleAddRow = () => {
     //     const newId = scheduleList.length + 1;
@@ -84,6 +80,20 @@ const ProcessSetting = () => {
     const createProcess = () => {
         mutate();
     }
+
+
+    // 데이터 없으면 메인 화면으로 이동
+    useEffect(() => {
+        if (isStudyLoading || isProcessLoading) return;
+
+        if (!studyData || !processData) {
+            navigate('/', { replace: true });
+        }
+    }, [isStudyLoading, isProcessLoading, studyData, processData]);
+
+
+    if (isStudyLoading || isProcessLoading) return <div>로딩 중...</div>
+    if (!studyData || !processData) return null
 
     return (
         <div className="max-w-[1400px] w-full mx-auto md:mt-0 2xl:mt-8 md:p-0 2xl:p-8 flex-1 md:scale-85 2xl:scale-100">

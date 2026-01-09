@@ -1,36 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { tempData } from './tempStudyData.ts';
 import processMoong from '../assets/process/process-moong.png';
 import Navbar from '../components/Navbar.tsx';
 import { formatDateToWord } from '../utils/formatDateToWord.tsx';
-import { getTokenFromSession } from '../utils/getTokenFromSession.tsx';
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
-
-export interface StudyItem {
-  studyId: number;
-  studyName: string;
-  studyPeriod: {
-    startDate: string;
-    endDate: string;
-  };
-  studyTopic: string;
-  studyInviteCode: string;
-  myRole: 'HOST' | 'GUEST';
-}
-
-export interface ProcessItem {
-  id: number;
-  processOrder: number;
-  title: string;
-  startDate: string;
-  endDate: string;
-  durationDays: number;
-  memo: string;
-  assignmentDescription: string;
-  status: 'COMPLETED' | 'IN_PROGRESS' | 'NOT_STARTED';
-}
+import { useStudyQuery } from '../hooks/useStudyQuery.tsx';
+import { useProcessQuery } from '../hooks/useProcessQuery.tsx';
 
 const Process = () => {
 
@@ -38,54 +12,14 @@ const Process = () => {
 
   const { studyId } = useParams<{ studyId: string }>();
 
+  const { data: studyData, isLoading: isStudyLoading } = useStudyQuery(studyId ?? '');
+  const { data: processData, isLoading: isProcessLoading } = useProcessQuery(studyId ?? '');
+
   // 전체 프로세스 항목 Refs
   const itemRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
   // 하단 과제 카드 가로 스크롤 Refs
   const scrollRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
-
-
-  const getStudyApi = async () => {
-    const token = getTokenFromSession();
-
-    const response = await axios.get(`${import.meta.env.VITE_API_CREATE_STUDY}/${studyId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    )
-
-    return response.data;
-  }
-
-  const getProcessApi = async () => {
-    const token = getTokenFromSession();
-
-    const response = await axios.get(`${import.meta.env.VITE_API_CREATE_STUDY}/${studyId}/processes`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    )
-
-    return response.data;
-  }
-
-  // 스터디 조회 
-  const { data: studyData } = useQuery<StudyItem>({
-    queryKey: ['studyInfo', studyId],
-    queryFn: getStudyApi,
-    enabled: !!getTokenFromSession()
-  })
-
-  // 프로세스 전체 조회
-  const { data: processData = [] } = useQuery<ProcessItem[]>({
-    queryKey: ['processInfo', studyId],
-    queryFn: getProcessApi,
-    enabled: !!getTokenFromSession()
-  })
 
 
   // 하단 과제 카드 스크롤 핸들러
@@ -101,9 +35,18 @@ const Process = () => {
   };
 
 
+  // 데이터 없으면 메인 화면으로 이동
+  useEffect(() => {
+    if (isStudyLoading || isProcessLoading) return;
+
+    if (!studyData || !processData) {
+      navigate('/', { replace: true });
+    }
+  }, [isStudyLoading, isProcessLoading, studyData, processData]);
+
   // 페이지 접속 시 스크롤
   useEffect(() => {
-    const activeProcess = processData.find(p => p.status === 'IN_PROGRESS');
+    const activeProcess = processData?.find(p => p.status === 'IN_PROGRESS');
     if (activeProcess) {
       const activeElement = itemRefs.current[activeProcess.processOrder];
       if (activeElement) {
@@ -113,6 +56,10 @@ const Process = () => {
       }
     }
   }, [processData]);
+
+
+  if (isStudyLoading || isProcessLoading) return <div className='h-screen bg-custom-bg text-white'>로딩 중...</div>
+  if (!studyData || !processData) return null
 
   return (
     <div className="min-h-screen bg-custom-bg text-white flex flex-col items-center">
