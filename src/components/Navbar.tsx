@@ -86,37 +86,6 @@ export default function Navbar() {
         }
     }, [dropdownRef]);
 
-
-    const token = getTokenFromSession();
-
-    const createProcessApi = async () => {
-        await axios.post(`${import.meta.env.VITE_API_CREATE_STUDY}/1/processes/generate`,
-            {
-                additionalDescription: "장난전화의 역사"
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": 'application/json'
-                },
-            },
-        )
-    }
-
-    const { mutate, isPending } = useMutation({
-        mutationFn: createProcessApi,
-        onSuccess: () => {
-            console.log(`${import.meta.env.VITE_API_CREATE_STUDY}/1/processes/generate}`)
-        },
-        onError: (error) => {
-            console.log(error);
-        }
-    })
-
-    const createProcess = () => {
-        mutate();
-    }
-
     return (
         <nav className="flex items-center justify-between px-6 md:py-2 2xl:py-3 bg-black sticky top-0 z-50 text-white rounded-full mt-7">
 
@@ -198,9 +167,8 @@ export default function Navbar() {
                         마이페이지
                     </button>
 
-                    <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
-                        onClick={createProcess}>
-                        {isPending ? '생성 중...' : '컬렉션'}
+                    <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
+                        컬렉션
                     </button>
 
                     <button onClick={() => { setModalMode("inviteCode") }}
