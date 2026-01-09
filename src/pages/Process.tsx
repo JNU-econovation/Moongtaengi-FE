@@ -8,7 +8,7 @@ import { getTokenFromSession } from '../utils/getTokenFromSession.tsx';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 
-interface StudyItem {
+export interface StudyItem {
   studyId: number;
   studyName: string;
   studyPeriod: {
@@ -20,7 +20,7 @@ interface StudyItem {
   myRole: 'HOST' | 'GUEST';
 }
 
-interface ProcessItem {
+export interface ProcessItem {
   id: number;
   processOrder: number;
   title: string;
@@ -73,13 +73,14 @@ const Process = () => {
     return response.data;
   }
 
-  // 스터디 조회 -> 프로세스 전체 조회
+  // 스터디 조회 
   const { data: studyData } = useQuery<StudyItem>({
     queryKey: ['studyInfo', studyId],
     queryFn: getStudyApi,
     enabled: !!getTokenFromSession()
   })
 
+  // 프로세스 전체 조회
   const { data: processData = [] } = useQuery<ProcessItem[]>({
     queryKey: ['processInfo', studyId],
     queryFn: getProcessApi,
