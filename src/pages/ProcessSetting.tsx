@@ -1,9 +1,29 @@
 import { useEffect, useMemo, useState } from 'react';
-import { formatDateToDot } from '../utils/formatDateToDot';
 import { replace, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useStudyQuery } from '../hooks/useStudyQuery';
 import { useProcessQuery } from '../hooks/useProcessQuery';
 import { useCreateProcessMutation } from '../hooks/useCreateProcessMutation';
+
+interface ProcessData {
+    id: number | null;
+    processOrder: number;
+    title: string;
+    startDate: string;
+    endDate: string;
+    durationDays: number;
+    memo: string;
+    assignmentDescription: string;
+    status: 'COMPLETED' | 'IN_PROGRESS' | 'NOT_STARTED';
+}
+
+// interface ProcessFormData {
+//     id: number | null;
+//     title: string;
+//     startDate: string;
+//     endDate: string;
+//     memo: string;
+//     assignmentDescription: string;
+// }
 
 const ProcessSetting = () => {
 
@@ -12,9 +32,7 @@ const ProcessSetting = () => {
     const { studyId } = useParams<{ studyId: string }>();
 
     const { data: studyData, isLoading: isStudyLoading } = useStudyQuery(studyId ?? '');
-    const { data: processData, isLoading: isProcessLoading } = useProcessQuery(studyId ?? '');
-
-    const { mutate, isPending: isCreateProcessPending } = useCreateProcessMutation(studyId ?? '');
+    const { data: processSourceData, isLoading: isProcessLoading } = useProcessQuery(studyId ?? '');
 
     const [studyForm, setStudyForm] = useState({
         name: '',
@@ -22,50 +40,20 @@ const ProcessSetting = () => {
         startDate: '',
         endDate: ''
     })
-
     const [processForm, setProcessForm] = useState('');
+    const [processData, setProcessData] = useState<ProcessData[]>();
+
+    const { mutate, isPending: isCreateProcessPending } = useCreateProcessMutation(studyId ?? '');
 
 
-    const isEditMode = location.state?.isEdit || (processData && processData.length > 0);
+    const isEditMode = location.state?.isEdit || (processSourceData && processSourceData.length > 0);
 
-
-    // const [scheduleList, setScheduleList] = useState<ProcessItem[]>();
-
-    // {
-    //     "processes": [
-    //         {
-    //             "id": 1,
-    //             "title": "운영체제 기초 및 개요 (수정됨)",
-    //             "startDate": "2025-01-01",
-    //             "endDate": "2025-01-05",
-    //             "memo": "첫 주차 메모 추가",
-    //             "assignmentDescription": "다양한 운영체제 유형을 조사하고 주요 특징을 비교 분석하여 문서로 요약하세요."
-    //         },
-    //         ...
-    //     ]
-    // }
-
-    // const handleAddRow = () => {
-    //     const newId = scheduleList.length + 1;
-    //     const newRow: ProcessItem = {
-    //         id: newId,
-    //         processOrder: newId,
-    //         title: "새로운 프로세스",
-    //         startDate: "2025-01-01",
-    //         endDate: "2025-01-01",
-    //         durationDays: 1,
-    //         memo: "",
-    //         assignmentDescription: "",
-    //         status: 'NOT_STARTED'
-    //     };
-    //     setScheduleList([...scheduleList, newRow]);
-    // };
-
+    // 맨 위 버튼
     const handleTopButton = () => {
         if (isEditMode) {
             navigate(`/studies/${studyId}`, { replace: true });
         } else {
-            if (processData && processData.length === 0) {
+            if (processSourceData && processSourceData.length === 0) {
                 alert("프로세스를 최소 하나 등록해주세요.");
                 return;
             }
@@ -78,8 +66,44 @@ const ProcessSetting = () => {
         setStudyForm((prev) => ({ ...prev, [name]: value }));
     }
 
+    // 추천 프로세스 제출 버튼
     const handleCreateProcess = () => {
         mutate({ studyId, processForm });
+    }
+
+    const handleProcessChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const {name, value} = e.target;
+        setProcessData((prev) => 
+            (prev?.map((process, i) =>
+                (i === index ? {...process, [name]: value} : process)
+            ))
+        );
+    }
+
+    // 스터디 스케줄러 추가 버튼
+    const handleAddSchedule = () => {
+        if (!processData) return;
+
+        const prevOrder: number = processData.length;
+
+        const newSchdule: ProcessData = {
+            id: null,
+            processOrder: (prevOrder + 1),
+            title: '',
+            startDate: '',
+            endDate: '',
+            durationDays: 0,
+            memo: '',
+            assignmentDescription: '',
+            status: 'NOT_STARTED'
+        }
+
+        setProcessData((prev) => [...prev, newSchdule]);
+    }
+
+    // 스터디 스케줄러 제출 버튼
+    const handleUpdateProcess = () => {
+
     }
 
 
@@ -90,11 +114,18 @@ const ProcessSetting = () => {
         if (!studyData) {
             navigate('/', { replace: true });
         }
-    }, [isStudyLoading, isProcessLoading, studyData, processData]);
+    }, [isStudyLoading, isProcessLoading, studyData, processSourceData]);
+
+    // 프로세스 데이터 배열 생성
+    useEffect(() => {
+        if (!processSourceData) return;
+
+        setProcessData(processSourceData);
+    }, [processSourceData]);
 
 
     if (isStudyLoading || isProcessLoading) return <div>로딩 중...</div>
-    if (!studyData || !processData) return null
+    if (!studyData || !processSourceData) return null
 
     return (
         <div className="max-w-[1400px] w-full mx-auto md:mt-0 2xl:mt-8 md:p-0 2xl:p-8 flex-1 md:scale-85 2xl:scale-100">
@@ -219,7 +250,9 @@ const ProcessSetting = () => {
                         <div>
                             <div className='flex font-semibold justify-between items-end'>
                                 <h2 className="text-2xl">스터디 스케줄러</h2>
-                                <button className="text-xs bg-[#393939] px-4 py-1 rounded hover:opacity-70">
+                                <button
+                                    onClick={handleUpdateProcess} 
+                                    className="text-xs bg-[#393939] px-4 py-1 rounded hover:opacity-70">
                                     {isEditMode ? '저장하기' : '등록하기'}
                                 </button>
                             </div>
@@ -243,9 +276,9 @@ const ProcessSetting = () => {
                                 [&::-webkit-scrollbar-thumb]:rounded-full
                                 [&::-webkit-scrollbar-button]:hidden    
                             `}>
-                            {processData.map((process) => (
+                            {processData?.map((process, index) => (
 
-                                <div key={process.id} className="grid grid-cols-20 gap-2 px-1 text-sm h-10 shrink-0">
+                                <div key={process.processOrder} className="grid grid-cols-20 gap-2 px-1 text-sm h-10 shrink-0">
 
                                     {/* Status Badge */}
                                     <div className="col-span-2 bg-[#393939] flex items-center justify-center text-lg rounded">
@@ -262,13 +295,17 @@ const ProcessSetting = () => {
                                     <div className="col-span-6 bg-[#393939] font-semibold flex gap-1 items-center justify-center rounded">
                                         <input
                                             type='date'
+                                            name='startDate'
                                             value={process.startDate}
+                                            onChange={(e) => {handleProcessChange(e, index)}}
                                             className='w-[43%]'
                                         />
                                         ~
                                         <input
                                             type='date'
+                                            name='endDate'
                                             value={process.endDate}
+                                            onChange={(e) => {handleProcessChange(e, index)}}
                                             className='w-[43%]'
                                         />
                                     </div>
@@ -281,7 +318,9 @@ const ProcessSetting = () => {
                                         <input
                                             type='text'
                                             id={`title${process.id}`}
+                                            name='title'
                                             value={process.title}
+                                            onChange={(e) => {handleProcessChange(e, index)}}
                                             className='truncate'
                                         />
                                     </div>
@@ -290,7 +329,9 @@ const ProcessSetting = () => {
                                     <div className="col-span-5 bg-[#393939] font-semibold flex items-center px-2 rounded">
                                         <input
                                             type='text'
+                                            name='memo'
                                             value={process.memo}
+                                            onChange={(e) => {handleProcessChange(e, index)}}
                                             className='truncate max-w-full'
                                         />
                                     </div>
@@ -300,10 +341,10 @@ const ProcessSetting = () => {
 
                         {/* Add Button */}
                         <button
-
+                            onClick={handleAddSchedule} 
                             className="w-full bg-[#393939] hover:opacity-70 h-10 mt-1.5 rounded flex items-center justify-center transition-colors text-4xl shrink-0"
                         >
-                            +
+                        +
                         </button>
 
                     </div>
