@@ -1,17 +1,18 @@
 import axios from "axios";
 import { getTokenFromSession } from "../utils/getTokenFromSession";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface Params {
     studyId: string;
-    recommendProcess: string;
+    processForm: string;
 }
 
-const createProcessApi = async ({studyId, recommendProcess}: Params) => {
+const createProcessApi = async ({studyId, processForm}: Params) => {
     const token = getTokenFromSession();
+    
     await axios.post(`${import.meta.env.VITE_API_CREATE_STUDY}/${studyId}/processes/generate`,
         {
-            additionalDescription: recommendProcess
+            additionalDescription: processForm
         },
         {
             headers: {
@@ -22,10 +23,13 @@ const createProcessApi = async ({studyId, recommendProcess}: Params) => {
     )
 }
 
-export const useCreateProcessMutation = () => {
+export const useCreateProcessMutation = (studyId: string) => {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: createProcessApi,
         onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['processInfo', studyId]})
             console.log("스터디 생성이 성공함");
         },
         onError: (error) => {
