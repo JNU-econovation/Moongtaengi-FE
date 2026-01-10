@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { formatDateToDot } from '../utils/formatDateToDot';
-import { useNavigate, useParams } from 'react-router-dom';
+import { replace, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useStudyQuery } from '../hooks/useStudyQuery';
 import { useProcessQuery } from '../hooks/useProcessQuery';
 import { useCreateProcessMutation } from '../hooks/useCreateProcessMutation';
@@ -8,7 +8,7 @@ import { useCreateProcessMutation } from '../hooks/useCreateProcessMutation';
 const ProcessSetting = () => {
 
     const navigate = useNavigate();
-
+    const location = useLocation();
     const { studyId } = useParams<{ studyId: string }>();
 
     const { data: studyData, isLoading: isStudyLoading } = useStudyQuery(studyId ?? '');
@@ -16,7 +16,17 @@ const ProcessSetting = () => {
 
     const { mutate, isPending: isCreateProcessPending } = useCreateProcessMutation();
 
-    const [recommendProcess, setRecommendProcess] = useState('');
+    const [studyForm, setStudyForm] = useState({
+        name: '',
+        topic: '',
+        startDate: '',
+        endDate: ''
+    })
+
+    const [processForm, setProcessForm] = useState('');
+
+
+    const isEditMode = location.state?.isEdit || (processData && processData.length > 0);
 
 
     // const [scheduleList, setScheduleList] = useState<ProcessItem[]>();
@@ -51,8 +61,25 @@ const ProcessSetting = () => {
     //     setScheduleList([...scheduleList, newRow]);
     // };
 
-    const createProcess = () => {
-        mutate({studyId, recommendProcess});
+    const handleTopButton = () => {
+        if (isEditMode) {
+            navigate(`/studies/${studyId}`, { replace: true });
+        } else {
+            if (processData && processData.length === 0) {
+                alert("프로세스를 최소 하나 등록해주세요.");
+                return;
+            }
+            navigate(`/studies/${studyId}`, { replace: true });
+        }
+    }
+
+    const handleStudyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {name, value} = e.target;
+        setStudyForm((prev) => ({...prev, [name]: value}));
+    }
+
+    const handleCreateProcess = () => {
+        mutate({ studyId, processForm });
     }
 
 
@@ -60,7 +87,7 @@ const ProcessSetting = () => {
     useEffect(() => {
         if (isStudyLoading || isProcessLoading) return;
 
-        if (!studyData || !processData) {
+        if (!studyData) {
             navigate('/', { replace: true });
         }
     }, [isStudyLoading, isProcessLoading, studyData, processData]);
@@ -75,8 +102,10 @@ const ProcessSetting = () => {
             {/* Header Section */}
             <div className="flex justify-between items-center font-semibold mb-4">
                 <h1 className="text-4xl">스터디명 입력</h1>
-                <button className="bg-[#272727] hover:opacity-70 text-white px-5 py-1.5 rounded text-md transition-colors cursor-pointer">
-                    수정 완료
+                <button
+                    onClick={handleTopButton}
+                    className="bg-[#272727] hover:opacity-70 text-white px-5 py-1.5 rounded text-md transition-colors cursor-pointer">
+                    {isEditMode ? '나가기' : '스터디 생성'}
                 </button>
             </div>
 
@@ -87,29 +116,65 @@ const ProcessSetting = () => {
                 <div className="col-span-4 bg-[#272727] p-5 rounded-sm flex flex-col gap-8">
 
                     {/* Section 1: Study Intro */}
-                    <div>
+                    <form>
                         <div className="flex justify-between items-center mb-2">
                             <h2 className="text-2xl font-semibold">스터디 소개</h2>
-                            <button onClick={() => {
-                                navigate(`/studies/${studyId}`);
-                            }}
+                            <button
                                 className="text-xs font-semibold bg-[#393939] px-4 py-1 rounded hover:opacity-70">
-                                나가기
+                                수정하기
                             </button>
                         </div>
-                        <div className="bg-[#393939] p-4 rounded text-sm h-40 flex flex-col justify-center gap-6">
-                            <p>[ 스터디명 ]</p>
-                            <p>[ 주제 ]</p>
-                            <p>[ 기간 ]</p>
+                        <div className="bg-[#393939] h-40 p-3 rounded text-sm flex flex-col justify-center gap-2">
+                            <div className='flex flex-col gap-1'>
+                                <label htmlFor='name' className='text-[#4AFFFC]'>[ 스터디명 ]</label>
+                                <input
+                                    type='text'
+                                    id='name'
+                                    name='name'
+                                    value={studyData.studyName}
+                                    onChange={handleStudyChange}
+                                    className='w-full'
+                                />
+                            </div>
+                            <div className='flex flex-col gap-1'>
+                                <label htmlFor='topic' className='text-[#4AFFFC]'>[ 주제 ]</label>
+                                <input
+                                    type='text'
+                                    id='topic'
+                                    name='topic'
+                                    value={studyData.studyTopic}
+                                    onChange={handleStudyChange}
+                                    className='w-full'
+                                />
+                            </div>
+                            <div className='flex flex-col gap-1'>
+                                <label htmlFor='startDate' className='text-[#4AFFFC]'>[ 기간 ]</label>
+                                <div className='flex gap-2'>
+                                    <input
+                                        type='date'
+                                        id='startDate'
+                                        name='startDate'
+                                        value={studyData.studyPeriod.startDate}
+                                        onChange={handleStudyChange}
+                                    />
+                                    ~
+                                    <input
+                                        type='date'
+                                        name='endDate'
+                                        value={studyData.studyPeriod.endDate}
+                                        onChange={handleStudyChange}
+                                    />
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </form>
 
                     {/* Section 2: Recommended Process */}
                     <div>
                         <div className="flex justify-between items-center mb-2">
                             <h2 className="text-2xl font-semibold">추천 프로세스</h2>
                             <button
-                                onClick={createProcess}
+                                onClick={handleCreateProcess}
                                 disabled={isCreateProcessPending}
                                 className={`text-xs px-3 py-1 rounded bg-[#393939]
                                     ${isCreateProcessPending
@@ -121,12 +186,12 @@ const ProcessSetting = () => {
                         </div>
                         <input
                             type='text'
-                            value={recommendProcess}
+                            value={processForm}
                             onChange={(e) => {
-                                setRecommendProcess(e.target.value);
+                                setProcessForm(e.target.value);
                             }}
                             placeholder='스터디 주제를 상세히 입력해주세요.'
-                            className="bg-[#393939] h-60 w-full p-4 pb-50 rounded text-sm placeholder:text-[#A1A1A1]">
+                            className="bg-[#393939] h-60 w-full p-4 pb-50 rounded text-sm placeholder:text-white">
                         </input>
                     </div>
                 </div>

@@ -13,7 +13,7 @@ const Process = () => {
   const { studyId } = useParams<{ studyId: string }>();
 
   const { data: studyData, isLoading: isStudyLoading } = useStudyQuery(studyId ?? '');
-  const { data: processData, isLoading: isProcessLoading } = useProcessQuery(studyId ?? '');
+  const { data: processData = [], isLoading: isProcessLoading } = useProcessQuery(studyId ?? '');
 
   // 전체 프로세스 항목 Refs
   const itemRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
@@ -35,13 +35,19 @@ const Process = () => {
   };
 
 
-  // 데이터 없으면 메인 화면으로 이동
   useEffect(() => {
     if (isStudyLoading || isProcessLoading) return;
 
-    if (!studyData || !processData) {
+    // 스터디 자체가 없으면 메인으로 리다이렉트
+    if (!studyData) {
       navigate('/', { replace: true });
     }
+
+    // 프로세스 데이터가 없으면 상세 설정 페이지로 리다이렉트
+    if (processData && processData.length === 0) {
+      navigate(`/studies/${studyId}/setting`, {replace: true});
+    }
+
   }, [isStudyLoading, isProcessLoading, studyData, processData]);
 
   // 페이지 접속 시 스크롤
@@ -59,7 +65,7 @@ const Process = () => {
 
 
   if (isStudyLoading || isProcessLoading) return <div className='h-screen bg-custom-bg text-white'>로딩 중...</div>
-  if (!studyData || !processData) return null
+  if (!studyData) return null
 
   return (
     <div className="min-h-screen bg-custom-bg text-white flex flex-col items-center">
@@ -85,7 +91,7 @@ const Process = () => {
               </div>
               <div className="flex gap-2 text-sm text-white font-semibold">
                 {studyData.myRole === 'HOST' && (
-                  <button onClick={() => { navigate(`/studies/${studyId}/setting`) }}
+                  <button onClick={() => { navigate(`/studies/${studyId}/setting`, {state: {idEdit: true}}) }}
                     className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70 cursor-pointer">수정하기</button>
                 )}
                 <button onClick={() => { }}
