@@ -14,7 +14,7 @@ const ProcessSetting = () => {
     const { data: studyData, isLoading: isStudyLoading } = useStudyQuery(studyId ?? '');
     const { data: processData, isLoading: isProcessLoading } = useProcessQuery(studyId ?? '');
 
-    const { mutate, isPending: isCreateProcessPending } = useCreateProcessMutation();
+    const { mutate, isPending: isCreateProcessPending } = useCreateProcessMutation(studyId ?? '');
 
     const [studyForm, setStudyForm] = useState({
         name: '',
@@ -74,8 +74,8 @@ const ProcessSetting = () => {
     }
 
     const handleStudyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target;
-        setStudyForm((prev) => ({...prev, [name]: value}));
+        const { name, value } = e.target;
+        setStudyForm((prev) => ({ ...prev, [name]: value }));
     }
 
     const handleCreateProcess = () => {
@@ -121,7 +121,7 @@ const ProcessSetting = () => {
                             <h2 className="text-2xl font-semibold">스터디 소개</h2>
                             <button
                                 className="text-xs font-semibold bg-[#393939] px-4 py-1 rounded hover:opacity-70">
-                                수정하기
+                                {isEditMode ? '수정하기' : '등록하기'}
                             </button>
                         </div>
                         <div className="bg-[#393939] h-40 p-3 rounded text-sm flex flex-col justify-center gap-2">
@@ -176,7 +176,7 @@ const ProcessSetting = () => {
                             <button
                                 onClick={handleCreateProcess}
                                 disabled={isCreateProcessPending}
-                                className={`text-xs px-3 py-1 rounded bg-[#393939]
+                                className={`text-xs px-4 py-1 rounded bg-[#393939]
                                     ${isCreateProcessPending
                                         ? 'opacity-70'
                                         : 'hover:opacity-70 cursor-pointer'}`}
@@ -215,21 +215,22 @@ const ProcessSetting = () => {
 
                     {/* 2. Scheduler Section */}
                     <div className="flex-1 flex flex-col">
-                        <div className="flex font-semibold justify-between items-end mb-1">
-                            <div>
+
+                        <div>
+                            <div className='flex font-semibold justify-between items-end'>
                                 <h2 className="text-2xl">스터디 스케줄러</h2>
-                                <p className="text-xs">~를 눌러서 수정</p>
+                                <button className="text-xs bg-[#393939] px-4 py-1 rounded hover:opacity-70">
+                                    {isEditMode ? '저장하기' : '등록하기'}
+                                </button>
                             </div>
-                            <button className="text-xs bg-[#393939] px-3 py-1 rounded hover:opacity-70">
-                                저장하기
-                            </button>
+                            <p className="text-xs">~를 눌러서 수정</p>
                         </div>
 
                         {/* Table Header */}
-                        <div className="grid grid-cols-17 gap-2 text-center py-2 text-2xl">
+                        <div className="grid grid-cols-20 gap-2 text-center px-1 py-2 text-2xl">
                             <div className="col-span-2 bg-[#393939] flex items-center justify-center rounded ">상태</div>
-                            <div className="col-span-4 bg-[#393939] flex items-center justify-center rounded">날짜</div>
-                            <div className="col-span-6 bg-[#393939] flex items-center justify-center rounded">프로세스</div>
+                            <div className="col-span-6 bg-[#393939] flex items-center justify-center rounded">날짜</div>
+                            <div className="col-span-7 bg-[#393939] flex items-center justify-center rounded">프로세스</div>
                             <div className="col-span-5 bg-[#393939] flex items-center justify-center rounded">메모</div>
                         </div>
 
@@ -244,7 +245,7 @@ const ProcessSetting = () => {
                             `}>
                             {processData.map((process) => (
 
-                                <div key={process.id} className="grid grid-cols-17 gap-2 text-sm h-10 shrink-0">
+                                <div key={process.id} className="grid grid-cols-20 gap-2 px-1 text-sm h-10 shrink-0">
 
                                     {/* Status Badge */}
                                     <div className="col-span-2 bg-[#393939] flex items-center justify-center text-lg rounded">
@@ -258,21 +259,40 @@ const ProcessSetting = () => {
                                     </div>
 
                                     {/* Date */}
-                                    <div className="col-span-4 bg-[#393939] font-semibold flex items-center justify-center rounded">
-                                        {formatDateToDot(process.startDate)} - {formatDateToDot(process.endDate)}
+                                    <div className="col-span-6 bg-[#393939] font-semibold flex gap-1 items-center justify-center rounded">
+                                        <input
+                                            type='date'
+                                            value={process.startDate}
+                                            className='w-[43%]'
+                                        />
+                                        ~
+                                        <input
+                                            type='date'
+                                            value={process.endDate}
+                                            className='w-[43%]'
+                                        />
                                     </div>
 
                                     {/* Process (Track + Title) */}
-                                    <div className="col-span-6 bg-[#393939] font-semibold flex items-center px-4 rounded">
-                                        <span className="text-black text-[10px] px-2 py-0.5 rounded-full mr-2 min-w-fit bg-gradient-to-r from-custom-gradient-blue to-custom-gradient-green">
+                                    <div className="col-span-7 bg-[#393939] font-semibold flex items-center px-2 rounded">
+                                        <label htmlFor={`title${process.id}`} className="text-black text-[10px] px-2 py-0.5 mr-2 min-w-fit rounded-full bg-gradient-to-r from-custom-gradient-blue to-custom-gradient-green">
                                             Track {process.processOrder}
-                                        </span>
-                                        <span className="truncate">{process.title}</span>
+                                        </label>
+                                        <input
+                                            type='text'
+                                            id={`title${process.id}`}
+                                            value={process.title}
+                                            className='truncate'
+                                        />
                                     </div>
 
                                     {/* Memo */}
                                     <div className="col-span-5 bg-[#393939] font-semibold flex items-center px-2 rounded">
-                                        <span className="truncate text-xs">{process.memo}</span>
+                                        <input
+                                            type='text'
+                                            value={process.memo}
+                                            className='truncate max-w-full'
+                                        />
                                     </div>
                                 </div>
                             ))}
