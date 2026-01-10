@@ -48,6 +48,7 @@ const ProcessSetting = () => {
 
     const isEditMode = location.state?.isEdit || (processSourceData && processSourceData.length > 0);
 
+
     // 맨 위 버튼
     const handleTopButton = () => {
         if (isEditMode) {
@@ -141,7 +142,7 @@ const ProcessSetting = () => {
             </div>
 
             {/* Content Section */}
-            <div className="grid grid-cols-12 gap-8 items-start">
+            <div className="grid grid-cols-12 gap-8">
 
                 {/* Left Column */}
                 <div className="col-span-4 bg-[#272727] p-5 rounded-sm flex flex-col gap-8">
@@ -151,7 +152,7 @@ const ProcessSetting = () => {
                         <div className="flex justify-between items-center mb-2">
                             <h2 className="text-2xl font-semibold">스터디 소개</h2>
                             <button
-                                className="text-xs font-semibold bg-[#393939] px-4 py-1 rounded hover:opacity-70">
+                                className="text-xs font-semibold bg-[#393939] px-4 py-1 rounded hover:opacity-70 cursor-pointer">
                                 {isEditMode ? '수정하기' : '등록하기'}
                             </button>
                         </div>
@@ -231,7 +232,7 @@ const ProcessSetting = () => {
                 <div className="col-span-8 bg-[#272727] p-5 rounded-sm flex flex-col gap-10">
 
                     {/* 1. Invite Code Section */}
-                    <div className='font-semibold'>
+                    <div className='font-semibold px-1'>
                         <h2 className="text-2xl mb-2">초대코드</h2>
                         <div className="relative flex gap-4 text-2xl">
                             <div className="flex-4 bg-[#393939] h-12 flex items-center justify-center rounded">
@@ -247,12 +248,12 @@ const ProcessSetting = () => {
                     {/* 2. Scheduler Section */}
                     <div className="flex-1 flex flex-col">
 
-                        <div>
+                        <div className='px-1'>
                             <div className='flex font-semibold justify-between items-end'>
                                 <h2 className="text-2xl">스터디 스케줄러</h2>
                                 <button
                                     onClick={handleUpdateProcess} 
-                                    className="text-xs bg-[#393939] px-4 py-1 rounded hover:opacity-70">
+                                    className="text-xs bg-[#393939] px-4 py-1 rounded hover:opacity-70 cursor-pointer">
                                     {isEditMode ? '저장하기' : '등록하기'}
                                 </button>
                             </div>
@@ -270,7 +271,6 @@ const ProcessSetting = () => {
                         {/* Table Body (Scrollable Area) */}
                         <div className={`overflow-y-auto h-[235px] space-y-2
                                 [&::-webkit-scrollbar]:w-1
-                                hover:[&::-webkit-scrollbar]:w-2
                                 [&::-webkit-scrollbar-track]:bg-transparent
                                 [&::-webkit-scrollbar-thumb]:bg-[#555]
                                 [&::-webkit-scrollbar-thumb]:rounded-full
@@ -342,7 +342,7 @@ const ProcessSetting = () => {
                         {/* Add Button */}
                         <button
                             onClick={handleAddSchedule} 
-                            className="w-full bg-[#393939] hover:opacity-70 h-10 mt-1.5 rounded flex items-center justify-center transition-colors text-4xl shrink-0"
+                            className="w-full bg-[#393939] hover:opacity-70 h-10 mt-1.5 rounded flex items-center justify-center transition-colors text-4xl shrink-0 cursor-pointer"
                         >
                         +
                         </button>
