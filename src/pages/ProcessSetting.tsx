@@ -4,6 +4,7 @@ import { useStudyQuery } from '../hooks/useStudyQuery';
 import { useProcessQuery } from '../hooks/useProcessQuery';
 import { useCreateProcessMutation } from '../hooks/useCreateProcessMutation';
 import { useUpdateStudyMutation } from '../hooks/useUpdateStudyMutation';
+import { useUpdateProcessMutation } from '../hooks/useUpdateProcessMutation';
 
 interface StudyData {
     name: string;
@@ -24,14 +25,14 @@ interface ProcessData {
     status: 'COMPLETED' | 'IN_PROGRESS' | 'NOT_STARTED';
 }
 
-// interface ProcessFormData {
-//     id: number | null;
-//     title: string;
-//     startDate: string;
-//     endDate: string;
-//     memo: string;
-//     assignmentDescription: string;
-// }
+interface ProcessModifiedData {
+    id: number | null;
+    title: string;
+    startDate: string;
+    endDate: string;
+    memo: string;
+    assignmentDescription: string;
+}
 
 const ProcessSetting = () => {
 
@@ -53,6 +54,7 @@ const ProcessSetting = () => {
 
     const { mutate: updateStudyMutate, isPending: isUpdateStudyPending } = useUpdateStudyMutation(studyId ?? '');
     const { mutate: createProcessMutate, isPending: isCreateProcessPending } = useCreateProcessMutation(studyId ?? '');
+    const { mutate: updateProcessMutate, isPending: isUpdateProcessPending } = useUpdateProcessMutation(studyId ?? '');
 
 
     const isEditMode = location.state?.isEdit || (processSourceData && processSourceData.length > 0);
@@ -117,7 +119,7 @@ const ProcessSetting = () => {
             endDate: '',
             durationDays: 0,
             memo: '',
-            assignmentDescription: '',
+            assignmentDescription: '과제 할당하기',
             status: 'NOT_STARTED'
         }
 
@@ -126,7 +128,23 @@ const ProcessSetting = () => {
 
     // 스터디 스케줄러 제출 버튼
     const handleUpdateProcess = () => {
+        if (!processData) return;
 
+        const processSubmitData: ProcessModifiedData[] = processData.map((process) => (
+            {
+                id: process.id,
+                title: process.title,
+                startDate: process.startDate,
+                endDate: process.endDate,
+                memo: process.memo,
+                assignmentDescription: process.assignmentDescription
+            }
+        ))
+
+        const sortedProcessSubmitData = processSubmitData.sort((a, b) => (a.startDate > b.startDate ? 1 : -1 ));
+
+        console.log(sortedProcessSubmitData);
+        updateProcessMutate({ studyId, sortedProcessSubmitData })
     }
 
 
@@ -186,12 +204,12 @@ const ProcessSetting = () => {
                                 className="text-xs font-semibold bg-[#393939] px-4 py-1 rounded hover:opacity-70 cursor-pointer"
                             >
                                 {isUpdateStudyPending
-                                ? isEditMode
-                                    ? '수정 중...'
-                                    : '등록 중...'
-                                : isEditMode
-                                    ? '수정하기'
-                                    : '등록하기'}
+                                    ? isEditMode
+                                        ? '수정 중...'
+                                        : '등록 중...'
+                                    : isEditMode
+                                        ? '수정하기'
+                                        : '등록하기'}
                             </button>
                         </div>
                         <div className="bg-[#393939] h-40 p-3 rounded text-sm flex flex-col justify-center gap-2">
@@ -290,12 +308,20 @@ const ProcessSetting = () => {
                             <div className='flex font-semibold justify-between items-end'>
                                 <h2 className="text-2xl">스터디 스케줄러</h2>
                                 <button
+                                    type='button'
                                     onClick={handleUpdateProcess}
                                     className="text-xs bg-[#393939] px-4 py-1 rounded hover:opacity-70 cursor-pointer">
-                                    {isEditMode ? '저장하기' : '등록하기'}
+                                    {isUpdateProcessPending
+                                    ? isEditMode
+                                        ? '저장 중...'
+                                        : '등록 중...'
+                                    : isEditMode
+                                        ? '저장하기'
+                                        : '등록하기'
+                                    }
                                 </button>
                             </div>
-                            <p className="text-xs">~를 눌러서 수정</p>
+                            <p className="text-xs">프로세스를 눌러 수정</p>
                         </div>
 
                         {/* Table Header */}
