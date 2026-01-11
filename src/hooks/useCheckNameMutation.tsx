@@ -8,8 +8,8 @@ interface Data {
     message: string;
 }
 
-const checkNameApi = async (name: string): Promise<Data> => {
-    const token = useGetTokenFromUrl();
+const checkNameApi = async (token: string, name: string): Promise<Data> => {
+
     const { data } = await axios.get<Data>(import.meta.env.VITE_API_CHECK_NAME,
         {
             headers: { Authorization: `Bearer ${token}` },
@@ -19,8 +19,14 @@ const checkNameApi = async (name: string): Promise<Data> => {
     return data;
 }
 
+interface ApiError {
+    message: string;
+}
+
 export const useCheckNameMutation = () => {
-    return useMutation({
-        mutationFn: checkNameApi,
+    const token = useGetTokenFromUrl();
+    
+    return useMutation<Data, ApiError, string>({
+        mutationFn: (name) => checkNameApi(token, name),
     })
 }

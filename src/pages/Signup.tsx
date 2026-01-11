@@ -9,7 +9,7 @@ export default function Signup() {
 
     const { checkName, isPending: isCheckNameLoading } = useCheckName();
     const { checkCode, isPending: isCheckCodeLoading } = useCheckCode();
-    const { sendUserData, isPending: isSendUserDataLoading } = useSendUserData();
+    const { sendUserData, isSendUserDataPending, isJoinStudyPending } = useSendUserData();
 
     const [name, setName] = useState<string>("");
     const [verified, setVerified] = useState<boolean>(false);
@@ -149,7 +149,7 @@ export default function Signup() {
                                 : 'bg-gray-600 text-gray-400'
                             }`}
                     >
-                        {isSendUserDataLoading ? '가입 중...' : '회원가입 완료'}
+                        {(isSendUserDataPending || isJoinStudyPending) ? '가입 중...' : '회원가입 완료'}
                     </button>
                 </form>
             </div>
