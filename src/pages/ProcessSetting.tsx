@@ -80,7 +80,9 @@ const ProcessSetting = () => {
     }
 
     // 스터디 소개 제출 버튼
-    const handleUpdateStudy = () => {
+    const handleUpdateStudy = (e: React.FocusEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
         const regex = /^[가-힣a-zA-Z0-9\s]+$/;
 
         if (!regex.test(studyData.name) || !regex.test(studyData.topic)) {
@@ -101,7 +103,9 @@ const ProcessSetting = () => {
     }
 
     // 추천 프로세스 제출 버튼
-    const handleCreateProcess = () => {
+    const handleCreateProcess = (e: React.FocusEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
         createProcessMutate({ studyId, processForm });
     }
 
@@ -195,12 +199,12 @@ const ProcessSetting = () => {
                 <div className="col-span-4 bg-[#272727] p-5 rounded-sm flex flex-col gap-8">
 
                     {/* Section 1: Study Intro */}
-                    <form>
+                    <form onSubmit={handleUpdateStudy}>
                         <div className="flex justify-between items-center mb-2">
                             <h2 className="text-2xl font-semibold">스터디 소개</h2>
                             <button
-                                type='button'
-                                onClick={handleUpdateStudy}
+                                type='submit'
+                                disabled={isUpdateStudyPending}
                                 className="text-xs font-semibold bg-[#393939] px-4 py-1 rounded hover:opacity-70 cursor-pointer"
                             >
                                 {isUpdateStudyPending
@@ -258,11 +262,11 @@ const ProcessSetting = () => {
                     </form>
 
                     {/* Section 2: Recommended Process */}
-                    <div>
+                    <form onSubmit={handleCreateProcess}>
                         <div className="flex justify-between items-center mb-2">
                             <h2 className="text-2xl font-semibold">추천 프로세스</h2>
                             <button
-                                onClick={handleCreateProcess}
+                                type='submit'
                                 disabled={isCreateProcessPending}
                                 className={`text-xs px-4 py-1 rounded bg-[#393939]
                                     ${isCreateProcessPending
@@ -281,7 +285,7 @@ const ProcessSetting = () => {
                             placeholder='스터디 주제를 상세히 입력해주세요.'
                             className="bg-[#393939] h-60 w-full p-4 pb-50 rounded text-sm placeholder:text-white">
                         </input>
-                    </div>
+                    </form>
                 </div>
 
                 {/* Right Column (Merged into 1 Box) */}
