@@ -3,6 +3,15 @@ import { replace, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useStudyQuery } from '../hooks/useStudyQuery';
 import { useProcessQuery } from '../hooks/useProcessQuery';
 import { useCreateProcessMutation } from '../hooks/useCreateProcessMutation';
+import { useUpdateStudyMutation } from '../hooks/useUpdateStudyMutation';
+import { useUpdateProcessMutation } from '../hooks/useUpdateProcessMutation';
+
+interface StudyData {
+    name: string;
+    topic: string;
+    startDate: string;
+    endDate: string;
+}
 
 interface ProcessData {
     id: number | null;
@@ -16,14 +25,14 @@ interface ProcessData {
     status: 'COMPLETED' | 'IN_PROGRESS' | 'NOT_STARTED';
 }
 
-// interface ProcessFormData {
-//     id: number | null;
-//     title: string;
-//     startDate: string;
-//     endDate: string;
-//     memo: string;
-//     assignmentDescription: string;
-// }
+interface ProcessModifiedData {
+    id: number | null;
+    title: string;
+    startDate: string;
+    endDate: string;
+    memo: string;
+    assignmentDescription: string;
+}
 
 const ProcessSetting = () => {
 
@@ -31,10 +40,10 @@ const ProcessSetting = () => {
     const location = useLocation();
     const { studyId } = useParams<{ studyId: string }>();
 
-    const { data: studyData, isLoading: isStudyLoading } = useStudyQuery(studyId ?? '');
+    const { data: studySourceData, isLoading: isStudyLoading } = useStudyQuery(studyId ?? '');
     const { data: processSourceData, isLoading: isProcessLoading } = useProcessQuery(studyId ?? '');
 
-    const [studyForm, setStudyForm] = useState({
+    const [studyData, setStudyData] = useState<StudyData>({
         name: '',
         topic: '',
         startDate: '',
@@ -43,10 +52,13 @@ const ProcessSetting = () => {
     const [processForm, setProcessForm] = useState('');
     const [processData, setProcessData] = useState<ProcessData[]>();
 
-    const { mutate, isPending: isCreateProcessPending } = useCreateProcessMutation(studyId ?? '');
+    const { mutate: updateStudyMutate, isPending: isUpdateStudyPending } = useUpdateStudyMutation(studyId ?? '');
+    const { mutate: createProcessMutate, isPending: isCreateProcessPending } = useCreateProcessMutation(studyId ?? '');
+    const { mutate: updateProcessMutate, isPending: isUpdateProcessPending } = useUpdateProcessMutation(studyId ?? '');
 
 
     const isEditMode = location.state?.isEdit || (processSourceData && processSourceData.length > 0);
+
 
     // 맨 위 버튼
     const handleTopButton = () => {
@@ -63,24 +75,37 @@ const ProcessSetting = () => {
 
     const handleStudyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setStudyForm((prev) => ({ ...prev, [name]: value }));
+        setStudyData((prev) => ({ ...prev, [name]: value }));
+        console.log(studyData)
+    }
+
+    // 스터디 소개 제출 버튼
+    const handleUpdateStudy = () => {
+        const regex = /^[가-힣a-zA-Z0-9\s]+$/;
+
+        if (!regex.test(studyData.name) || !regex.test(studyData.topic)) {
+            alert("한글, 영문, 숫자만 가능");
+            return;
+        }
+
+        updateStudyMutate({ studyId, studyData });
+    }
+
+    const handleProcessChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+        const { name, value } = e.target;
+        setProcessData((prev) =>
+        (prev?.map((process, i) =>
+            (i === index ? { ...process, [name]: value } : process)
+        ))
+        );
     }
 
     // 추천 프로세스 제출 버튼
     const handleCreateProcess = () => {
-        mutate({ studyId, processForm });
+        createProcessMutate({ studyId, processForm });
     }
 
-    const handleProcessChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        const {name, value} = e.target;
-        setProcessData((prev) => 
-            (prev?.map((process, i) =>
-                (i === index ? {...process, [name]: value} : process)
-            ))
-        );
-    }
-
-    // 스터디 스케줄러 추가 버튼
+    // 스케줄 추가 버튼
     const handleAddSchedule = () => {
         if (!processData) return;
 
@@ -94,7 +119,7 @@ const ProcessSetting = () => {
             endDate: '',
             durationDays: 0,
             memo: '',
-            assignmentDescription: '',
+            assignmentDescription: '과제 할당하기',
             status: 'NOT_STARTED'
         }
 
@@ -103,7 +128,23 @@ const ProcessSetting = () => {
 
     // 스터디 스케줄러 제출 버튼
     const handleUpdateProcess = () => {
+        if (!processData) return;
 
+        const processSubmitData: ProcessModifiedData[] = processData.map((process) => (
+            {
+                id: process.id,
+                title: process.title,
+                startDate: process.startDate,
+                endDate: process.endDate,
+                memo: process.memo,
+                assignmentDescription: process.assignmentDescription
+            }
+        ))
+
+        const sortedProcessSubmitData = processSubmitData.sort((a, b) => (a.startDate > b.startDate ? 1 : -1 ));
+
+        console.log(sortedProcessSubmitData);
+        updateProcessMutate({ studyId, sortedProcessSubmitData })
     }
 
 
@@ -116,12 +157,19 @@ const ProcessSetting = () => {
         }
     }, [isStudyLoading, isProcessLoading, studyData, processSourceData]);
 
-    // 프로세스 데이터 배열 생성
+    // 데이터 state에 저장
     useEffect(() => {
+        if (!studySourceData) return;
         if (!processSourceData) return;
 
+        setStudyData({
+            name: studySourceData.studyName,
+            topic: studySourceData.studyTopic,
+            startDate: studySourceData.studyPeriod.startDate,
+            endDate: studySourceData.studyPeriod.endDate
+        })
         setProcessData(processSourceData);
-    }, [processSourceData]);
+    }, [studySourceData, processSourceData]);
 
 
     if (isStudyLoading || isProcessLoading) return <div>로딩 중...</div>
@@ -141,7 +189,7 @@ const ProcessSetting = () => {
             </div>
 
             {/* Content Section */}
-            <div className="grid grid-cols-12 gap-8 items-start">
+            <div className="grid grid-cols-12 gap-8">
 
                 {/* Left Column */}
                 <div className="col-span-4 bg-[#272727] p-5 rounded-sm flex flex-col gap-8">
@@ -151,8 +199,17 @@ const ProcessSetting = () => {
                         <div className="flex justify-between items-center mb-2">
                             <h2 className="text-2xl font-semibold">스터디 소개</h2>
                             <button
-                                className="text-xs font-semibold bg-[#393939] px-4 py-1 rounded hover:opacity-70">
-                                {isEditMode ? '수정하기' : '등록하기'}
+                                type='button'
+                                onClick={handleUpdateStudy}
+                                className="text-xs font-semibold bg-[#393939] px-4 py-1 rounded hover:opacity-70 cursor-pointer"
+                            >
+                                {isUpdateStudyPending
+                                    ? isEditMode
+                                        ? '수정 중...'
+                                        : '등록 중...'
+                                    : isEditMode
+                                        ? '수정하기'
+                                        : '등록하기'}
                             </button>
                         </div>
                         <div className="bg-[#393939] h-40 p-3 rounded text-sm flex flex-col justify-center gap-2">
@@ -162,7 +219,7 @@ const ProcessSetting = () => {
                                     type='text'
                                     id='name'
                                     name='name'
-                                    value={studyData.studyName}
+                                    value={studyData.name}
                                     onChange={handleStudyChange}
                                     className='w-full'
                                 />
@@ -173,7 +230,7 @@ const ProcessSetting = () => {
                                     type='text'
                                     id='topic'
                                     name='topic'
-                                    value={studyData.studyTopic}
+                                    value={studyData.topic}
                                     onChange={handleStudyChange}
                                     className='w-full'
                                 />
@@ -185,14 +242,14 @@ const ProcessSetting = () => {
                                         type='date'
                                         id='startDate'
                                         name='startDate'
-                                        value={studyData.studyPeriod.startDate}
+                                        value={studyData.startDate}
                                         onChange={handleStudyChange}
                                     />
                                     ~
                                     <input
                                         type='date'
                                         name='endDate'
-                                        value={studyData.studyPeriod.endDate}
+                                        value={studyData.endDate}
                                         onChange={handleStudyChange}
                                     />
                                 </div>
@@ -231,7 +288,7 @@ const ProcessSetting = () => {
                 <div className="col-span-8 bg-[#272727] p-5 rounded-sm flex flex-col gap-10">
 
                     {/* 1. Invite Code Section */}
-                    <div className='font-semibold'>
+                    <div className='font-semibold px-1'>
                         <h2 className="text-2xl mb-2">초대코드</h2>
                         <div className="relative flex gap-4 text-2xl">
                             <div className="flex-4 bg-[#393939] h-12 flex items-center justify-center rounded">
@@ -247,16 +304,24 @@ const ProcessSetting = () => {
                     {/* 2. Scheduler Section */}
                     <div className="flex-1 flex flex-col">
 
-                        <div>
+                        <div className='px-1'>
                             <div className='flex font-semibold justify-between items-end'>
                                 <h2 className="text-2xl">스터디 스케줄러</h2>
                                 <button
-                                    onClick={handleUpdateProcess} 
-                                    className="text-xs bg-[#393939] px-4 py-1 rounded hover:opacity-70">
-                                    {isEditMode ? '저장하기' : '등록하기'}
+                                    type='button'
+                                    onClick={handleUpdateProcess}
+                                    className="text-xs bg-[#393939] px-4 py-1 rounded hover:opacity-70 cursor-pointer">
+                                    {isUpdateProcessPending
+                                    ? isEditMode
+                                        ? '저장 중...'
+                                        : '등록 중...'
+                                    : isEditMode
+                                        ? '저장하기'
+                                        : '등록하기'
+                                    }
                                 </button>
                             </div>
-                            <p className="text-xs">~를 눌러서 수정</p>
+                            <p className="text-xs">프로세스를 눌러 수정</p>
                         </div>
 
                         {/* Table Header */}
@@ -270,7 +335,6 @@ const ProcessSetting = () => {
                         {/* Table Body (Scrollable Area) */}
                         <div className={`overflow-y-auto h-[235px] space-y-2
                                 [&::-webkit-scrollbar]:w-1
-                                hover:[&::-webkit-scrollbar]:w-2
                                 [&::-webkit-scrollbar-track]:bg-transparent
                                 [&::-webkit-scrollbar-thumb]:bg-[#555]
                                 [&::-webkit-scrollbar-thumb]:rounded-full
@@ -297,7 +361,7 @@ const ProcessSetting = () => {
                                             type='date'
                                             name='startDate'
                                             value={process.startDate}
-                                            onChange={(e) => {handleProcessChange(e, index)}}
+                                            onChange={(e) => { handleProcessChange(e, index) }}
                                             className='w-[43%]'
                                         />
                                         ~
@@ -305,7 +369,7 @@ const ProcessSetting = () => {
                                             type='date'
                                             name='endDate'
                                             value={process.endDate}
-                                            onChange={(e) => {handleProcessChange(e, index)}}
+                                            onChange={(e) => { handleProcessChange(e, index) }}
                                             className='w-[43%]'
                                         />
                                     </div>
@@ -320,7 +384,7 @@ const ProcessSetting = () => {
                                             id={`title${process.id}`}
                                             name='title'
                                             value={process.title}
-                                            onChange={(e) => {handleProcessChange(e, index)}}
+                                            onChange={(e) => { handleProcessChange(e, index) }}
                                             className='truncate'
                                         />
                                     </div>
@@ -331,7 +395,7 @@ const ProcessSetting = () => {
                                             type='text'
                                             name='memo'
                                             value={process.memo}
-                                            onChange={(e) => {handleProcessChange(e, index)}}
+                                            onChange={(e) => { handleProcessChange(e, index) }}
                                             className='truncate max-w-full'
                                         />
                                     </div>
@@ -341,10 +405,10 @@ const ProcessSetting = () => {
 
                         {/* Add Button */}
                         <button
-                            onClick={handleAddSchedule} 
-                            className="w-full bg-[#393939] hover:opacity-70 h-10 mt-1.5 rounded flex items-center justify-center transition-colors text-4xl shrink-0"
+                            onClick={handleAddSchedule}
+                            className="w-full bg-[#393939] hover:opacity-70 h-10 mt-1.5 rounded flex items-center justify-center transition-colors text-4xl shrink-0 cursor-pointer"
                         >
-                        +
+                            +
                         </button>
 
                     </div>

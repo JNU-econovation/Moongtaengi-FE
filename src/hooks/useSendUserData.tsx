@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useSaveToken } from "./useSaveToken";
 import { useSendUserDataMutation } from "./useSendUserDataMutation";
+import { useJoinStudyMutation } from "./useJoinStudyMutation";
 
 interface SendData {
     verified: boolean;
@@ -11,21 +12,29 @@ interface SendData {
 
 export const useSendUserData = () => {
     const navigate = useNavigate();
-    const {saveToken} = useSaveToken();
-    const {mutate, isPending} = useSendUserDataMutation();
+    const { saveToken } = useSaveToken();
+    const { mutate: sendUserDataMutate, isPending: isSendUserDataPending } = useSendUserDataMutation();
+    const { mutate: joinStudyMutate, isPending: isJoinStudyPending } = useJoinStudyMutation();
 
     const sendUserData = ({ verified, codeStatus, name, code }: SendData) => {
         if (!verified) return;
 
         saveToken();
 
-        const userInfo = codeStatus
-            ? { nickname: name, inviteCode: code }
-            : { nickname: name };
-
-        mutate(userInfo, {
+        sendUserDataMutate(name, {
             onSuccess: () => {
-                navigate('/signup/check', {replace: true});
+                console.log('회원가입 성공')
+                if (codeStatus) {
+                    joinStudyMutate(code, {
+                        onSuccess: () => {
+                            console.log('스터디 가입 성공');
+                        },
+                        onError: (error) => {
+                            console.log(error);
+                        }
+                    });
+                }
+                navigate('/signup/check', { replace: true });
             },
             onError: (error) => {
                 console.log(error);
@@ -33,5 +42,5 @@ export const useSendUserData = () => {
         })
     }
 
-    return {sendUserData, isPending};
+    return { sendUserData, isSendUserDataPending, isJoinStudyPending };
 };

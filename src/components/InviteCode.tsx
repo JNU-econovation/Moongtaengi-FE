@@ -2,49 +2,32 @@ import { useState } from "react";
 import { createPortal } from "react-dom"
 import cross from "../assets/icons/cross.svg";
 import { useModalModeStore } from "../stores/useModalModeStore";
-import { getTokenFromSession } from "../utils/getTokenFromSession";
-import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
+import { useJoinStudyMutation } from "../hooks/useJoinStudyMutation";
 
 export const InviteCode = () => {
 
     const { setModalMode } = useModalModeStore();
 
+    const { mutate, isPending } = useJoinStudyMutation();
+
     const [formData, setFormData] = useState("");
+
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData(e.target.value);
     };
 
-    const joinStudyApi = async () => {
-        const token = getTokenFromSession();
-        await axios.post(import.meta.env.VITE_API_JOIN_STUDY, 
-            {
-                inviteCode: formData
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": 'application/json',
-                },
-            }
-        )
-    }
-
-    const {mutate, isPending} = useMutation({
-        mutationFn: joinStudyApi,
-        onSuccess: () => {
-            setModalMode(null);
-        },
-        onError: (error) => {
-            console.log(error);
-        }
-    })
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         console.log('저장된 데이터:', formData);
-        mutate();
+        mutate(formData, {
+            onSuccess: () => {
+                setModalMode(null);
+            },
+            onError: (error) => {
+                console.log(error);
+            }
+        });
     };
 
     return createPortal(
