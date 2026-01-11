@@ -13,7 +13,7 @@ export const useCheckName = () => {
         const regex = /^[가-힣0-9]+$/;
 
         // 닉네임 유효문자 확인
-        if (name.length > 7 || !regex.test(name)) {
+        if (name.length < 2 || name.length > 7 || !regex.test(name)) {
             setVerified(false);
             setNameAlert("닉네임을 확인해주세요");
             return;
