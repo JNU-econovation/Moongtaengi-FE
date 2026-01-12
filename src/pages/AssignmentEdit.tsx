@@ -26,8 +26,8 @@ export const AssignmentEdit = () => {
     }
 
     // 툴바 버튼 스타일 클래스
-    const buttonBaseClass = "px-2 py-1 text-gray-400 hover:text-white text-lg font-serif font-bold transition-colors";
-    const activeClass = "text-white bg-gray-700 rounded";
+    const buttonBaseClass = "px-1 text-xl hover:opacity-70 transition-colors cursor-pointer";
+    const activeClass = "text-black bg-white rounded";
 
     return (
         <div className="flex-1 flex flex-col">
@@ -56,7 +56,7 @@ export const AssignmentEdit = () => {
                         {/* Bold */}
                         <button
                             onClick={() => editor.chain().focus().toggleBold().run()}
-                            className={`${buttonBaseClass} ${editor.isActive('bold') ? activeClass : ''}`}
+                            className={`${buttonBaseClass} ${editor.isActive('bold') ? activeClass : ''} font-bold`}
                         >
                             B
                         </button>
@@ -64,7 +64,7 @@ export const AssignmentEdit = () => {
                         {/* Italic */}
                         <button
                             onClick={() => editor.chain().focus().toggleItalic().run()}
-                            className={`${buttonBaseClass} ${editor.isActive('italic') ? activeClass : ''}`}
+                            className={`${buttonBaseClass} ${editor.isActive('italic') ? activeClass : ''} italic`}
                         >
                             I
                         </button>
@@ -85,18 +85,10 @@ export const AssignmentEdit = () => {
                             T
                         </button>
 
-                        {/* 이미지 (로직 없음, 화면만) */}
-                        <button className={`${buttonBaseClass} border border-gray-500 rounded px-1 ml-1 text-sm`}>
-                            IMG
-                        </button>
-
-                        {/* 구분선 */}
-                        <div className="w-[1px] h-6 bg-gray-600 mx-2"></div>
-
                         {/* H1 */}
                         <button
                             onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                            className={`${buttonBaseClass} ${editor.isActive('heading', { level: 1 }) ? activeClass : ''} text-sm`}
+                            className={`${buttonBaseClass} ${editor.isActive('heading', { level: 1 }) ? activeClass : ''}`}
                         >
                             H1
                         </button>
@@ -104,23 +96,31 @@ export const AssignmentEdit = () => {
                         {/* H2 */}
                         <button
                             onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                            className={`${buttonBaseClass} ${editor.isActive('heading', { level: 2 }) ? activeClass : ''} text-sm`}
+                            className={`${buttonBaseClass} ${editor.isActive('heading', { level: 2 }) ? activeClass : ''}`}
                         >
                             H2
                         </button>
 
-                        {/* 문단 나누는 선 (Horizontal Rule) */}
+                        {/* 문단 구분 선 */}
                         <button
                             onClick={() => editor.chain().focus().setHorizontalRule().run()}
-                            className={`${buttonBaseClass} text-sm`}
+                            className={`${buttonBaseClass}`}
                         >
                             HR
                         </button>
 
+                        {/* 이미지 선택 */}
+                        <button className={`${buttonBaseClass} border border-white rounded px-1 ml-1`}>
+                            IMG
+                        </button>
+
+                        {/* 구분선 */}
+                        <div className="w-[1px] h-full bg-white mx-2"></div>
+
 
                         {/* 파일 임베드 */}
-                        <div className="flex-1 ml-4 text-gray-500 text-sm flex items-center">
-                            <span className="opacity-50">파일을 임베드 하세요(PDF, Google Docs...)</span>
+                        <div className="flex-1 ml-4 text-[#5F5F5F] text-sm flex items-center">
+                            <span>파일을 임베드 하세요(PDF, Google Docs...)</span>
                         </div>
 
                         {/* 등록 버튼 */}
