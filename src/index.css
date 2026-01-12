@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@plugin "@tailwindcss/typography";
+
 /* 400 -> Regular (normal)
 기본은 400을 건너뛰고 500부터 등록 (Medium) */
 @font-face {
