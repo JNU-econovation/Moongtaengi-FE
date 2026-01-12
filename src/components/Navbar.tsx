@@ -1,5 +1,5 @@
 import { useNavigate, type NavigateFunction } from 'react-router-dom'
-import downArrow from "../assets/icons/down-arrow.svg";
+import downArrow from "../assets/icons/common/down-arrow.svg";
 import { getTokenFromSession } from '../utils/getTokenFromSession';
 import axios from 'axios';
 import { useMutation, useQuery } from '@tanstack/react-query';

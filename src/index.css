@@ -2,6 +2,7 @@
 
 @plugin "@tailwindcss/typography";
 
+
 /* 400 -> Regular (normal)
 기본은 400을 건너뛰고 500부터 등록 (Medium) */
 @font-face {
@@ -43,4 +44,23 @@
 @theme {
 	--color-custom-gradient-blue: #03C4FF;
 	--color-custom-gradient-green: #2BFFB8;
+}
+
+
+/* globals.css 또는 index.css */
+.ProseMirror h1 {
+  @apply text-3xl font-bold my-4; /* H1 스타일 정의 */
+}
+
+.ProseMirror h2 {
+  @apply text-2xl font-bold my-3; /* H2 스타일 정의 */
+}
+
+.ProseMirror hr {
+  @apply my-4 border-t-2 border-gray-300; /* 구분선 스타일 보강 */
+}
+
+/* 에디터 포커스 시 외곽선 제거 (선택사항) */
+.ProseMirror:focus {
+  outline: none;
 }
