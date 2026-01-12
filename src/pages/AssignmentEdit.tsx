@@ -11,8 +11,12 @@ import underlineIcon from "../assets/icons/assignmentEdit/underlineIcon.svg";
 import strikeIcon from "../assets/icons/assignmentEdit/strikeIcon.svg";
 import imageIcon from "../assets/icons/assignmentEdit/imageIcon.svg";
 import fileIcon from "../assets/icons/assignmentEdit/fileIcon.svg";
+import { useUploadFile } from '../hooks/useUploadFile';
+
 
 export const AssignmentEdit = () => {
+    const uploadFile = useUploadFile();
+
     const [_, forceUpdate] = useState(0);
 
     const editor = useEditor({
@@ -36,23 +40,30 @@ export const AssignmentEdit = () => {
         return null;
     }
 
-    const handleDropImage = (e: React.DragEvent) => {
+    const handleDropImage = async (e: React.DragEvent) => {
         e.preventDefault();
 
         const file = e.dataTransfer.files[0];
         if (!file) return;
-
-        const url = URL.createObjectURL(file);
 
         const {clientX, clientY} = e;
         const pos = editor.view.posAtCoords({left: clientX, top: clientY});
 
         if (!pos) return;
 
-        editor.chain().focus().insertContentAt(pos.pos, {
-            type: "image",
-            attrs: {src: url},
-        }).run();
+        try {
+            const url = await uploadFile(file);
+        
+            if(url) {
+                editor.chain().focus().insertContentAt(pos.pos, {
+                    type: "image",
+                    attrs: {src: url}
+                }).run();
+            }
+        } catch (error) {
+            console.error(error);
+            alert('이미지 업로드 오류. 다시 시도해 주세요');
+        }
     }
 
     const handleLog = () => {
