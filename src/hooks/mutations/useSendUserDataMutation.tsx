@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios";
-import { getTokenFromSession } from "../utils/getTokenFromSession";
+import { getTokenFromSession } from "../../utils/getTokenFromSession";
 
 const sendUserDataApi = async (userInfo: string) => {
     const token = getTokenFromSession();

@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query"
-import { getTokenFromSession } from "../utils/getTokenFromSession";
+import { getTokenFromSession } from "../../utils/getTokenFromSession";
 import axios from "axios";
 
 const joinStudyApi = async (formData: string) => {

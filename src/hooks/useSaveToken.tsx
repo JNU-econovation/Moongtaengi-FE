@@ -1,4 +1,3 @@
-
 import { useGetTokenFromUrl } from "./useGetTokenFromUrl";
 
 export const useSaveToken = () => {

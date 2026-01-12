@@ -1,4 +1,4 @@
-import { useCheckNameMutation } from "./useCheckNameMutation";
+import { useCheckNameMutation } from "./mutations/useCheckNameMutation";
 
 interface CheckName {
     name: string;

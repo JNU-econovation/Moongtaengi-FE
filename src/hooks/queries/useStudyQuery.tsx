@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getTokenFromSession } from "../utils/getTokenFromSession";
+import { getTokenFromSession } from "../../utils/getTokenFromSession";
 import { useQuery } from "@tanstack/react-query";
 
 interface StudyItem {

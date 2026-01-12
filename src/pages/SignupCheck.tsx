@@ -1,5 +1,5 @@
 import signupCheck from '../assets/signup/signup-check.png'
-import { replace, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const SignupCheck = () => {
 

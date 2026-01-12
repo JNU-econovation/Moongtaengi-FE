@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
-import { getPresignedUrlApi } from "../utils/getPresignedUrlApi"
-import { uploadFileToS3Api } from "../utils/uploadFileToS3Api";
+import { getPresignedUrlApi } from "../utils/api/getPresignedUrlApi"
+import { uploadFileToS3Api } from "../utils/api/uploadFileToS3Api";
 
 export const useUploadFile = () => {
     const { studyId, processId } = useParams<"studyId" | "processId">();

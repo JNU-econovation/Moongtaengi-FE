@@ -3,8 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import processMoong from '../assets/process/process-moong.png';
 import Navbar from '../components/Navbar.tsx';
 import { formatDateToWord } from '../utils/formatDateToWord.tsx';
-import { useStudyQuery } from '../hooks/useStudyQuery.tsx';
-import { useProcessQuery } from '../hooks/useProcessQuery.tsx';
+import { useStudyQuery } from '../hooks/queries/useStudyQuery.tsx';
+import { useProcessQuery } from '../hooks/queries/useProcessQuery.tsx';
 
 const Process = () => {
 

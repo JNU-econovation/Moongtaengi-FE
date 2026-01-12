@@ -1,4 +1,4 @@
-import { getTokenFromSession } from "./getTokenFromSession";
+import { getTokenFromSession } from "../getTokenFromSession";
 import axios from "axios";
 
 interface PresignedUrlParams {

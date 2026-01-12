@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
-import { replace, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useStudyQuery } from '../hooks/useStudyQuery';
-import { useProcessQuery } from '../hooks/useProcessQuery';
-import { useCreateProcessMutation } from '../hooks/useCreateProcessMutation';
-import { useUpdateStudyMutation } from '../hooks/useUpdateStudyMutation';
-import { useUpdateProcessMutation } from '../hooks/useUpdateProcessMutation';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useStudyQuery } from '../hooks/queries/useStudyQuery';
+import { useProcessQuery } from '../hooks/queries/useProcessQuery';
+import { useCreateProcessMutation } from '../hooks/mutations/useCreateProcessMutation';
+import { useUpdateStudyMutation } from '../hooks/mutations/useUpdateStudyMutation';
+import { useUpdateProcessMutation } from '../hooks/mutations/useUpdateProcessMutation';
 
 interface StudyData {
     name: string;

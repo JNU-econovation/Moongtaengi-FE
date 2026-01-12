@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useGetTokenFromUrl } from "./useGetTokenFromUrl";
+import { useGetTokenFromUrl } from "../useGetTokenFromUrl";
 import { useMutation } from "@tanstack/react-query";
 
 const checkCodeApi = async (code: string) => {

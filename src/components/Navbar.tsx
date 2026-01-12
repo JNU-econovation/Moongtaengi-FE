@@ -2,7 +2,7 @@ import { useNavigate, type NavigateFunction } from 'react-router-dom'
 import downArrow from "../assets/icons/common/down-arrow.svg";
 import { getTokenFromSession } from '../utils/getTokenFromSession';
 import axios from 'axios';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../stores/useAuthStore';
 import { useModalModeStore } from '../stores/useModalModeStore';
 import { useEffect, useRef, useState } from 'react';

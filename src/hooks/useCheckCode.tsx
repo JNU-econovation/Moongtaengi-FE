@@ -1,4 +1,4 @@
-import { useCheckCodeMutation } from "./useCheckCodeMutation";
+import { useCheckCodeMutation } from "./mutations/useCheckCodeMutation";
 
 interface CheckCode {
     code: string;

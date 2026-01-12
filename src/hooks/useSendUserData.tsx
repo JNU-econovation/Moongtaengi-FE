@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useSaveToken } from "./useSaveToken";
-import { useSendUserDataMutation } from "./useSendUserDataMutation";
-import { useJoinStudyMutation } from "./useJoinStudyMutation";
+import { useSendUserDataMutation } from "./mutations/useSendUserDataMutation";
+import { useJoinStudyMutation } from "./mutations/useJoinStudyMutation";
 
 interface SendData {
     verified: boolean;

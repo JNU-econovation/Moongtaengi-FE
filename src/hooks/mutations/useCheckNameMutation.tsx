@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
-import { useGetTokenFromUrl } from "./useGetTokenFromUrl";
+import { useGetTokenFromUrl } from "../useGetTokenFromUrl";
 
 interface Data {
     nickname: string;
