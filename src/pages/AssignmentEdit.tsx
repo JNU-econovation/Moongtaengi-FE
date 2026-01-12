@@ -1,5 +1,6 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import Image from '@tiptap/extension-image'
 import { Markdown } from 'tiptap-markdown';
 import { useState } from 'react';
 import downArrow from "../assets/icons/common/down-arrow.svg";
@@ -10,14 +11,19 @@ import underlineIcon from "../assets/icons/assignmentEdit/underlineIcon.svg";
 import strikeIcon from "../assets/icons/assignmentEdit/strikeIcon.svg";
 import imageIcon from "../assets/icons/assignmentEdit/imageIcon.svg";
 import fileIcon from "../assets/icons/assignmentEdit/fileIcon.svg";
+import { useUploadFile } from '../hooks/useUploadFile';
+
 
 export const AssignmentEdit = () => {
+    const uploadFile = useUploadFile();
+
     const [_, forceUpdate] = useState(0);
 
     const editor = useEditor({
         extensions: [
             StarterKit,
             Markdown,
+            Image,
         ],
         content: '',
         editorProps: {
@@ -34,11 +40,37 @@ export const AssignmentEdit = () => {
         return null;
     }
 
+    const handleDropImage = async (e: React.DragEvent) => {
+        e.preventDefault();
+
+        const file = e.dataTransfer.files[0];
+        if (!file) return;
+
+        const {clientX, clientY} = e;
+        const pos = editor.view.posAtCoords({left: clientX, top: clientY});
+
+        if (!pos) return;
+
+        try {
+            const url = await uploadFile(file);
+        
+            if(url) {
+                editor.chain().focus().insertContentAt(pos.pos, {
+                    type: "image",
+                    attrs: {src: url}
+                }).run();
+            }
+        } catch (error) {
+            console.error(error);
+            alert('이미지 업로드 오류. 다시 시도해 주세요');
+        }
+    }
+
     const handleLog = () => {
         console.log(editor.storage.markdown.getMarkdown());
     }
 
-    
+
     // 툴바 버튼 스타일 클래스
     const buttonBaseClass = "flex items-center justify-center hover:opacity-70 transition-colors cursor-pointer";
     const activeClass = "bg-white py-1 rounded";
@@ -60,7 +92,10 @@ export const AssignmentEdit = () => {
                 <div className="w-full max-w-4xl h-130 overflow-hidden flex flex-col gap-2">
 
                     {/* 에디터 본문 */}
-                    <div className="flex-1 overflow-y-auto bg-[#272727] p-6 rounded-md
+                    <div
+                        onDrop={(e) => handleDropImage(e)}
+                        onDragOver={(e) => e.preventDefault()}
+                        className="flex-1 overflow-y-auto bg-[#272727] p-6 rounded-md
                         [&::-webkit-scrollbar]:w-1
                         hover:[&::-webkit-scrollbar]:w-2
                         [&::-webkit-scrollbar-track]:bg-transparent
