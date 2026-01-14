@@ -78,7 +78,7 @@ export const AssignmentEdit = () => {
     return (
         <div className="flex-1 flex flex-col">
             {/* 뒤로가기, 댓글  */}
-            <div className='relative w-full h-24 flex items-center mb-10'>
+            <div className='relative w-full h-24 flex items-center md:mb-2 2xl:mb-10'>
                 <button className="absolute left-8 w-10 h-10 rounded-full bg-[#272727] flex items-center justify-center hover:opacity-70">
                     <img src={downArrow} className='invert rotate-90 w-[40%]' />
                 </button>
@@ -88,7 +88,7 @@ export const AssignmentEdit = () => {
             </div>
 
             {/* 에디터 영역 컨테이너 */}
-            <div className="flex-1 flex items-center justify-center p-4">
+            <div className="flex-1 flex items-center justify-center md:scale-95 2xl:scale-100">
                 <div className="w-full max-w-4xl h-130 overflow-hidden flex flex-col gap-2">
 
                     {/* 에디터 본문 */}

@@ -2,8 +2,8 @@ import { getTokenFromSession } from "../getTokenFromSession";
 import axios from "axios";
 
 interface PresignedUrlParams {
-    studyId: string;
-    processId: string;
+    numStudyId: number;
+    numProcessId: number;
     fileName: string;
     fileSize: number;
     contentType: string;
@@ -16,13 +16,13 @@ interface PresignedUrlResponse {
     expiresIn: number;
 }
 
-export const getPresignedUrlApi = async ({ studyId, processId, fileName, fileSize, contentType }: PresignedUrlParams): Promise<PresignedUrlResponse> => {
+export const getPresignedUrlApi = async ({ numStudyId, numProcessId, fileName, fileSize, contentType }: PresignedUrlParams): Promise<PresignedUrlResponse> => {
     const token = getTokenFromSession();
 
     const { data } = await axios.post<PresignedUrlResponse>(import.meta.env.VITE_API_PRESIGNED_URL,
         {
-            studyId: studyId,
-            processId: processId,
+            studyId: numStudyId,
+            processId: numProcessId,
             fileName: fileName,
             fileSize: fileSize,
             contentType: contentType
