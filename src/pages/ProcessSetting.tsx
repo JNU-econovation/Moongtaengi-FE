@@ -109,7 +109,7 @@ const ProcessSetting = () => {
         createProcessMutate({ studyId, processForm });
     }
 
-    // 스케줄 추가 버튼
+    // 스케줄 테이블 행 추가 버튼
     const handleAddSchedule = () => {
         if (!processData) return;
 
@@ -130,6 +130,13 @@ const ProcessSetting = () => {
         setProcessData((prev) => [...prev, newSchdule]);
     }
 
+    // 스케줄 테이블 행 제거 버튼
+    const handleDeleteSchedule = (processOrder: number) => {
+        if (!processData) return;
+
+        setProcessData((prev) => prev?.filter((process) => (process.processOrder !== processOrder)));
+    }
+
     // 스터디 스케줄러 제출 버튼
     const handleUpdateProcess = () => {
         if (!processData) return;
@@ -145,14 +152,14 @@ const ProcessSetting = () => {
             }
         ))
 
-        const sortedProcessSubmitData = processSubmitData.sort((a, b) => (a.startDate > b.startDate ? 1 : -1 ));
+        const sortedProcessSubmitData = processSubmitData.sort((a, b) => (a.startDate > b.startDate ? 1 : -1));
 
         console.log(sortedProcessSubmitData);
         updateProcessMutate({ studyId, sortedProcessSubmitData })
     }
 
 
-    // 데이터 없으면 메인 화면으로 이동
+    // 서버 데이터 없으면 메인 화면으로 이동
     useEffect(() => {
         if (isStudyLoading || isProcessLoading) return;
 
@@ -161,7 +168,7 @@ const ProcessSetting = () => {
         }
     }, [isStudyLoading, isProcessLoading, studyData, processSourceData]);
 
-    // 데이터 state에 저장
+    // 서버 데이터 state에 저장
     useEffect(() => {
         if (!studySourceData) return;
         if (!processSourceData) return;
@@ -292,7 +299,7 @@ const ProcessSetting = () => {
                 <div className="col-span-8 bg-[#272727] p-5 rounded-sm flex flex-col gap-10">
 
                     {/* 1. Invite Code Section */}
-                    <div className='font-semibold px-1'>
+                    <div className='font-semibold px-1 pr-2'>
                         <h2 className="text-2xl mb-2">초대코드</h2>
                         <div className="relative flex gap-4 text-2xl">
                             <div className="flex-4 bg-[#393939] h-12 flex items-center justify-center rounded">
@@ -308,7 +315,7 @@ const ProcessSetting = () => {
                     {/* 2. Scheduler Section */}
                     <div className="flex-1 flex flex-col">
 
-                        <div className='px-1'>
+                        <div className='px-1 pr-2'>
                             <div className='flex font-semibold justify-between items-end'>
                                 <h2 className="text-2xl">스터디 스케줄러</h2>
                                 <button
@@ -316,12 +323,12 @@ const ProcessSetting = () => {
                                     onClick={handleUpdateProcess}
                                     className="text-xs bg-[#393939] px-4 py-1 rounded hover:opacity-70 cursor-pointer">
                                     {isUpdateProcessPending
-                                    ? isEditMode
-                                        ? '저장 중...'
-                                        : '등록 중...'
-                                    : isEditMode
-                                        ? '저장하기'
-                                        : '등록하기'
+                                        ? isEditMode
+                                            ? '저장 중...'
+                                            : '등록 중...'
+                                        : isEditMode
+                                            ? '저장하기'
+                                            : '등록하기'
                                     }
                                 </button>
                             </div>
@@ -329,11 +336,12 @@ const ProcessSetting = () => {
                         </div>
 
                         {/* Table Header */}
-                        <div className="grid grid-cols-20 gap-2 text-center px-1 py-2 text-2xl">
+                        <div className="grid grid-cols-21 gap-2 text-center px-1 pr-2 py-2 h-13 text-2xl">
                             <div className="col-span-2 bg-[#393939] flex items-center justify-center rounded ">상태</div>
                             <div className="col-span-6 bg-[#393939] flex items-center justify-center rounded">날짜</div>
                             <div className="col-span-7 bg-[#393939] flex items-center justify-center rounded">프로세스</div>
                             <div className="col-span-5 bg-[#393939] flex items-center justify-center rounded">메모</div>
+                            <div className="col-span-1 bg-[#393939] flex items-center justify-center rounded"></div>
                         </div>
 
                         {/* Table Body (Scrollable Area) */}
@@ -346,7 +354,7 @@ const ProcessSetting = () => {
                             `}>
                             {processData?.map((process, index) => (
 
-                                <div key={process.processOrder} className="grid grid-cols-20 gap-2 px-1 text-sm h-10 shrink-0">
+                                <div key={process.processOrder} className="grid grid-cols-21 gap-2 px-1 text-sm h-10 shrink-0">
 
                                     {/* Status Badge */}
                                     <div className="col-span-2 bg-[#393939] flex items-center justify-center text-lg rounded">
@@ -381,7 +389,7 @@ const ProcessSetting = () => {
                                     {/* Process (Track + Title) */}
                                     <div className="col-span-7 bg-[#393939] font-semibold flex items-center px-2 rounded">
                                         <label htmlFor={`title${process.id}`} className="text-black text-[10px] px-2 py-0.5 mr-2 min-w-fit rounded-full bg-gradient-to-r from-custom-gradient-blue to-custom-gradient-green">
-                                            Track {process.processOrder}
+                                            Track {index}
                                         </label>
                                         <input
                                             type='text'
@@ -402,6 +410,16 @@ const ProcessSetting = () => {
                                             onChange={(e) => { handleProcessChange(e, index) }}
                                             className='truncate max-w-full'
                                         />
+                                    </div>
+
+                                    {/* Delete */}
+                                    <div className="col-span-1 bg-[#393939] font-semibold text-2xl flex items-center justify-center rounded hover:opacity-70">
+                                        <button
+                                            onClick={() => {handleDeleteSchedule(process.processOrder)}}
+                                            className='w-full h-full cursor-pointer'
+                                        >
+                                            -
+                                        </button>
                                     </div>
                                 </div>
                             ))}
