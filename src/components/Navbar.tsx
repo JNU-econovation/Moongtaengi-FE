@@ -197,7 +197,7 @@ interface RightProps {
     logout: () => boolean;
     notificationMode: boolean;
     setNotificationMode: (arg: boolean) => void;
-    dropdownRef: React.RefObject<HTMLDivElement>;
+    dropdownRef: React.RefObject<HTMLDivElement | null>;
     navigate: NavigateFunction;
 }
 
