@@ -26,12 +26,14 @@ export default function Navbar() {
     const { isLogin, setIsLogin, logout } = useAuthStore();
 
     const [myStudyMode, setMyStudyMode] = useState<boolean>(false);
-    const [myNotificationMode, setNotificationMode] = useState<boolean>(false);
+    const [notificationMode, setNotificationMode] = useState<boolean>(false);
 
     const [studyMode, setStudyMode] = useState<StudyMenu>('operating');
 
+    // 스터디 생성 or 초대코드 입력
     const { setModalMode } = useModalModeStore();
 
+    // 다른 곳 클릭 시 나의 스터디 or 새로운 알림 닫기 위한 ref
     const dropdownRef = useRef<HTMLDivElement>(null);
 
 
@@ -101,7 +103,8 @@ export default function Navbar() {
                 {/* Menu Items */}
                 <div className="hidden md:flex gap-3">
                     <div ref={dropdownRef}
-                        className='relative group'>
+                        className='relative group'
+                    >
                         <button className="flex items-center px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
                             onClick={() => {
                                 !myStudyMode ? setMyStudyMode(true) : setMyStudyMode(false)
@@ -182,7 +185,7 @@ export default function Navbar() {
 
             {/* Right Side */}
             <div className="flex items-center gap-3 mr-10">
-                <RightMenu isLogin={isLogin} logout={logout} navigate={navigate} />
+                <RightMenu isLogin={isLogin} logout={logout} notificationMode={notificationMode} setNotificationMode={setNotificationMode} dropdownRef={dropdownRef} navigate={navigate} />
             </div>
 
         </nav>
@@ -192,10 +195,13 @@ export default function Navbar() {
 interface RightProps {
     isLogin: boolean;
     logout: () => boolean;
+    notificationMode: boolean;
+    setNotificationMode: (arg: boolean) => void;
+    dropdownRef: React.RefObject<HTMLDivElement>;
     navigate: NavigateFunction;
 }
 
-const RightMenu = ({ isLogin, logout, navigate }: RightProps) => {
+const RightMenu = ({ isLogin, logout, notificationMode, setNotificationMode, dropdownRef, navigate }: RightProps) => {
     if (!isLogin) {
         return (
             <button className="px-3 py-1.5 text-sm text-black bg-white rounded-full hover:opacity-80 transition cursor-pointer"
@@ -207,9 +213,24 @@ const RightMenu = ({ isLogin, logout, navigate }: RightProps) => {
 
     return (
         <>
-            <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
-                새로운 알림
-            </button>
+            <div
+                ref={dropdownRef}
+                className='relative group'
+            >
+                <button
+                    onClick={() => {
+                        !notificationMode ? setNotificationMode(true) : setNotificationMode(false);
+                    }}
+                    className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
+                    새로운 알림
+                </button>
+
+                {notificationMode && (
+                    <div className='absolute flex top-10 left-0 w-43 h-40 bg-[#2C2C2C]/80 text-white text-[12px] border border-gray-600 rounded-xl overflow-hidden z-50'>
+                        알림 목록
+                    </div>
+                )}
+            </div>
             <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
                 onClick={() => { logout() && navigate('/', { replace: true }); }}>
                 로그아웃
