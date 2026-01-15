@@ -135,7 +135,7 @@ export const AssignmentEdit = () => {
                 className='hidden'
             />
 
-            {/* 뒤로가기, 댓글  */}
+            {/* 뒤로가기, 댓글 */}
             <div className='relative w-full h-24 flex items-center md:mb-2 2xl:mb-10'>
                 <button
                     onClick={() => { navigate(`/studies/${studyId}/processes/${processId}/assignments/${assignmentId}`) }}

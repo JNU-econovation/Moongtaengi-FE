@@ -37,7 +37,7 @@ export default function Navbar() {
     const dropdownStudyRef = useRef<HTMLDivElement>(null);
     const dropdownNotiRef = useRef<HTMLDivElement>(null);
 
-    
+
     const studyListApi = async (arg: string) => {
         const token = getTokenFromSession();
 
@@ -110,9 +110,7 @@ export default function Navbar() {
                         className='relative group'
                     >
                         <button className="flex items-center px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
-                            onClick={() => {
-                                !myStudyMode ? setMyStudyMode(true) : setMyStudyMode(false)
-                            }}>
+                            onClick={() => { setMyStudyMode(!myStudyMode) }}>
                             나의 스터디
                             <img src={downArrow}
                                 className={`w-3.5 ml-1.5 mt-0.5 invert ${myStudyMode && 'rotate-180'}`} />
@@ -222,9 +220,7 @@ const RightMenu = ({ isLogin, logout, notificationMode, setNotificationMode, dro
                 className='relative group'
             >
                 <button
-                    onClick={() => {
-                        !notificationMode ? setNotificationMode(true) : setNotificationMode(false);
-                    }}
+                    onClick={() => { setNotificationMode(!notificationMode) }}
                     className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
                     새로운 알림
                 </button>
