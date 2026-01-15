@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createPortal } from "react-dom"
-import cross from "../assets/icons/cross.svg";
+import cross from "../assets/icons/common/cross.svg";
 import { useModalModeStore } from "../stores/useModalModeStore";
 import { useJoinStudyMutation } from "../hooks/mutations/useJoinStudyMutation";
 

@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom"
-import assignmentBg from '../assets/Remove tool edits 1.png'
+import heroBg from '../assets/images/assignment/hero-bg.png'
+import heroMoong from "../assets/images/assignment/hero-moong.png"
 import downArrow from "../assets/icons/common/down-arrow.svg";
 import hamburgerBar from "../assets/icons/assignmentEdit/hamburgerBarIcon.svg";
-import studyMoong from "../assets/assignment/Layer 1 1.png"
 
 export const Assignment = () => {
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ export const Assignment = () => {
 
             <div className="absolute inset-0 z-0">
                 <img
-                    src={assignmentBg}
+                    src={heroBg}
                     className="w-full h-full object-cover"
                     style={{
                         WebkitMaskImage: `
@@ -77,7 +77,7 @@ export const Assignment = () => {
                     <div className="flex-1 flex justify-end">
                         <div className="w-100">
                             <img
-                                src={studyMoong}
+                                src={heroMoong}
                                 className="w-full h-full object-contain"
                             />
                         </div>

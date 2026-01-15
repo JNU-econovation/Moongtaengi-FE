@@ -7,7 +7,7 @@ import { useAuthStore } from "../stores/useAuthStore";
 const Main = () => {
 
     const { isLogin } = useAuthStore();
-    const [isStudy, setIsStudy] = useState<boolean>(true);
+    const [isStudy] = useState<boolean>(true);
 
     return (
         <>

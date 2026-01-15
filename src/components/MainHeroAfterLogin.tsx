@@ -1,8 +1,8 @@
-import mainBg from "../assets/main/main-bg.png";
-import mainMoongs from "../assets/main/main-moongs.png";
+import mainBg from "../assets/images/main/main-bg.png";
+import mainMoongs from "../assets/images/main/main-moongs.png";
 
-import mainMoongCompB from "../assets/main/main-moong-comp-b.png";
-import mainProfile from "../assets/main/main-profile.png";
+import heroBgAfter from "../assets/images/main/hero-bg-after.png";
+import heroProfile from "../assets/images/main/hero-profile.png";
 import MainButton from "./MainButton";
 
 interface HeroProps {
@@ -23,7 +23,7 @@ export default function MainHeroAfterLogin({ isLogin, isStudy }: HeroProps) {
                 </h2>
 
                 <div className="flex items-center mb-10">
-                    <img src={mainProfile} className="w-14 h-14 rounded-xl mr-6 object-cover" alt="study thumbnail" />
+                    <img src={heroProfile} className="w-14 h-14 rounded-xl mr-6 object-cover" alt="study thumbnail" />
                     <div className="flex flex-col">
                         <span className="font-semibold">퍼스트커밋: 사용자 시나리오 작성</span>
                         <span className="text-sm text-white/70">제출까지 18시간 남았어요!</span>
@@ -51,7 +51,7 @@ export default function MainHeroAfterLogin({ isLogin, isStudy }: HeroProps) {
             {/* Right: Character Area */}
             <div className="absolute inset-0 static flex-1">
                 <div className="relative md:w-[110%] 2xl:w-full h-full flex items-center justify-center">
-                    <img src={mainMoongCompB} className="absolute w-full h-full mr-60"></img>
+                    <img src={heroBgAfter} className="absolute w-full h-full mr-60"></img>
 
                     {/* <img src={mainBg} className="absolute w-full h-full mr-40 object-cover"></img>
                     <img src={mainMoongs} className="absolute md:right-48 2xl:right-70 z-10 md:w-100 2xl:w-130 md:h-100 2xl:h-130 flex items-center justify-center"></img>

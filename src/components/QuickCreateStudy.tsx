@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createPortal } from "react-dom"
-import cross from "../assets/icons/cross.svg";
+import cross from "../assets/icons/common/cross.svg";
 import { getTokenFromSession } from "../utils/getTokenFromSession";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

@@ -1,7 +1,7 @@
-import mainBg from "../assets/main/main-bg.png";
-import mainMoong from "../assets/main/main-moong.png";
+import mainBg from "../assets/images/main/main-bg.png";
+import mainMoong from "../assets/images/main/main-moong.png";
 
-import mainMoongCompA from "../assets/main/main-moong-comp-a.png";
+import heroBgBefore from "../assets/images/main/hero-bg-before.png";
 import MainButton from "./MainButton";
 
 
@@ -32,7 +32,7 @@ export default function MainHeroBeforeLogin({ isLogin, isStudy }: HeroProps) {
             {/* Right: Character Area */}
             <div className="absolute inset-0 static flex-1">
                 <div className="relative md:w-[110%] 2xl:w-full h-full flex items-center justify-center">
-                    <img src={mainMoongCompA} className="absolute w-full h-full mr-60"></img>
+                    <img src={heroBgBefore} className="absolute w-full h-full mr-60"></img>
                 </div>
             </div>
 

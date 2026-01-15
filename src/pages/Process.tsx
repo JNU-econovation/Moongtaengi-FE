@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import processMoong from '../assets/process/process-moong.png';
+import cardPrimaryMoong from '../assets/images/process/card-primary-moong.png';
 import Navbar from '../components/Navbar.tsx';
 import { formatDateToWord } from '../utils/formatDateToWord.tsx';
 import { useStudyQuery } from '../hooks/queries/useStudyQuery.tsx';
@@ -120,7 +120,7 @@ const Process = () => {
                     </div>
 
                     <div className='flex items-end justify-center absolute top-10 right-1 bg-white rounded-2xl w-50 h-50 '>
-                      <img src={processMoong} className='w-[90%]' />
+                      <img src={cardPrimaryMoong} className='w-[90%]' />
                     </div>
                   </div>
 
