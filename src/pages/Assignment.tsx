@@ -1,17 +1,99 @@
 import { useNavigate, useParams } from "react-router-dom"
+import assignmentBg from '../assets/Remove tool edits 1.png'
+import downArrow from "../assets/icons/common/down-arrow.svg";
+import hamburgerBar from "../assets/icons/assignmentEdit/hamburgerBarIcon.svg";
+import studyMoong from "../assets/assignment/Layer 1 1.png"
 
 export const Assignment = () => {
     const navigate = useNavigate();
 
-    const {studyId, processId} = useParams<"studyId" | "processId">();
-    const assignmentId: number = 1;
+    const { studyId, processId, assignmentId } = useParams<"studyId" | "processId"| "assignmentId">();
 
     return (
-        <button 
-            onClick={() => {navigate(`/studies/${studyId}/processes/${processId}/assignments/${assignmentId}/edit`)}}
-            className="bg-white text-black"
-        >
-            스터디 과제 작성하기
-        </button>
+        <div className="relative w-full h-[calc(100vh-100px)] overflow-hidden">
+
+            <div className="absolute inset-0 z-0">
+                <img
+                    src={assignmentBg}
+                    className="w-full h-full object-cover"
+                    style={{
+                        WebkitMaskImage: `
+                            linear-gradient(to top, black 60%, transparent 100%),
+                            linear-gradient(to bottom, black 60%, transparent 100%),
+                            linear-gradient(to left, black 70%, transparent 100%),
+                            linear-gradient(to right, black 70%, transparent 100%)
+                            `,
+                        maskImage: `
+                            linear-gradient(to top, black 60%, transparent 100%),
+                            linear_gradient(to bottom, black 60%, transparent 100%),
+                            linear-gradient(to left, black 70%, transparent 100%),
+                            linear-gradient(to right, black 70%, transparent 100%)
+                            `,
+                        WebkitMaskComposite: 'source-in',
+                        maskComposite: 'intersect'
+                    }}
+                />
+            </div>
+
+            <main className="relative w-full h-full flex flex-col items-center z-10">
+
+                <div className='relative w-full py-12 flex items-center'>
+                    {/* 뒤로가기, 댓글 버튼 */}
+                    <button 
+                        onClick={() => {navigate('/studies/${studyId}')}}
+                        className="absolute left-8 w-10 h-10 rounded-full bg-[#272727] flex items-center justify-center cursor-pointer hover:opacity-70">
+                        <img src={downArrow} className='invert rotate-90 w-[40%]' />
+                    </button>
+                    <button className="absolute right-8 w-10 h-10 rounded-full bg-[#2a2a2a] flex items-center justify-center cursor-pointer hover:opacity-70">
+                        <img src={hamburgerBar} className='w-[40%]' />
+                    </button>
+                </div>
+
+                <div className="flex items-center w-full px-60 py-20">
+
+                    {/* 텍스트 영역 */}
+                    <div className="flex-1 flex flex-col items-start " >
+                        <div className="flex flex-col gap-4 mb-20">
+                            <p className="text-custom-gradient-blue text-3xl">스터디 명</p>
+                            <p className="text-7xl">부여받은 과제 이름</p>
+                        </div>
+
+                        <p className="font-semibold mb-4">
+                            현재 레벨: Pro
+                        </p>
+                        
+                        <div className="flex items-center justify-center gap-3">
+                            <div className="border rounded-full w-15 h-15 flex items-center justify-center">
+                                이미지
+                            </div>
+                            <div className="font-semibold text-lg">
+                                <p>사용자 1</p>
+                                <p className="text-[#A0A0A0]">과제 작성일</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 캐릭터 영역 */}
+                    <div className="flex-1 flex justify-end">
+                        <div className="w-100">
+                            <img
+                                src={studyMoong}
+                                className="w-full h-full object-contain"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* 이동 버튼 */}
+                <div className="py-2 w-full flex justify-center">
+                    <button
+                        onClick={() => { navigate(`/studies/${studyId}/processes/${processId}/assignments/${assignmentId}/edit`) }}
+                        className="bg-white text-[#6D6D6D] font-semibold px-6 py-4 rounded-full hover:opacity-70 cursor-pointer"
+                    >
+                        스터디 과제 작성하기
+                    </button>
+                </div>
+            </main>
+        </div>
     )
 }
