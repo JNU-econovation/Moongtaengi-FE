@@ -76,7 +76,7 @@ export const AssignmentEdit = () => {
     }
 
     const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files[0];
+        const file = e.target.files?.[0];
         if (!file) return;
 
         try {
@@ -93,7 +93,7 @@ export const AssignmentEdit = () => {
     }
 
     const handleFileSelect = async (e:React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files[0];
+        const file = e.target.files?.[0];
         if (!file) return;
 
         try {
@@ -109,9 +109,9 @@ export const AssignmentEdit = () => {
         }
     }
 
-    const handleLog = () => {
-        console.log(editor.storage.markdown.getMarkdown());
-    }
+    // const handleLog = () => {
+    //     console.log(editor.storage.markdown.getMarkdown());
+    // }
 
 
     // 툴바 버튼 스타일 클래스
@@ -261,7 +261,7 @@ export const AssignmentEdit = () => {
 
                         {/* 등록 버튼 */}
                         <button
-                            onClick={handleLog}
+                            
                             className="bg-white text-[#6D6D6D] px-4 py-1.5 rounded text-sm font-semibold hover:text-black transition-colors cursor-pointer">
                             등록
                         </button>

@@ -50,7 +50,7 @@ const ProcessSetting = () => {
         endDate: ''
     })
     const [processForm, setProcessForm] = useState('');
-    const [processData, setProcessData] = useState<ProcessData[]>();
+    const [processData, setProcessData] = useState<ProcessData[]>([]);
 
     const { mutate: updateStudyMutate, isPending: isUpdateStudyPending } = useUpdateStudyMutation(studyId ?? '');
     const { mutate: createProcessMutate, isPending: isCreateProcessPending } = useCreateProcessMutation(studyId ?? '');
@@ -59,6 +59,8 @@ const ProcessSetting = () => {
 
     const isEditMode = location.state?.isEdit || (processSourceData && processSourceData.length > 0);
 
+    
+    if (!studyId) return null;
 
     // 맨 위 버튼
     const handleTopButton = () => {

@@ -27,6 +27,11 @@ export const useCheckNameMutation = () => {
     const token = useGetTokenFromUrl();
     
     return useMutation<Data, ApiError, string>({
-        mutationFn: (name) => checkNameApi(token, name),
+        mutationFn: (name) => {
+            if (!token) {
+                return Promise.reject(new Error("No token"));
+            }
+            return checkNameApi(token, name);
+        },
     })
 }

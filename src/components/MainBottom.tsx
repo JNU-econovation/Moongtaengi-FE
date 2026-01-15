@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export default function MainBottom() {
-    const navigate = useNavigate;
 
-    const [studyList, setStudyList] = useState([1,2,3,4,5]);
+    const [studyList] = useState([1,2,3,4,5]);
 
     return (
         <div className="px-8 py-4 bg-[#272727]">

@@ -1,5 +1,5 @@
-import mainBg from "../assets/images/main/main-bg.png";
-import mainMoongs from "../assets/images/main/main-moongs.png";
+// import mainBg from "../assets/images/main/main-bg.png";
+// import mainMoongs from "../assets/images/main/main-moongs.png";
 
 import heroBgAfter from "../assets/images/main/hero-bg-after.png";
 import heroProfile from "../assets/images/main/hero-profile.png";

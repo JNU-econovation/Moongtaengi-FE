@@ -1,5 +1,5 @@
-import mainBg from "../assets/images/main/main-bg.png";
-import mainMoong from "../assets/images/main/main-moong.png";
+// import mainBg from "../assets/images/main/main-bg.png";
+// import mainMoong from "../assets/images/main/main-moong.png";
 
 import heroBgBefore from "../assets/images/main/hero-bg-before.png";
 import MainButton from "./MainButton";
