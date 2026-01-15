@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import signupBg from '../assets/signup/signup-bg.png';
-import signupMoong from '../assets/signup/signup-moong.png';
+import bannerBg from '../assets/images/signup/banner-bg.png';
+import bannerMoong from '../assets/images/signup/banner-moong.png';
 import { useCheckCode } from '../hooks/useCheckCode';
 import { useSendUserData } from '../hooks/useSendUserData';
 import { useCheckName } from '../hooks/useCheckName';
@@ -123,13 +123,13 @@ export default function Signup() {
                         <div className="absolute bottom-0 right-0 h-[100%] w-[50%]">
                             {/* 배경 이미지 */}
                             <img
-                                src={signupBg}
+                                src={bannerBg}
                                 alt="Background"
                                 className="absolute inset-0 h-full w-full object-cover scale-90"
                             />
                             {/* 캐릭터 이미지 */}
                             <img
-                                src={signupMoong}
+                                src={bannerMoong}
                                 alt="Moong"
                                 className="absolute bottom-2 right-7 h-[95%] object-contain z-10"
                             />
