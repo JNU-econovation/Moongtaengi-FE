@@ -12,9 +12,12 @@ import strikeIcon from "../assets/icons/assignmentEdit/strikeIcon.svg";
 import imageIcon from "../assets/icons/assignmentEdit/imageIcon.svg";
 import fileIcon from "../assets/icons/assignmentEdit/fileIcon.svg";
 import { useUploadFile } from '../hooks/useUploadFile';
+import { useNavigate, useParams } from 'react-router-dom';
 
 
 export const AssignmentEdit = () => {
+    const navigate = useNavigate();
+    const { studyId, processId, assignmentId } = useParams<"studyId" | "processId" | "assignmentId">();
     const uploadFile = useUploadFile();
 
     const [_, forceUpdate] = useState(0);
@@ -36,6 +39,7 @@ export const AssignmentEdit = () => {
         }
     });
 
+
     if (!editor) {
         return null;
     }
@@ -46,18 +50,18 @@ export const AssignmentEdit = () => {
         const file = e.dataTransfer.files[0];
         if (!file) return;
 
-        const {clientX, clientY} = e;
-        const pos = editor.view.posAtCoords({left: clientX, top: clientY});
+        const { clientX, clientY } = e;
+        const pos = editor.view.posAtCoords({ left: clientX, top: clientY });
 
         if (!pos) return;
 
         try {
             const url = await uploadFile(file);
-        
-            if(url) {
+
+            if (url) {
                 editor.chain().focus().insertContentAt(pos.pos, {
                     type: "image",
-                    attrs: {src: url}
+                    attrs: { src: url }
                 }).run();
             }
         } catch (error) {
@@ -79,10 +83,13 @@ export const AssignmentEdit = () => {
         <div className="flex-1 flex flex-col">
             {/* 뒤로가기, 댓글  */}
             <div className='relative w-full h-24 flex items-center md:mb-2 2xl:mb-10'>
-                <button className="absolute left-8 w-10 h-10 rounded-full bg-[#272727] flex items-center justify-center hover:opacity-70">
+                <button
+                    onClick={() => { navigate(`/studies/${studyId}/processes/${processId}/assignments/${assignmentId}`) }}
+                    className="absolute left-8 w-10 h-10 rounded-full bg-[#272727] flex items-center justify-center hover:opacity-70 cursor-pointer"
+                >
                     <img src={downArrow} className='invert rotate-90 w-[40%]' />
                 </button>
-                <button className="absolute right-8 w-10 h-10 rounded-full bg-[#2a2a2a] flex items-center justify-center hover:opacity-70">
+                <button className="absolute right-8 w-10 h-10 rounded-full bg-[#2a2a2a] flex items-center justify-center hover:opacity-70 cursor-pointer">
                     <img src={hamburgerBar} className='w-[40%]' />
                 </button>
             </div>
@@ -184,10 +191,12 @@ export const AssignmentEdit = () => {
 
 
                         {/* 파일 임베드 */}
-                        <button className="flex-1 text-[#5F5F5F] text-sm flex items-center">
-                            <img src={fileIcon} className='w-[4%] mr-1'/>
-                            <span>파일을 임베드 하세요(PDF, Google Docs...)</span>
-                        </button>
+                        <div className='flex-1'>
+                            <button className="text-[#5F5F5F] text-sm flex items-center cursor-pointer hover:opacity-70">
+                                <img src={fileIcon} className='w-[8%] mr-1' />
+                                <span>파일을 임베드 하세요(PDF, Google Docs...)</span>
+                            </button>
+                        </div>
 
                         {/* 등록 버튼 */}
                         <button

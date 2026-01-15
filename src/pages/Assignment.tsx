@@ -40,7 +40,7 @@ export const Assignment = () => {
                 <div className='relative w-full py-12 flex items-center'>
                     {/* 뒤로가기, 댓글 버튼 */}
                     <button 
-                        onClick={() => {navigate('/studies/${studyId}')}}
+                        onClick={() => {navigate(`/studies/${studyId}`)}}
                         className="absolute left-8 w-10 h-10 rounded-full bg-[#272727] flex items-center justify-center cursor-pointer hover:opacity-70">
                         <img src={downArrow} className='invert rotate-90 w-[40%]' />
                     </button>
