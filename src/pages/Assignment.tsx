@@ -10,7 +10,7 @@ export const Assignment = () => {
     const { studyId, processId, assignmentId } = useParams<"studyId" | "processId"| "assignmentId">();
 
     return (
-        <div className="relative w-full h-[calc(100vh-100px)] overflow-hidden">
+        <div className="relative w-full md:h-[calc(100vh-90px)] 2xl:h-[calc(100vh-100px)] overflow-hidden">
 
             <div className="absolute inset-0 z-0">
                 <img
@@ -49,12 +49,12 @@ export const Assignment = () => {
                     </button>
                 </div>
 
-                <div className="flex items-center w-full px-60 py-20">
+                <div className="flex items-center w-full md:px-40 2xl:px-60 md:py-0 2xl:py-20 md:scale-85 2xl:scale-100">
 
                     {/* 텍스트 영역 */}
-                    <div className="flex-1 flex flex-col items-start " >
+                    <div className="flex-1 flex flex-col items-start" >
                         <div className="flex flex-col gap-4 mb-20">
-                            <p className="text-custom-gradient-blue text-3xl">스터디 명</p>
+                            <p className="text-custom-gradient-blue text-4xl">스터디 명</p>
                             <p className="text-7xl">부여받은 과제 이름</p>
                         </div>
 
@@ -85,7 +85,7 @@ export const Assignment = () => {
                 </div>
 
                 {/* 이동 버튼 */}
-                <div className="py-2 w-full flex justify-center">
+                <div className="pt-6 w-full flex justify-center">
                     <button
                         onClick={() => { navigate(`/studies/${studyId}/processes/${processId}/assignments/${assignmentId}/edit`) }}
                         className="bg-white text-[#6D6D6D] font-semibold px-6 py-4 rounded-full hover:opacity-70 cursor-pointer"

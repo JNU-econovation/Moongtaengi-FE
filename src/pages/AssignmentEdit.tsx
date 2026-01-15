@@ -2,7 +2,7 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image'
 import { Markdown } from 'tiptap-markdown';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import downArrow from "../assets/icons/common/down-arrow.svg";
 import hamburgerBar from "../assets/icons/assignmentEdit/hamburgerBarIcon.svg";
 import boldIcon from "../assets/icons/assignmentEdit/boldIcon.svg";
@@ -21,6 +21,11 @@ export const AssignmentEdit = () => {
     const uploadFile = useUploadFile();
 
     const [_, forceUpdate] = useState(0);
+
+    const imageInputRef = useRef<HTMLInputElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const [fileName, setFileName] = useState('');
 
     const editor = useEditor({
         extensions: [
@@ -70,6 +75,40 @@ export const AssignmentEdit = () => {
         }
     }
 
+    const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        try {
+            const url = await uploadFile(file);
+            if (url) {
+                editor.chain().focus().setImage({ src: url }).run();
+            }
+        } catch (error) {
+            console.error(error);
+            alert('이미지 업로드 오류');
+        } finally {
+            if (imageInputRef.current) imageInputRef.current.value = '';
+        }
+    }
+
+    const handleFileSelect = async (e:React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        try {
+            const url = await uploadFile(file);
+
+            if (url) {
+                setFileName(file.name);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    }
+
     const handleLog = () => {
         console.log(editor.storage.markdown.getMarkdown());
     }
@@ -81,6 +120,21 @@ export const AssignmentEdit = () => {
 
     return (
         <div className="flex-1 flex flex-col">
+            <input
+                type='file'
+                accept='image/*'
+                ref={imageInputRef}
+                onChange={handleImageSelect}
+                className='hidden'
+            />
+            <input
+                type='file'
+                accept='.pdf'
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                className='hidden'
+            />
+
             {/* 뒤로가기, 댓글  */}
             <div className='relative w-full h-24 flex items-center md:mb-2 2xl:mb-10'>
                 <button
@@ -181,7 +235,9 @@ export const AssignmentEdit = () => {
                         </button> */}
 
                         {/* 이미지 선택 */}
-                        <button className={`${buttonBaseClass}`}>
+                        <button
+                            onClick={() => { imageInputRef.current?.click() }}
+                            className={`${buttonBaseClass}`}>
                             <img src={imageIcon} className='w-[70%]' />
                         </button>
 
@@ -192,9 +248,14 @@ export const AssignmentEdit = () => {
 
                         {/* 파일 임베드 */}
                         <div className='flex-1'>
-                            <button className="text-[#5F5F5F] text-sm flex items-center cursor-pointer hover:opacity-70">
+                            <button
+                                onClick={() => {fileInputRef.current?.click()}}
+                                className="text-[#5F5F5F] text-sm flex items-center cursor-pointer hover:opacity-70"
+                            >
                                 <img src={fileIcon} className='w-[8%] mr-1' />
-                                <span>파일을 임베드 하세요(PDF, Google Docs...)</span>
+                                <span>
+                                    {fileName ? fileName : '파일을 임베드 하세요(PDF, Google Docs...)'}
+                                </span>
                             </button>
                         </div>
 
