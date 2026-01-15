@@ -11,6 +11,7 @@ import ProcessSetting from './pages/ProcessSetting'
 import { NavLayout } from './components/NavLayout'
 import { Assignment } from './pages/Assignment'
 import { AssignmentEdit } from './pages/AssignmentEdit'
+import { ProtectedRoute } from './components/ProtectedRoute'
 
 const queryClient = new QueryClient();
 
@@ -22,9 +23,12 @@ function App() {
         <Routes>
           <Route element={<NavLayout />}>
             <Route path='/' element={<Main />} />
-            <Route path='/studies/:studyId/setting' element={<ProcessSetting />} />
-            <Route path='/studies/:studyId/processes/:processId/assignments/:assignmentId' element={<Assignment />} />
-            <Route path='/studies/:studyId/processes/:processId/assignments/:assignmentId/edit' element={<AssignmentEdit />} />
+            
+            <Route element={<ProtectedRoute />}>
+              <Route path='/studies/:studyId/setting' element={<ProcessSetting />} />
+              <Route path='/studies/:studyId/processes/:processId/assignments/:assignmentId' element={<Assignment />} />
+              <Route path='/studies/:studyId/processes/:processId/assignments/:assignmentId/edit' element={<AssignmentEdit />} />
+            </Route>
           </Route>
 
           <Route path='/studies/:studyId' element={<Process />} />
