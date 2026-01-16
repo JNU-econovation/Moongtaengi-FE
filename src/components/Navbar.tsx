@@ -33,8 +33,9 @@ export default function Navbar() {
     // 스터디 생성 or 초대코드 입력
     const { setModalMode } = useModalModeStore();
 
-    // 다른 곳 클릭 시 나의 스터디 or 새로운 알림 닫기 위한 ref
-    const dropdownRef = useRef<HTMLDivElement>(null);
+    // 다른 곳 클릭 시 나의 스터디 ref
+    const dropdownStudyRef = useRef<HTMLDivElement>(null);
+    const dropdownNotiRef = useRef<HTMLDivElement>(null);
 
 
     const studyListApi = async (arg: string) => {
@@ -77,8 +78,11 @@ export default function Navbar() {
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+            if (dropdownStudyRef.current && !dropdownStudyRef.current.contains(e.target as Node)) {
                 setMyStudyMode(false);
+            }
+
+            if (dropdownNotiRef.current && !dropdownNotiRef.current.contains(e.target as Node)) {
                 setNotificationMode(false);
             }
         }
@@ -88,7 +92,7 @@ export default function Navbar() {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         }
-    }, [dropdownRef]);
+    }, [dropdownStudyRef, dropdownNotiRef]);
 
     return (
         <nav className="flex items-center justify-between px-6 md:py-2 2xl:py-3 bg-black sticky top-0 z-50 text-white rounded-full mt-7">
@@ -102,13 +106,11 @@ export default function Navbar() {
 
                 {/* Menu Items */}
                 <div className="hidden md:flex gap-3">
-                    <div ref={dropdownRef}
+                    <div ref={dropdownStudyRef}
                         className='relative group'
                     >
                         <button className="flex items-center px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
-                            onClick={() => {
-                                !myStudyMode ? setMyStudyMode(true) : setMyStudyMode(false)
-                            }}>
+                            onClick={() => { setMyStudyMode(!myStudyMode) }}>
                             나의 스터디
                             <img src={downArrow}
                                 className={`w-3.5 ml-1.5 mt-0.5 invert ${myStudyMode && 'rotate-180'}`} />
@@ -185,7 +187,7 @@ export default function Navbar() {
 
             {/* Right Side */}
             <div className="flex items-center gap-3 mr-10">
-                <RightMenu isLogin={isLogin} logout={logout} notificationMode={notificationMode} setNotificationMode={setNotificationMode} dropdownRef={dropdownRef} navigate={navigate} />
+                <RightMenu isLogin={isLogin} logout={logout} notificationMode={notificationMode} setNotificationMode={setNotificationMode} dropdownNotiRef={dropdownNotiRef} navigate={navigate} />
             </div>
 
         </nav>
@@ -197,11 +199,11 @@ interface RightProps {
     logout: () => boolean;
     notificationMode: boolean;
     setNotificationMode: (arg: boolean) => void;
-    dropdownRef: React.RefObject<HTMLDivElement | null>;
+    dropdownNotiRef: React.RefObject<HTMLDivElement | null>;
     navigate: NavigateFunction;
 }
 
-const RightMenu = ({ isLogin, logout, notificationMode, setNotificationMode, dropdownRef, navigate }: RightProps) => {
+const RightMenu = ({ isLogin, logout, notificationMode, setNotificationMode, dropdownNotiRef, navigate }: RightProps) => {
     if (!isLogin) {
         return (
             <button className="px-3 py-1.5 text-sm text-black bg-white rounded-full hover:opacity-80 transition cursor-pointer"
@@ -214,13 +216,11 @@ const RightMenu = ({ isLogin, logout, notificationMode, setNotificationMode, dro
     return (
         <>
             <div
-                ref={dropdownRef}
+                ref={dropdownNotiRef}
                 className='relative group'
             >
                 <button
-                    onClick={() => {
-                        !notificationMode ? setNotificationMode(true) : setNotificationMode(false);
-                    }}
+                    onClick={() => { setNotificationMode(!notificationMode) }}
                     className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
                     새로운 알림
                 </button>

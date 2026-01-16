@@ -8,10 +8,10 @@ export const NavLayout = () => {
     const { modalMode } = useModalModeStore();
 
     return (
-        <div className="min-h-screen bg-custom-bg text-white font-sans flex flex-col overflow-x-hidden">
+        <div className="h-screen bg-custom-bg text-white font-sans flex flex-col overflow-x-hidden">
             <Navbar />
             
-            <main>
+            <main className="flex-1">
                 <Outlet />
             </main>
 

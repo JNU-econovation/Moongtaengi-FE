@@ -10,7 +10,7 @@ export const Assignment = () => {
     const { studyId, processId, assignmentId } = useParams<"studyId" | "processId"| "assignmentId">();
 
     return (
-        <div className="relative w-full md:h-[calc(100vh-90px)] 2xl:h-[calc(100vh-100px)] overflow-hidden">
+        <div className="relative w-full h-full overflow-hidden">
 
             <div className="absolute inset-0 z-0">
                 <img
