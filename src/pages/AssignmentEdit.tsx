@@ -303,7 +303,7 @@ export const AssignmentEdit = () => {
                                 [&::-webkit-scrollbar-thumb]:rounded-full
                                 [&::-webkit-scrollbar-button]:hidden `}
                         >
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((comment, index) => (
+                            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(() => (
                                 <div className='w-full p-2 bg-[#393939] rounded'>
                                     <div className='flex'>
                                         <div className='shrink-0 border w-10 h-10 rounded-full'>
