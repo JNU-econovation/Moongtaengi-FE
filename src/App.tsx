@@ -12,6 +12,7 @@ import { NavLayout } from './components/NavLayout'
 import { Assignment } from './pages/Assignment'
 import { AssignmentEdit } from './pages/AssignmentEdit'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { Error } from './pages/Error'
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,8 @@ function App() {
           <Route path='/signup' element={<Signup />} />
           <Route path='/signup/check' element={<SignupCheck />} />
           <Route path='/auth/callback' element={<AuthCallback />} />
+
+          <Route path='*' element={<Error />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
