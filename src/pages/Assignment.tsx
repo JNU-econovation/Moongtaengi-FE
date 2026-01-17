@@ -39,7 +39,7 @@ export const Assignment = () => {
                 />
             </div>
 
-            <main className="relative w-full h-full flex flex-col items-center">
+            <main className="relative w-full h-full flex flex-col">
 
                 <div className='relative w-full py-12 flex items-center z-50'>
                     {/* 뒤로가기, 댓글 버튼 */}
