@@ -95,7 +95,7 @@ export default function Navbar() {
     }, [dropdownStudyRef, dropdownNotiRef]);
 
     return (
-        <nav className="flex items-center justify-between px-6 md:py-2 2xl:py-3 bg-black sticky top-0 z-50 text-white rounded-full mt-7">
+        <nav className="flex items-center justify-between px-6 md:py-2 2xl:py-3 bg-black sticky top-0 z-60 text-white rounded-full mt-7">
 
             {/* Left Side */}
             <div className="flex items-center gap-8 ml-10">
@@ -226,11 +226,12 @@ const RightMenu = ({ isLogin, logout, notificationMode, setNotificationMode, dro
                 </button>
 
                 {notificationMode && (
-                    <div className='absolute flex top-10 left-0 w-43 h-40 bg-[#2C2C2C]/80 text-white text-[12px] border border-gray-600 rounded-xl overflow-hidden z-50'>
+                    <div className='absolute flex top-10 right-0 w-43 h-40 bg-[#2C2C2C]/80 text-white text-[12px] border border-gray-600 rounded-xl overflow-hidden'>
                         알림 목록
                     </div>
                 )}
             </div>
+
             <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
                 onClick={() => { logout() && navigate('/', { replace: true }); }}>
                 로그아웃

@@ -119,8 +119,9 @@ export const AssignmentEdit = () => {
 
 
     // 툴바 버튼 스타일 클래스
-    const buttonBaseClass = "flex items-center justify-center hover:opacity-70 transition-colors cursor-pointer";
-    const activeClass = "bg-white py-1 rounded";
+    const buttonBaseClass = "flex items-center justify-center text-2xl hover:opacity-70 transition-colors cursor-pointer";
+    const activeTextClass = "bg-white text-black rounded";
+    const activeIconClass = "bg-white py-1 rounded";
 
     return (
         <div className="h-full flex flex-col relative">
@@ -176,56 +177,32 @@ export const AssignmentEdit = () => {
                     {/* 하단 툴바 */}
                     <div className="bg-[#272727] px-4 py-3 flex items-center gap-2 rounded-md">
 
+                        {/* H1 */}
+                        <button
+                            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                            className={`${buttonBaseClass} font-bold ${editor.isActive('heading', { level: 1 }) ? activeTextClass : ''}`}
+                        >
+                            H1
+                        </button>
+
+                        {/* H2 */}
+                        <button
+                            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                            className={`${buttonBaseClass} font-bold ${editor.isActive('heading', { level: 2 }) ? activeTextClass : ''}`}
+                        >
+                            H2
+                        </button>
+
                         {/* Bold */}
                         <button
                             onClick={() => editor.chain().focus().toggleBold().run()}
-                            className={`${buttonBaseClass} ${editor.isActive('bold') ? activeClass : ''} pl-1`}
+                            className={`${buttonBaseClass} ${editor.isActive('bold') ? activeIconClass : ''} pl-1`}
                         >
                             <img src={boldIcon} className={`w-[60%] ${editor.isActive('bold') && 'invert'}`} />
                         </button>
 
-                        {/* Italic */}
-                        <button
-                            onClick={() => editor.chain().focus().toggleItalic().run()}
-                            className={`${buttonBaseClass} ${editor.isActive('italic') ? activeClass : ''}`}
-                        >
-                            <img src={italicIcon} className={`w-[60%] ${editor.isActive('italic') && 'invert'}`} />
-                        </button>
-
-                        {/* Underline */}
-                        <button
-                            onClick={() => editor.chain().focus().toggleUnderline().run()}
-                            className={`${buttonBaseClass} ${editor.isActive('underline') ? activeClass : ''}`}
-                        >
-                            <img src={underlineIcon} className={`w-[60%] ${editor.isActive('underline') && 'invert'}`} />
-                        </button>
-
-                        {/* Strike */}
-                        <button
-                            onClick={() => editor.chain().focus().toggleStrike().run()}
-                            className={`${buttonBaseClass} ${editor.isActive('strike') ? activeClass : ''}`}
-                        >
-                            <img src={strikeIcon} className={`w-[60%] ${editor.isActive('strike') && 'invert'}`} />
-                        </button>
-
-                        {/* H1 */}
-                        {/* <button
-                            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                            className={`${buttonBaseClass} ${editor.isActive('heading', { level: 1 }) ? activeClass : ''}`}
-                        >
-                            H1
-                        </button> */}
-
-                        {/* H2 */}
-                        {/* <button
-                            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                            className={`${buttonBaseClass} ${editor.isActive('heading', { level: 2 }) ? activeClass : ''}`}
-                        >
-                            H2
-                        </button> */}
-
                         {/* 문단 구분 선 */}
-                        {/* <button
+                        <button
                             onClick={() => {
                                 const { state } = editor;
                                 const { selection } = state;
@@ -238,7 +215,31 @@ export const AssignmentEdit = () => {
                             className={`${buttonBaseClass}`}
                         >
                             HR
-                        </button> */}
+                        </button>
+
+                        {/* Italic */}
+                        <button
+                            onClick={() => editor.chain().focus().toggleItalic().run()}
+                            className={`${buttonBaseClass} ${editor.isActive('italic') ? activeIconClass : ''}`}
+                        >
+                            <img src={italicIcon} className={`w-[60%] ${editor.isActive('italic') && 'invert'}`} />
+                        </button>
+
+                        {/* Underline */}
+                        <button
+                            onClick={() => editor.chain().focus().toggleUnderline().run()}
+                            className={`${buttonBaseClass} ${editor.isActive('underline') ? activeIconClass : ''}`}
+                        >
+                            <img src={underlineIcon} className={`w-[60%] ${editor.isActive('underline') && 'invert'}`} />
+                        </button>
+
+                        {/* Strike */}
+                        <button
+                            onClick={() => editor.chain().focus().toggleStrike().run()}
+                            className={`${buttonBaseClass} ${editor.isActive('strike') ? activeIconClass : ''}`}
+                        >
+                            <img src={strikeIcon} className={`w-[60%] ${editor.isActive('strike') && 'invert'}`} />
+                        </button>
 
                         {/* 이미지 선택 */}
                         <button
