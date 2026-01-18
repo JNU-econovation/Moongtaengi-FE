@@ -1,8 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
 import Navbar from '../components/Navbar.tsx';
-
 import { useStudyQuery } from '../hooks/queries/useStudyQuery.tsx';
 import { useProcessQuery } from '../hooks/queries/useProcessQuery.tsx';
 import { ProcessCard } from '../components/ProcessCard.tsx';

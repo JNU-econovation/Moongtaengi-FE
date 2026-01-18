@@ -1,19 +1,12 @@
 import { useState } from "react";
 import { createPortal } from "react-dom"
 import cross from "../assets/icons/common/cross.svg";
-import { getTokenFromSession } from "../utils/getTokenFromSession";
-import axios from "axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useModalModeStore } from "../stores/useModalModeStore";
-import { useNavigate } from "react-router-dom";
+import { useCreateStudyMutation } from "../hooks/mutations/useCreateStudyMutation";
 
 export const QuickCreateStudy = () => {
 
-    const navigate = useNavigate();
-
     const {setModalMode} = useModalModeStore();
-    
-    const queryClient = useQueryClient();
 
     const [formData, setFormData] = useState({
         name: '',
@@ -22,49 +15,17 @@ export const QuickCreateStudy = () => {
         endDate: ''
     });
 
+    const {mutate, isPending} = useCreateStudyMutation(setModalMode);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const createStudyApi = async () => {
-        const token = getTokenFromSession();
-        const response = await axios.post(import.meta.env.VITE_API_CREATE_STUDY, formData, 
-            {
-                headers: { 
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": 'application/json',
-                },
-            }
-        )
-
-        return response;
-    }
-
-    const {mutate, isPending} = useMutation({
-        mutationFn: createStudyApi,
-        onSuccess: (response) => {
-            const location = response.headers['location'];
-
-            queryClient.invalidateQueries({queryKey: ['operatingStudyList']});
-            queryClient.invalidateQueries({queryKey: ['participatingStudyList']});
-
-            setModalMode(null);
-            
-            if (location) {
-                navigate(location.replace(/^\/api/, ''));
-            }
-        },
-        onError: (error) => {
-            console.log(error);
-        }
-    })
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         console.log('저장된 데이터:', formData);
-        mutate();
+        mutate(formData);
     };
 
     return createPortal(
