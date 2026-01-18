@@ -6,6 +6,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '../stores/useAuthStore';
 import { useModalModeStore } from '../stores/useModalModeStore';
 import { useEffect, useRef, useState } from 'react';
+import { useOperatingStudiesQuery } from '../hooks/queries/useOperatingStudiesQuery';
+import { usePaticipatingStudiesQuery } from '../hooks/queries/useParticipatingStudiesQuery';
 
 type StudyMenu = "operating" | "participating";
 
@@ -30,6 +32,10 @@ export default function Navbar() {
 
     const [studyMode, setStudyMode] = useState<StudyMenu>('operating');
 
+    const { data: operatingStudyList = [] } = useOperatingStudiesQuery();
+
+    const { data: participatingStudyList = [] } = usePaticipatingStudiesQuery();
+
     // 스터디 생성 or 초대코드 입력
     const { setModalMode } = useModalModeStore();
 
@@ -37,32 +43,6 @@ export default function Navbar() {
     const dropdownStudyRef = useRef<HTMLDivElement>(null);
     const dropdownNotiRef = useRef<HTMLDivElement>(null);
 
-
-    const studyListApi = async (arg: string) => {
-        const token = getTokenFromSession();
-
-        const response = await axios.get(`${import.meta.env.VITE_API}${arg}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            },
-        )
-
-        return response.data;
-    }
-
-    const { data: operatingStudyList = [] } = useQuery<StudyItem[]>({
-        queryKey: ['operatingStudyList'],
-        queryFn: () => studyListApi('/studies/me/managed'),
-        enabled: !!getTokenFromSession()
-    })
-
-    const { data: participatingStudyList = [] } = useQuery<StudyItem[]>({
-        queryKey: ['participatingStudyList'],
-        queryFn: () => studyListApi('/studies/me/joined'),
-        enabled: !!getTokenFromSession()
-    })
 
     const studyList: StudyList = {
         operating: operatingStudyList,
