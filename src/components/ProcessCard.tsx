@@ -2,6 +2,18 @@ import { useNavigate } from 'react-router-dom';
 import cardPrimaryMoong from '../assets/images/process/card-primary-moong.png';
 import { formatDateToWord } from "../utils/formatDateToWord";
 
+interface ProcessType {
+        id: number;
+        processOrder: number;
+        title: string;
+        startDate: string;
+        endDate: string;
+        durationDays: number;
+        memo: string;
+        assignmentDescription: string;
+        status: 'COMPLETED' | 'IN_PROGRESS' | 'NOT_STARTED';
+}
+
 interface Params {
     studyData: {
         studyId: number;
@@ -15,28 +27,8 @@ interface Params {
         myRole: 'HOST' | 'GUEST';
     };
     studyId: string;
-    processData: {
-        id: number;
-        processOrder: number;
-        title: string;
-        startDate: string;
-        endDate: string;
-        durationDays: number;
-        memo: string;
-        assignmentDescription: string;
-        status: 'COMPLETED' | 'IN_PROGRESS' | 'NOT_STARTED';
-    }[];
-    process: {
-        id: number;
-        processOrder: number;
-        title: string;
-        startDate: string;
-        endDate: string;
-        durationDays: number;
-        memo: string;
-        assignmentDescription: string;
-        status: 'COMPLETED' | 'IN_PROGRESS' | 'NOT_STARTED';
-    };
+    processData: ProcessType[];
+    process: ProcessType;
     scrollRefs: React.MutableRefObject<{
         [key: number]: HTMLDivElement | null;
     }>;
@@ -114,9 +106,11 @@ export const ProcessCard = ({ studyData, studyId, processData, process, scrollRe
                     {/* 나의 과제 제출 카드 */}
                     <div className="md:w-80 md:shrink-0 aspect-square bg-[#272727] rounded-2xl p-6 flex flex-col justify-between hover:opacity-70 transition-colors cursor-pointer">
                         <div className='flex flex-col items-start gap-2'>
-                            <h4 className="text-3xl font-semibold mt-6">
-                                이번 주<br /> 부여 받은 과제
-                            </h4>
+                            <input
+                                type='text'
+                                placeholder='이번 주<br /> 부여 받은 과제'
+                                className="text-3xl font-semibold mt-6 placeholder:text-white"
+                            />
                             <div className='bg-[#3E3E3E] px-2 text-sm rounded-full'>
                                 테스트
                             </div>
