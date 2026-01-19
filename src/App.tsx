@@ -13,6 +13,7 @@ import { Assignment } from './pages/Assignment'
 import { AssignmentEdit } from './pages/AssignmentEdit'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Error } from './pages/Error'
+import Collection from './pages/Collection'
 
 const queryClient = new QueryClient();
 
@@ -29,7 +30,9 @@ function App() {
               <Route path='/studies/:studyId/setting' element={<ProcessSetting />} />
               <Route path='/studies/:studyId/processes/:processId/assignments/:assignmentId' element={<Assignment />} />
               <Route path='/studies/:studyId/processes/:processId/assignments/:assignmentId/edit' element={<AssignmentEdit />} />
+              
             </Route>
+            <Route path='/collections' element={<Collection />} />
           </Route>
 
           <Route path='/studies/:studyId' element={<Process />} />
