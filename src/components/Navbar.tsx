@@ -153,7 +153,9 @@ export default function Navbar() {
                             마이페이지
                         </button>
 
-                        <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
+                        <button
+                            onClick={() => {navigate('/collections')}}
+                            className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
                             컬렉션
                         </button>
 

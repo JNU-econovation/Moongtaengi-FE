@@ -89,7 +89,7 @@ export default function Collection() {
                                 onClick={() => setSelectedItem(item)}
                                 className={`
                                     relative w-64 aspect-square rounded-2xl overflow-hidden cursor-pointer transition-all duration-200
-                                    ${isEquipped ? 'border-1 border-[#4AFFFC]' : 'border border-gray-700 hover:border-gray-500'}
+                                    ${isEquipped ? 'border border-[#4AFFFC]' : 'border border-[#606060] hover:border-white'}
                                     bg-[#1e1e1e]
                             `}
                             >
@@ -98,7 +98,7 @@ export default function Collection() {
                                     absolute top-2 left-2 w-[25%] text-[10px] text-center font-semibold px-2 py-0.5 rounded-full z-10
                                     ${item.unlocked
                                         ? 'text-black bg-gradient-to-r from-custom-gradient-blue to-custom-gradient-green'
-                                        : 'bg-gray-600 text-gray-400'}
+                                        : 'bg-[#606060] text-black'}
                                 `}
                                 >
                                     {item.unlocked ? item.rarity : 'Lock'}
@@ -116,7 +116,7 @@ export default function Collection() {
 
                                 {/* 텍스트 오버레이 */}
                                 <div className="absolute bottom-2 right-2 text-center z-10 px-1">
-                                    <span className="text-lg font-semibold text-white">
+                                    <span className={`text-lg font-semibold ${item.unlocked ? 'text-white' : 'text-[#606060]'}`}>
                                         {item.unlocked ? item.displayName : '??????'}
                                     </span>
                                 </div>
@@ -125,6 +125,7 @@ export default function Collection() {
                     })}
                 </div>
             </section>
+
 
             {/* --- 팝업 모달 --- */}
             {selectedItem && (
@@ -135,9 +136,10 @@ export default function Collection() {
                     {/* 팝업창 */}
                     <div
                         onClick={(e) => e.stopPropagation()}
-                        className="relative flex flex-col items-center bg-[#272727] text-white p-4 pt-12 rounded w-[50%] text-center shadow-2xl"
+                        className="relative flex flex-col items-center bg-[#272727] text-white p-4 pt-16 rounded w-[50%] text-center shadow-2xl"
                     >
 
+                        {/* 닫기 버튼 */}
                         <button
                             onClick={() => { setSelectedItem(null) }}
                             className="absolute right-4 top-4 text-white transition-colors hover:opacity-70 cursor-pointer"
@@ -146,28 +148,42 @@ export default function Collection() {
                             <img src={cross} className="w-3.5 mt-1 mr-1 invert" />
                         </button>
 
-                        <div className={`relative w-40 h-40 rounded-xl overflow-hidden
-                                ${selectedItem.unlocked ? 'border-1 border-[#4AFFFC]' : 'border-1 border-[#606060'}`}>
-                            <span 
-                                className={`absolute top-2 left-2 text-black text-[10px] font-semibold px-2 py-0.5 rounded-full font-semibold z-10
-                                    ${selectedItem.unlocked ? 'bg-gradient-to-r from-custom-gradient-blue to-custom-gradient-green' : 'bg-gray-700'}`}
+
+                        <div className={`relative w-45 h-45 rounded-xl overflow-hidden
+                                ${selectedItem.unlocked ? 'border-2 border-[#4AFFFC]' : 'border-2 border-[#606060]'}`}
+                        >
+                            {/* 뱃지 */}
+                            <span
+                                className={`absolute top-2 left-2 w-[25%] text-[10px] font-semibold px-2 py-0.3 rounded-full font-semibold z-10
+                                    ${selectedItem.unlocked
+                                        ? 'text-black bg-gradient-to-r from-custom-gradient-blue to-custom-gradient-green'
+                                        : 'bg-[#606060] text-black'}`}
                             >
                                 {selectedItem.unlocked ? selectedItem.rarity : 'Lock'}
                             </span>
+
+                            {/* 이미지 */}
                             <img
                                 src={selectedItem.imageUrl}
                                 alt={selectedItem.displayName}
                                 className={`w-full h-full object-cover ${selectedItem.unlocked ? 'bg-white' : 'blur-md brightness-50'}`}
                             />
-                            <p className="absolute bottom-2 right-2 font-semibold text-lg px-1">
-                                {selectedItem.unlocked ? selectedItem.displayName : '??????' }
+
+                            {/* 텍스트 오버레이 */}
+                            <p className={`absolute bottom-2 right-2 font-semibold text-lg px-1
+                                ${selectedItem.unlocked ? 'text-white' : 'text-[#606060]'}`}
+                            >
+                                {selectedItem.unlocked ? selectedItem.displayName : '??????'}
                             </p>
                         </div>
 
+
+                        {/* 뭉탱이 이름 */}
                         <p className="text-xl text-[#4AFFFC] font-semibold mt-8 mb-3">
                             {selectedItem.unlocked ? selectedItem.displayName : '??????'}
                         </p>
 
+                        {/* 해금 방법 */}
                         <p className="text-white text-xl mb-6">
                             {selectedItem.description}
                         </p>
@@ -177,6 +193,7 @@ export default function Collection() {
                                 획득일: {new Date(selectedItem.unlockedAt).toLocaleDateString()}
                             </p>
                         )} */}
+
 
                         <button
                             onClick={() => setSelectedItem(null)}
