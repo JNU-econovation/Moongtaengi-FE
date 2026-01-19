@@ -72,102 +72,105 @@ export default function Navbar() {
     }, [dropdownStudyRef, dropdownNotiRef]);
 
     return (
-        <nav className="flex items-center justify-between px-6 md:py-2 2xl:py-3 bg-black sticky top-0 z-60 text-white rounded-full mt-7">
+        // 위에 블러 효과
+        <div className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/50 rounded-full">
+            <nav className="flex items-center justify-between px-6 md:py-2 2xl:py-3 bg-black sticky top-0 z-60 text-white rounded-full mt-7">
 
-            {/* Left Side */}
-            <div className="flex items-center gap-8 ml-10">
+                {/* Left Side */}
+                <div className="flex items-center gap-8 ml-10">
 
-                {/* Logo */}
-                <h1 onClick={() => { navigate('/') }}
-                    className="md:text-4xl 2xl:text-5xl font-semibold tracking-tighter cursor-pointer">뭉탱이</h1>
+                    {/* Logo */}
+                    <h1 onClick={() => { navigate('/') }}
+                        className="md:text-4xl 2xl:text-5xl font-semibold tracking-tighter cursor-pointer">뭉탱이</h1>
 
-                {/* Menu Items */}
-                <div className="hidden md:flex gap-3">
-                    <div ref={dropdownStudyRef}
-                        className='relative group'
-                    >
-                        <button className="flex items-center px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
-                            onClick={() => { setMyStudyMode(!myStudyMode) }}>
-                            나의 스터디
-                            <img src={downArrow}
-                                className={`w-3.5 ml-1.5 mt-0.5 invert ${myStudyMode && 'rotate-180'}`} />
-                        </button>
+                    {/* Menu Items */}
+                    <div className="hidden md:flex gap-3">
+                        <div ref={dropdownStudyRef}
+                            className='relative group'
+                        >
+                            <button className="flex items-center px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
+                                onClick={() => { setMyStudyMode(!myStudyMode) }}>
+                                나의 스터디
+                                <img src={downArrow}
+                                    className={`w-3.5 ml-1.5 mt-0.5 invert ${myStudyMode && 'rotate-180'}`} />
+                            </button>
 
-                        {myStudyMode && (
-                            <div className='absolute flex top-10 left-0 w-70 h-38 bg-[#2C2C2C]/80 text-white text-[12px] border border-gray-600 rounded-xl overflow-hidden z-50'>
-                                {/* Left Menu */}
-                                <div className='flex flex-col gap-2 font-semibold border-r border-r-gray-600 p-1'>
-                                    <button onClick={() => { setStudyMode('operating') }}
-                                        className={`px-3 py-1 rounded-full mt-1 cursor-pointer 
+                            {myStudyMode && (
+                                <div className='absolute flex top-10 left-0 w-70 h-38 bg-[#2C2C2C]/80 text-white text-[12px] border border-gray-600 rounded-xl overflow-hidden z-50'>
+                                    {/* Left Menu */}
+                                    <div className='flex flex-col gap-2 font-semibold border-r border-r-gray-600 p-1'>
+                                        <button onClick={() => { setStudyMode('operating') }}
+                                            className={`px-3 py-1 rounded-full mt-1 cursor-pointer 
                                         ${studyMode === "operating" ? 'bg-[#393939]' : 'text-[#A0A0A0]'}`}>
-                                        운영 중인 스터디 &gt;
-                                    </button>
-                                    <button onClick={() => { setStudyMode('participating') }}
-                                        className={`px-3 py-1 rounded-full cursor-pointer
+                                            운영 중인 스터디 &gt;
+                                        </button>
+                                        <button onClick={() => { setStudyMode('participating') }}
+                                            className={`px-3 py-1 rounded-full cursor-pointer
                                         ${studyMode === "participating" ? 'bg-[#393939]' : 'text-[#A0A0A0]'}`}>
-                                        참여 중인 스터디 &gt;
-                                    </button>
-                                </div>
+                                            참여 중인 스터디 &gt;
+                                        </button>
+                                    </div>
 
-                                {/* Right Items */}
-                                <div className='flex-1 p-1 flex flex-col h-full'>
+                                    {/* Right Items */}
+                                    <div className='flex-1 p-1 flex flex-col h-full'>
 
-                                    <p className='px-3 py-1 rounded-full mt-1 bg-[#393939] shrink-0'>스터디명</p>
+                                        <p className='px-3 py-1 rounded-full mt-1 bg-[#393939] shrink-0'>스터디명</p>
 
-                                    <div className='flex-1 flex flex-col gap-1 mt-2 overflow-y-auto
+                                        <div className='flex-1 flex flex-col gap-1 mt-2 overflow-y-auto
                                         [&::-webkit-scrollbar]:w-1
                                         hover:[&::-webkit-scrollbar]:w-2
                                         [&::-webkit-scrollbar-track]:bg-transparent
                                         [&::-webkit-scrollbar-thumb]:bg-[#555]
                                         [&::-webkit-scrollbar-thumb]:rounded-full
                                         [&::-webkit-scrollbar-button]:hidden'
-                                    >
-                                        {
-                                            studyList[studyMode].map((study, index) => (
-                                                <div key={index}
-                                                    onClick={() => { navigate(`/studies/${study["studyId"]}`) }}
-                                                    className='px-3 py-1 rounded-md bg-[#2C2C2C] cursor-pointer shrink-0 hover:bg-[#393939] transition'>
-                                                    {study["studyName"]}
-                                                </div>
-                                            ))
-                                        }
-                                    </div>
-
-                                    <div className='mt-2 shrink-0 flex justify-end'>
-                                        <button
-                                            onClick={() => { setModalMode("createStudy"); }}
-                                            className='px-3 py-1 text-[10px] bg-[#393939] rounded-full hover:opacity-70 cursor-pointer'
                                         >
-                                            스터디 생성
-                                        </button>
+                                            {
+                                                studyList[studyMode].map((study, index) => (
+                                                    <div key={index}
+                                                        onClick={() => { navigate(`/studies/${study["studyId"]}`) }}
+                                                        className='px-3 py-1 rounded-md bg-[#2C2C2C] cursor-pointer shrink-0 hover:bg-[#393939] transition'>
+                                                        {study["studyName"]}
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+
+                                        <div className='mt-2 shrink-0 flex justify-end'>
+                                            <button
+                                                onClick={() => { setModalMode("createStudy"); }}
+                                                className='px-3 py-1 text-[10px] bg-[#393939] rounded-full hover:opacity-70 cursor-pointer'
+                                            >
+                                                스터디 생성
+                                            </button>
+                                        </div>
+
                                     </div>
-
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
+
+                        <button className="px-3 2xl:py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
+                            마이페이지
+                        </button>
+
+                        <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
+                            컬렉션
+                        </button>
+
+                        <button onClick={() => { setModalMode("inviteCode") }}
+                            className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
+                            초대코드 입력
+                        </button>
                     </div>
-
-                    <button className="px-3 2xl:py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
-                        마이페이지
-                    </button>
-
-                    <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
-                        컬렉션
-                    </button>
-
-                    <button onClick={() => { setModalMode("inviteCode") }}
-                        className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
-                        초대코드 입력
-                    </button>
                 </div>
-            </div>
 
-            {/* Right Side */}
-            <div className="flex items-center gap-3 mr-10">
-                <RightMenu isLogin={isLogin} logout={logout} notificationMode={notificationMode} setNotificationMode={setNotificationMode} dropdownNotiRef={dropdownNotiRef} navigate={navigate} />
-            </div>
+                {/* Right Side */}
+                <div className="flex items-center gap-3 mr-10">
+                    <RightMenu isLogin={isLogin} logout={logout} notificationMode={notificationMode} setNotificationMode={setNotificationMode} dropdownNotiRef={dropdownNotiRef} navigate={navigate} />
+                </div>
 
-        </nav>
+            </nav>
+        </div>
     )
 }
 

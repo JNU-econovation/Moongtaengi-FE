@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Navbar from '../components/Navbar.tsx';
 import { useStudyQuery } from '../hooks/queries/useStudyQuery.tsx';
 import { useProcessQuery } from '../hooks/queries/useProcessQuery.tsx';
 import { ProcessCard } from '../components/ProcessCard.tsx';
@@ -67,11 +66,7 @@ const Process = () => {
   if (!studyData) return null
 
   return (
-    <div className="min-h-screen bg-custom-bg text-white flex flex-col items-center">
-      <div className="sticky top-0 z-50 w-full backdrop-blur-md bg-black/50 rounded-full">
-        <Navbar />
-      </div>
-
+    <div className="min-h-full bg-custom-bg text-white flex flex-col items-center">
       <div className="w-full max-w-6xl px-4 py-10 flex flex-col gap-24 mb-40 md:scale-90 2xl:scale-98">
         {processData.map((process) => (
           <ProcessCard studyData={studyData} studyId={studyId} processData={processData} process={process} scrollRefs={scrollRefs} itemRefs={itemRefs} handleScroll={handleScroll} />
