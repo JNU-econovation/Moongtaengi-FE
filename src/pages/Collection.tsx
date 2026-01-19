@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import cross from '../assets/icons/common/cross.svg';
+import { useCollectionQuery } from '../hooks/queries/useCollectionQuery';
+import { useChangeCollectionMutation } from '../hooks/mutations/useChangeCollectionMutation';
 
-// --- 타입 정의 ---
 interface CollectionItem {
     type: string;
     displayName: string;
@@ -12,33 +13,31 @@ interface CollectionItem {
     imageUrl: string;
 }
 
-interface CollectionData {
-    equippedIcon: string;
-    collections: CollectionItem[];
-}
-
-// --- 데이터 ---
-const MOCK_DATA: CollectionData = {
-    equippedIcon: "DEFAULT",
-    collections: [
-        { type: "DEFAULT", displayName: "기본 뭉탱이", rarity: "COMMON", description: "회원가입 시 기본 지급", unlocked: true, unlockedAt: "2026-01-19T11:19:48.050465", imageUrl: "https://s3.ap-northeast-2.amazonaws.com/moongtaengi-bucket/collections/default.png" },
-        { type: "ECONO_SPECIAL", displayName: "에코노 뭉탱이", rarity: "COMMON", description: "에코노 코드로 스터디 참여", unlocked: false, unlockedAt: null, imageUrl: "https://s3.ap-northeast-2.amazonaws.com/moongtaengi-bucket/collections/econo-special.png" },
-        { type: "SPECIAL", displayName: "스페셜 뭉탱이", rarity: "RARE", description: "스페셜 코드로 스터디 참여", unlocked: false, unlockedAt: null, imageUrl: "https://s3.ap-northeast-2.amazonaws.com/moongtaengi-bucket/collections/special.png" },
-        { type: "PRO", displayName: "프로 뭉탱이", rarity: "RARE", description: "100 XP 달성", unlocked: false, unlockedAt: null, imageUrl: "https://s3.ap-northeast-2.amazonaws.com/moongtaengi-bucket/collections/pro.png" },
-        { type: "MASTER", displayName: "마스터 뭉탱이", rarity: "EPIC", description: "300 XP 달성", unlocked: false, unlockedAt: null, imageUrl: "https://s3.ap-northeast-2.amazonaws.com/moongtaengi-bucket/collections/master.png" },
-        { type: "BUNCH", displayName: "뭉탱이 다발", rarity: "EPIC", description: "4인 이상 스터디 참여", unlocked: false, unlockedAt: null, imageUrl: "https://s3.ap-northeast-2.amazonaws.com/moongtaengi-bucket/collections/bunch.png" },
-        { type: "TREASURE_BAG", displayName: "보물주머니 뭉탱이", rarity: "UNIQUE", description: "7개 이상 컬렉션 해금", unlocked: false, unlockedAt: null, imageUrl: "https://s3.ap-northeast-2.amazonaws.com/moongtaengi-bucket/collections/treasure-bag.png" },
-        { type: "WOODEN_PICKAXE", displayName: "나무곡괭이 뭉탱이", rarity: "COMMON", description: "모든 온보딩 미션 완료", unlocked: false, unlockedAt: null, imageUrl: "https://s3.ap-northeast-2.amazonaws.com/moongtaengi-bucket/collections/wooden-pickaxe.png" }
-    ]
-};
-
 export default function Collection() {
+
+    const {data: collectionData} = useCollectionQuery();
+
+    console.log(collectionData);
+
+    const {mutate, isPending} = useChangeCollectionMutation();
+
     const [selectedItem, setSelectedItem] = useState<CollectionItem | null>(null);
 
+    if (!collectionData) return null;
+
     // 대표 아이콘 찾기
-    const equippedItem = MOCK_DATA.collections.find(
-        (item) => (item.type === MOCK_DATA.equippedIcon)
+    const equippedItem = collectionData.collections.find(
+        (item) => (item.type === collectionData.equippedIcon)
     );
+
+    const handleChange = (selectedItem: CollectionItem) => {
+        if (!selectedItem.unlocked) {
+            setSelectedItem(null);
+            return;
+        }
+
+        mutate(selectedItem.type);
+    }
 
     return (
         <div className="min-h-full bg-[#121212] text-white p-6 font-sans flex flex-col items-center">
@@ -77,11 +76,11 @@ export default function Collection() {
 
             {/* --- 하단: 컬렉션 리스트 --- */}
             <section className="w-full flex flex-col items-center">
-                <h2 className="text-6xl font-semibold text-center mb-14">처음 스터디를 시작할 때</h2>
+                <p className="text-6xl font-semibold text-center mb-14">처음 스터디를 시작할 때</p>
 
                 <div className="grid grid-cols-3 gap-4">
-                    {MOCK_DATA.collections.map((item) => {
-                        const isEquipped = item.type === MOCK_DATA.equippedIcon;
+                    {collectionData.collections.map((item) => {
+                        const isEquipped = (item.type === collectionData.equippedIcon);
 
                         return (
                             <div
@@ -196,10 +195,14 @@ export default function Collection() {
 
 
                         <button
-                            onClick={() => setSelectedItem(null)}
-                            className="px-6 rounded-full bg-white text-[#6D6D6D] text-sm font-semibold transition-colors hover:opacity-70 cursor-pointer"
+                            onClick={() => {
+                                handleChange(selectedItem)
+                            }}
+                            disabled={!selectedItem.unlocked}
+                            className={`px-6 rounded-full bg-white text-[#6D6D6D] text-sm font-semibold transition-colors 
+                                ${selectedItem.unlocked ? 'hover:opacity-70 cursor-pointer' : 'cursor-default'} `}
                         >
-                            변경하기
+                            {isPending ? '변경 중...' : '변경하기'}
                         </button>
                     </div>
                 </div>
