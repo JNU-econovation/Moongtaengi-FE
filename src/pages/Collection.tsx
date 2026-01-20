@@ -37,6 +37,7 @@ export default function Collection() {
         }
 
         mutate(selectedItem.type);
+        setSelectedItem(null);
     }
 
     return (
@@ -72,7 +73,7 @@ export default function Collection() {
 
             </section>
 
-            <div className="w-[80%] h-px bg-white my-2 mb-28" />
+            <div className="w-[80%] h-px bg-white mt-6 mb-30" />
 
             {/* --- 하단: 컬렉션 리스트 --- */}
             <section className="w-full flex flex-col items-center">
