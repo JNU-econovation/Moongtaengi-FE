@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { getTokenFromSession } from "../../utils/getTokenFromSession";
 import axios from "axios";
 
@@ -18,7 +18,15 @@ const joinStudyApi = async (formData: string) => {
 }
 
 export const useJoinStudyMutation = () => {
+    const queryClient = useQueryClient();
+
     return useMutation({
         mutationFn: joinStudyApi,
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['collection']})
+        },
+        onError: (error) => {
+            console.error(error);
+        }
     })
 }
