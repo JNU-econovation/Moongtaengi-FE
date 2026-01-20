@@ -9,7 +9,7 @@ interface Params {
         topic: string;
         startDate: string;
         endDate: string;
-    }
+    };
 }
 
 const updateStudyApi = async ({ studyId, studyData }: Params) => {

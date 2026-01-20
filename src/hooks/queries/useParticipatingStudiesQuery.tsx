@@ -10,7 +10,7 @@ interface StudyItem {
 export const usePaticipatingStudiesQuery = () => {
     return useQuery<StudyItem[]>({
         queryKey: ['participatingStudyList'],
-        queryFn: () => studyListApi('/studies/me/joined'),
+        queryFn: () => studyListApi('/joined'),
         enabled: !!getTokenFromSession()
     })
 }

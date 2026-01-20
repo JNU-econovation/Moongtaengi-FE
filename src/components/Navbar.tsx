@@ -5,6 +5,7 @@ import { useModalModeStore } from '../stores/useModalModeStore';
 import { useEffect, useRef, useState } from 'react';
 import { useOperatingStudiesQuery } from '../hooks/queries/useOperatingStudiesQuery';
 import { usePaticipatingStudiesQuery } from '../hooks/queries/useParticipatingStudiesQuery';
+import { useNotificationQuery } from '../hooks/queries/useNotificationQuery';
 
 type StudyMenu = "operating" | "participating";
 
@@ -33,6 +34,8 @@ export default function Navbar() {
 
     const { data: participatingStudyList = [] } = usePaticipatingStudiesQuery();
 
+    const { data: notification } = useNotificationQuery();
+
     // 스터디 생성 or 초대코드 입력
     const { setModalMode } = useModalModeStore();
 
@@ -47,7 +50,7 @@ export default function Navbar() {
     }
 
     console.log(studyList);
-
+    console.log(notification);
 
     useEffect(() => {
         setIsLogin();
@@ -116,23 +119,24 @@ export default function Navbar() {
 
                                         <p className='px-3 py-1 rounded-full mt-1 bg-[#393939] shrink-0'>스터디명</p>
 
-                                        <div className='flex-1 flex flex-col gap-1 mt-2 overflow-y-auto
-                                        [&::-webkit-scrollbar]:w-1
-                                        hover:[&::-webkit-scrollbar]:w-2
-                                        [&::-webkit-scrollbar-track]:bg-transparent
-                                        [&::-webkit-scrollbar-thumb]:bg-[#555]
-                                        [&::-webkit-scrollbar-thumb]:rounded-full
-                                        [&::-webkit-scrollbar-button]:hidden'
-                                        >
-                                            {
-                                                studyList[studyMode].map((study, index) => (
-                                                    <div key={index}
-                                                        onClick={() => { navigate(`/studies/${study["studyId"]}`) }}
-                                                        className='px-3 py-1 rounded-md bg-[#2C2C2C] cursor-pointer shrink-0 hover:bg-[#393939] transition'>
-                                                        {study["studyName"]}
-                                                    </div>
-                                                ))
-                                            }
+                                        <div className='flex-1 min-h-0 mt-2 pr-0.5'>
+                                            <div className='h-full flex flex-col gap-1 pr-1.5 overflow-y-auto
+                                                [&::-webkit-scrollbar]:w-0.5
+                                                [&::-webkit-scrollbar-track]:bg-transparent
+                                                [&::-webkit-scrollbar-thumb]:bg-[#555]
+                                                [&::-webkit-scrollbar-thumb]:rounded-full
+                                                [&::-webkit-scrollbar-button]:hidden'
+                                            >
+                                                {
+                                                    studyList[studyMode].map((study, index) => (
+                                                        <div key={index}
+                                                            onClick={() => { navigate(`/studies/${study["studyId"]}`) }}
+                                                            className='px-3 py-1 rounded-md bg-[#2C2C2C] cursor-pointer shrink-0 hover:bg-[#393939] transition'>
+                                                            {study["studyName"]}
+                                                        </div>
+                                                    ))
+                                                }
+                                            </div>
                                         </div>
 
                                         <div className='mt-2 shrink-0 flex justify-end'>
@@ -154,7 +158,7 @@ export default function Navbar() {
                         </button>
 
                         <button
-                            onClick={() => {navigate('/collections')}}
+                            onClick={() => { navigate('/collections') }}
                             className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
                             컬렉션
                         </button>
@@ -209,7 +213,23 @@ const RightMenu = ({ isLogin, logout, notificationMode, setNotificationMode, dro
 
                 {notificationMode && (
                     <div className='absolute flex top-10 right-0 w-43 h-40 bg-[#2C2C2C]/80 text-white text-[12px] border border-gray-600 rounded-xl overflow-hidden'>
-                        알림 목록
+                        <div className='w-full py-2 pl-2 pr-1'>
+                            <div className={`flex flex-col gap-1 w-full h-full pr-1 overflow-y-auto
+                            [&::-webkit-scrollbar]:w-0.5
+                            [&::-webkit-scrollbar-track]:bg-transparent
+                            [&::-webkit-scrollbar-thumb]:bg-[#625E5E]
+                            [&::-webkit-scrollbar-thumb]:rounded-full
+                            [&::-webkit-scrollbar-button]:hidden`}
+                            >
+                                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((a, i) => (
+                                    <div
+                                        key={i}
+                                        className='px-1 py-2 rounded bg-[#393939] shrink-0'>
+                                        테스트
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>

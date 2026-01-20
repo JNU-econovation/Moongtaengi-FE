@@ -64,9 +64,9 @@ export default function Collection() {
                             <p className="absolute bottom-2 right-2 font-semibold text-lg px-1">{equippedItem.displayName}</p>
                         </div>
 
-                        <span className="self-end mt-1 text-[#4AFFFC] text-sm hover:underline">
+                        {/* <span className="self-end mt-1 text-[#4AFFFC] text-sm hover:underline">
                             변경하기
-                        </span>
+                        </span> */}
                     </div>
                 )}
 
@@ -107,10 +107,7 @@ export default function Collection() {
                                 <img
                                     src={item.imageUrl}
                                     alt={item.displayName}
-                                    className={`
-                                        w-full h-full object-cover transition-all duration-300
-                                        ${item.unlocked ? 'opacity-100' : 'opacity-60 blur-[4px] brightness-[0.4]'}
-                                `}
+                                    className='w-full h-full object-cover transition-all duration-300'
                                 />
 
                                 {/* 텍스트 오버레이 */}
@@ -165,7 +162,7 @@ export default function Collection() {
                             <img
                                 src={selectedItem.imageUrl}
                                 alt={selectedItem.displayName}
-                                className={`w-full h-full object-cover ${selectedItem.unlocked ? 'bg-white' : 'blur-md brightness-50'}`}
+                                className='w-full h-full object-cover'
                             />
 
                             {/* 텍스트 오버레이 */}
