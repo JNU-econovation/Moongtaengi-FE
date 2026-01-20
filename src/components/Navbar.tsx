@@ -5,6 +5,7 @@ import { useModalModeStore } from '../stores/useModalModeStore';
 import { useEffect, useRef, useState } from 'react';
 import { useOperatingStudiesQuery } from '../hooks/queries/useOperatingStudiesQuery';
 import { usePaticipatingStudiesQuery } from '../hooks/queries/useParticipatingStudiesQuery';
+import { useNotificationQuery } from '../hooks/queries/useNotificationQuery';
 
 type StudyMenu = "operating" | "participating";
 
@@ -33,6 +34,8 @@ export default function Navbar() {
 
     const { data: participatingStudyList = [] } = usePaticipatingStudiesQuery();
 
+    const { data: notification } = useNotificationQuery();
+
     // 스터디 생성 or 초대코드 입력
     const { setModalMode } = useModalModeStore();
 
@@ -47,7 +50,7 @@ export default function Navbar() {
     }
 
     console.log(studyList);
-
+    console.log(notification);
 
     useEffect(() => {
         setIsLogin();
@@ -219,7 +222,9 @@ const RightMenu = ({ isLogin, logout, notificationMode, setNotificationMode, dro
                             [&::-webkit-scrollbar-button]:hidden`}
                             >
                                 {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((a, i) => (
-                                    <div className='px-1 py-2 rounded bg-[#393939] shrink-0'>
+                                    <div
+                                        key={i}
+                                        className='px-1 py-2 rounded bg-[#393939] shrink-0'>
                                         테스트
                                     </div>
                                 ))}

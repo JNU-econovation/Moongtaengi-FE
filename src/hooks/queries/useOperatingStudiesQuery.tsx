@@ -10,7 +10,7 @@ interface StudyItem {
 export const useOperatingStudiesQuery = () => {
     return useQuery<StudyItem[]>({
         queryKey: ['operatingStudyList'],
-        queryFn: () => studyListApi('/studies/me/managed'),
+        queryFn: () => studyListApi('/managed'),
         enabled: !!getTokenFromSession()
     })
 }

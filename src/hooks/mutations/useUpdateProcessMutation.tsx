@@ -11,7 +11,7 @@ interface Params {
         endDate: string;
         memo: string;
         assignmentDescription: string;
-    }[]
+    }[];
 }
 
 const updateProcessApi = async ({ studyId, sortedProcessSubmitData }: Params) => {
