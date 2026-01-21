@@ -14,6 +14,7 @@ import { AssignmentEdit } from './pages/AssignmentEdit'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Error } from './pages/Error'
 import Collection from './pages/Collection'
+import { AppInitializer } from './components/AppInitializer'
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+        <AppInitializer />
+
         <Routes>
           <Route element={<NavLayout />}>
             <Route path='/' element={<Main />} />

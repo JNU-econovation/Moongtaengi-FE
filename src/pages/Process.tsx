@@ -3,10 +3,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useStudyQuery } from '../hooks/queries/useStudyQuery.tsx';
 import { useProcessQuery } from '../hooks/queries/useProcessQuery.tsx';
 import { ProcessCard } from '../components/ProcessCard.tsx';
+import { useQueryClient } from '@tanstack/react-query';
 
 const Process = () => {
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { studyId='' } = useParams<{ studyId: string }>();
 
@@ -60,6 +62,11 @@ const Process = () => {
       }
     }
   }, [processData]);
+
+  // 전역 데이터 캐시 쿼리
+  useEffect(() => {
+    queryClient.invalidateQueries({queryKey: ['userGlobalData']});
+  }, []);
 
 
   if (isStudyLoading || isProcessLoading) return <div className='h-screen bg-custom-bg text-white'>로딩 중...</div>

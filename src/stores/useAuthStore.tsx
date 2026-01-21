@@ -4,12 +4,22 @@ import { deleteToken } from "../utils/deleteToken";
 
 interface AuthState {
     isLogin: boolean;
+    userId: number | null;
+    userNickname: string | null;
+    setUserId: (arg: number) => void;
+    setNickname: (arg: string) => void;
     setIsLogin: () => void;
     logout: () => boolean;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
     isLogin: !!getTokenFromSession(),
+
+    userId: null,
+    userNickname: null,
+
+    setUserId: (id) => set({userId: id}),
+    setNickname: (nickname) => set({userNickname: nickname}),
 
     setIsLogin: () => {
         const token = getTokenFromSession();
