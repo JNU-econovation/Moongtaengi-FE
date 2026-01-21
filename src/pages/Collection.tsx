@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import cross from '../assets/icons/common/cross.svg';
 import { useCollectionQuery } from '../hooks/queries/useCollectionQuery';
 import { useChangeCollectionMutation } from '../hooks/mutations/useChangeCollectionMutation';
