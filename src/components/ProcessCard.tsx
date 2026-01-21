@@ -54,7 +54,6 @@ export const ProcessCard = ({ studyData, studyId, processData, process, scrollRe
                 <div className="flex flex-col">
                     <h2 className="text-4xl font-semibold">
                         {formatDateToWord(process.startDate)} / {formatDateToWord(process.endDate)}
-                        배포 테스트
                     </h2>
                 </div>
 
