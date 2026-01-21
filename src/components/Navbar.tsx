@@ -5,7 +5,7 @@ import { useModalModeStore } from '../stores/useModalModeStore';
 import { useEffect, useRef, useState } from 'react';
 import { useOperatingStudiesQuery } from '../hooks/queries/useOperatingStudiesQuery';
 import { usePaticipatingStudiesQuery } from '../hooks/queries/useParticipatingStudiesQuery';
-import { useNotificationQuery } from '../hooks/queries/useNotificationQuery';
+import { Notification } from './Notification';
 
 type StudyMenu = "operating" | "participating";
 
@@ -28,13 +28,12 @@ export default function Navbar() {
     const [myStudyMode, setMyStudyMode] = useState<boolean>(false);
     const [notificationMode, setNotificationMode] = useState<boolean>(false);
 
-    const [studyMode, setStudyMode] = useState<StudyMenu>('operating');
+    const [studyMenu, setStudyMenu] = useState<StudyMenu>('operating');
+
 
     const { data: operatingStudyList = [] } = useOperatingStudiesQuery();
-
     const { data: participatingStudyList = [] } = usePaticipatingStudiesQuery();
 
-    const { data: notification } = useNotificationQuery();
 
     // 스터디 생성 or 초대코드 입력
     const { setModalMode } = useModalModeStore();
@@ -50,7 +49,6 @@ export default function Navbar() {
     }
 
     console.log(studyList);
-    console.log(notification);
 
     useEffect(() => {
         setIsLogin();
@@ -102,14 +100,18 @@ export default function Navbar() {
                                 <div className='absolute flex top-10 left-0 w-70 h-38 bg-[#2C2C2C]/80 text-white text-[12px] border border-gray-600 rounded-xl overflow-hidden z-50'>
                                     {/* Left Menu */}
                                     <div className='flex flex-col gap-2 font-semibold border-r border-r-gray-600 p-1'>
-                                        <button onClick={() => { setStudyMode('operating') }}
+                                        <button
+                                            onClick={() => { setStudyMenu('operating') }}
                                             className={`px-3 py-1 rounded-full mt-1 cursor-pointer 
-                                        ${studyMode === "operating" ? 'bg-[#393939]' : 'text-[#A0A0A0]'}`}>
+                                                ${studyMenu === "operating" ? 'bg-[#393939]' : 'text-[#A0A0A0]'}`}
+                                        >
                                             운영 중인 스터디 &gt;
                                         </button>
-                                        <button onClick={() => { setStudyMode('participating') }}
+                                        <button
+                                            onClick={() => { setStudyMenu('participating') }}
                                             className={`px-3 py-1 rounded-full cursor-pointer
-                                        ${studyMode === "participating" ? 'bg-[#393939]' : 'text-[#A0A0A0]'}`}>
+                                                ${studyMenu === "participating" ? 'bg-[#393939]' : 'text-[#A0A0A0]'}`}
+                                        >
                                             참여 중인 스터디 &gt;
                                         </button>
                                     </div>
@@ -128,7 +130,7 @@ export default function Navbar() {
                                                 [&::-webkit-scrollbar-button]:hidden'
                                             >
                                                 {
-                                                    studyList[studyMode].map((study, index) => (
+                                                    studyList[studyMenu].map((study, index) => (
                                                         <div key={index}
                                                             onClick={() => { navigate(`/studies/${study["studyId"]}`) }}
                                                             className='px-3 py-1 rounded-md bg-[#2C2C2C] cursor-pointer shrink-0 hover:bg-[#393939] transition'>
@@ -190,6 +192,7 @@ interface RightProps {
 }
 
 const RightMenu = ({ isLogin, logout, notificationMode, setNotificationMode, dropdownNotiRef, navigate }: RightProps) => {
+    
     if (!isLogin) {
         return (
             <button className="px-3 py-1.5 text-sm text-black bg-white rounded-full hover:opacity-80 transition cursor-pointer"
@@ -201,37 +204,8 @@ const RightMenu = ({ isLogin, logout, notificationMode, setNotificationMode, dro
 
     return (
         <>
-            <div
-                ref={dropdownNotiRef}
-                className='relative group'
-            >
-                <button
-                    onClick={() => { setNotificationMode(!notificationMode) }}
-                    className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
-                    새로운 알림
-                </button>
-
-                {notificationMode && (
-                    <div className='absolute flex top-10 right-0 w-43 h-40 bg-[#2C2C2C]/80 text-white text-[12px] border border-gray-600 rounded-xl overflow-hidden'>
-                        <div className='w-full py-2 pl-2 pr-1'>
-                            <div className={`flex flex-col gap-1 w-full h-full pr-1 overflow-y-auto
-                            [&::-webkit-scrollbar]:w-0.5
-                            [&::-webkit-scrollbar-track]:bg-transparent
-                            [&::-webkit-scrollbar-thumb]:bg-[#625E5E]
-                            [&::-webkit-scrollbar-thumb]:rounded-full
-                            [&::-webkit-scrollbar-button]:hidden`}
-                            >
-                                {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((a, i) => (
-                                    <div
-                                        key={i}
-                                        className='px-1 py-2 rounded bg-[#393939] shrink-0'>
-                                        테스트
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                )}
+            <div ref={dropdownNotiRef}>
+                <Notification notificationMode={notificationMode} setNotificationMode={setNotificationMode} />
             </div>
 
             <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
