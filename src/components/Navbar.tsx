@@ -89,11 +89,14 @@ export default function Navbar() {
                         <div ref={dropdownStudyRef}
                             className='relative group'
                         >
-                            <button className="flex items-center px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
-                                onClick={() => { setMyStudyMode(!myStudyMode) }}>
+                            <button
+                                onClick={() => { setMyStudyMode(!myStudyMode) }}
+                                className={`flex items-center px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:opacity-70 transition cursor-pointer
+                                    ${myStudyMode && 'bg-white text-black'}`}
+                            >
                                 나의 스터디
                                 <img src={downArrow}
-                                    className={`w-3.5 ml-1.5 mt-0.5 invert ${myStudyMode && 'rotate-180'}`} />
+                                    className={`w-3.5 ml-1.5 mt-0.5 ${myStudyMode ? 'rotate-180' : 'invert'}`} />
                             </button>
 
                             {myStudyMode && (
@@ -155,18 +158,18 @@ export default function Navbar() {
                             )}
                         </div>
 
-                        <button className="px-3 2xl:py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
+                        <button className="px-3 2xl:py-1.5 text-sm bg-custom-gray rounded-full hover:opacity-70 transition cursor-pointer">
                             마이페이지
                         </button>
 
                         <button
                             onClick={() => { navigate('/collections') }}
-                            className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
+                            className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:opacity-70 transition cursor-pointer">
                             컬렉션
                         </button>
 
                         <button onClick={() => { setModalMode("inviteCode") }}
-                            className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
+                            className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:opacity-70 transition cursor-pointer">
                             초대코드 입력
                         </button>
                     </div>
@@ -192,10 +195,10 @@ interface RightProps {
 }
 
 const RightMenu = ({ isLogin, logout, notificationMode, setNotificationMode, dropdownNotiRef, navigate }: RightProps) => {
-    
+
     if (!isLogin) {
         return (
-            <button className="px-3 py-1.5 text-sm text-black bg-white rounded-full hover:opacity-80 transition cursor-pointer"
+            <button className="px-3 py-1.5 text-sm text-black bg-white rounded-full hover:opacity-70 transition cursor-pointer"
                 onClick={() => { navigate('/login') }}>
                 로그인
             </button>
@@ -208,7 +211,7 @@ const RightMenu = ({ isLogin, logout, notificationMode, setNotificationMode, dro
                 <Notification notificationMode={notificationMode} setNotificationMode={setNotificationMode} />
             </div>
 
-            <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer"
+            <button className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:opacity-70 transition cursor-pointer"
                 onClick={() => { logout() && navigate('/', { replace: true }); }}>
                 로그아웃
             </button>

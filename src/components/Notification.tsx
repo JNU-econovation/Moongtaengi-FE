@@ -16,12 +16,23 @@ export const Notification = ({ notificationMode, setNotificationMode }: Params) 
 
     console.log(notificationData);
 
+    const totalCound =
+        (notificationData?.onboarding.status === 'WAITING' ? 1 : 0) +
+        (notificationData?.dailyQuests.length || 0) +
+        (notificationData?.notifications.length || 0);
+
     return (
         <div className="relative group">
             <button
                 onClick={() => { setNotificationMode(!notificationMode) }}
-                className="px-3 py-1.5 text-sm bg-custom-gray rounded-full hover:bg-custom-hover-gray transition cursor-pointer">
+                className="relative px-5 py-1.5 text-sm bg-custom-gray rounded-full hover:opacity-70 transition cursor-pointer"
+            >
                 새로운 알림
+                {totalCound > 0 && (
+                    <div className="absolute -top-1 -left-1 w-4 h-4 bg-[#12DBE4] text-black text-[12px] flex justify-center items-center  rounded-full">
+                        {totalCound}
+                    </div>
+                )}
             </button>
 
             {notificationMode && (
