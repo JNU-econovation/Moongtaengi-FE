@@ -3,15 +3,19 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useStudyQuery } from '../hooks/queries/useStudyQuery.tsx';
 import { useProcessQuery } from '../hooks/queries/useProcessQuery.tsx';
 import { ProcessCard } from '../components/ProcessCard.tsx';
+import { useQueryClient } from '@tanstack/react-query';
 
 const Process = () => {
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const { studyId='' } = useParams<{ studyId: string }>();
+  const { studyId = '' } = useParams<{ studyId: string }>();
 
   const { data: studyData, isLoading: isStudyLoading } = useStudyQuery(studyId ?? '');
   const { data: processData = [], isLoading: isProcessLoading } = useProcessQuery(studyId ?? '');
+
+  console.log('processData: ', processData);
 
   // 전체 프로세스 항목 Refs
   const itemRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
@@ -61,6 +65,11 @@ const Process = () => {
     }
   }, [processData]);
 
+  // 전역 데이터 캐시 쿼리
+  useEffect(() => {
+    queryClient.invalidateQueries({queryKey: ['userGlobalData']});
+  }, []);
+
 
   if (isStudyLoading || isProcessLoading) return <div className='h-screen bg-custom-bg text-white'>로딩 중...</div>
   if (!studyData) return null
@@ -69,7 +78,7 @@ const Process = () => {
     <div className="min-h-full bg-custom-bg text-white flex flex-col items-center">
       <div className="w-full max-w-6xl px-4 py-10 flex flex-col gap-24 mb-40 md:scale-90 2xl:scale-98">
         {processData.map((process) => (
-          <ProcessCard studyData={studyData} studyId={studyId} processData={processData} process={process} scrollRefs={scrollRefs} itemRefs={itemRefs} handleScroll={handleScroll} />
+          <ProcessCard studyData={studyData} processData={processData} process={process} scrollRefs={scrollRefs} itemRefs={itemRefs} handleScroll={handleScroll} />
         ))}
       </div>
     </div >
