@@ -3,6 +3,7 @@ import { createPortal } from "react-dom"
 import cross from "../assets/icons/common/cross.svg";
 import { useModalModeStore } from "../stores/useModalModeStore";
 import { useJoinStudyMutation } from "../hooks/mutations/useJoinStudyMutation";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const InviteCode = () => {
 
@@ -11,6 +12,8 @@ export const InviteCode = () => {
     const { mutate, isPending } = useJoinStudyMutation();
 
     const [formData, setFormData] = useState("");
+
+    const queryClient = useQueryClient();
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,8 +24,17 @@ export const InviteCode = () => {
         e.preventDefault();
         console.log('저장된 데이터:', formData);
         mutate(formData, {
-            onSuccess: () => {
-                setModalMode(null);
+            onSuccess: (response) => {
+                queryClient.invalidateQueries({ queryKey: ['collection'] });
+                queryClient.invalidateQueries({ queryKey: ['notification'] });
+
+                if (response.codeType === "STUDY") {
+                    alert(response.message);
+                    setModalMode(null);
+                } else if (response.codeType === "ECONO") {
+                    setModalMode('ECONO');
+                }
+                
             },
             onError: (error) => {
                 console.log(error);

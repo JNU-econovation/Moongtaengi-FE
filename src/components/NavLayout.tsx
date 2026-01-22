@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import { QuickCreateStudy } from "./QuickCreateStudy";
 import { InviteCode } from "./InviteCode";
 import { useModalModeStore } from "../stores/useModalModeStore";
+import { EconoGift } from "./EconoGift";
 
 export const NavLayout = () => {
     const { modalMode } = useModalModeStore();
@@ -17,6 +18,7 @@ export const NavLayout = () => {
 
             {modalMode === "createStudy" && <QuickCreateStudy />}
             {modalMode === "inviteCode" && <InviteCode />}
+            {modalMode === "ECONO" && <EconoGift />}
         </div>
     );
 };
