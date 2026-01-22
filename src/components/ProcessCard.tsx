@@ -3,8 +3,9 @@ import cardPrimaryMoong from '../assets/images/process/card-primary-moong.png';
 import { formatDateToWord } from "../utils/formatDateToWord";
 import { useAssignmentListQuery } from '../hooks/queries/useAssignmentListQuery';
 import { useAuthStore } from '../stores/useAuthStore';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAssignAssignmentMutation } from '../hooks/mutations/useAssignAssignmentMutation';
+import { useUpdateAssignmentMutation } from '../hooks/mutations/useUpdateAssignmentMutation';
 
 interface ProcessType {
     id: number;
@@ -57,13 +58,26 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
 
     const navigate = useNavigate();
     const userId = useAuthStore((s) => s.userId);
+    const nickname = useAuthStore((s) => s.userNickname);
     const { data: assignmentList = [] } = useAssignmentListQuery(process.id);
+    
+    console.log('과제 리스트', assignmentList);
 
     if (!userId) return null;
 
-    const myAssignment: AssignmentType | undefined = assignmentList.find((assignment) => (assignment.memberId === userId));
-
-    if (!myAssignment) return null;
+    const myAssignment: AssignmentType =
+        assignmentList.find((assignment) => (assignment.memberId === userId)) ||
+        {
+            assignmentId: null,
+            submissionId: null,
+            memberId: userId,
+            nickname: nickname || '나',
+            assignmentDescription: '',
+            fileName: '',
+            fileUrl: '',
+            status: null,
+            isLate: false,
+        }
 
     const otherAssignmentList: AssignmentType[] = assignmentList.filter((assignment) => (assignment.memberId !== userId));
 
@@ -84,8 +98,12 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
 
                 <div className="flex gap-2 text-sm text-white font-semibold">
                     {studyData.myRole === 'HOST' && (
-                        <button onClick={() => { navigate(`/studies/${studyData.studyId}/setting`, { state: { idEdit: true } }) }}
-                            className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70 cursor-pointer">수정하기</button>
+                        <button 
+                            onClick={() => { navigate(`/studies/${studyData.studyId}/setting`, { state: { idEdit: true } }) }}
+                            className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70 cursor-pointer"
+                        >
+                            수정하기
+                        </button>
                     )}
                     <button onClick={() => { }}
                         className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70 cursor-pointer">나의 과제 모아보기</button>
@@ -133,8 +151,8 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
                         onClick={() => {
                             console.log('과제 리스트', assignmentList);
                             myAssignment.assignmentId
-                            ? navigate(`/studies/${studyData.studyId}/processes/${process.id}/assignments/${myAssignment.assignmentId}`)
-                            : alert('아직 할당되지 않은 과제입니다.')
+                                ? navigate(`/studies/${studyData.studyId}/processes/${process.id}/assignments/${myAssignment.assignmentId}`)
+                                : alert('아직 할당되지 않은 과제입니다.')
                         }}
                         className="md:w-80 md:shrink-0 aspect-square bg-[#272727] rounded-2xl p-6 flex flex-col justify-between hover:opacity-70 transition-colors cursor-pointer">
                         <div className='flex flex-col items-start gap-2'>
@@ -142,6 +160,8 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
                                 processId={process.id}
                                 memberId={userId}
                                 initialDescription={myAssignment.assignmentDescription}
+                                assignmentId={myAssignment.assignmentId}
+                                myRole={studyData.myRole}
                             />
                             <div className={`bg-[#3E3E3E] px-2 text-sm rounded-full text-white
                                 ${AssignmentStatus(myAssignment) === '기간초과' && 'text-[#FF2935]'}
@@ -158,7 +178,7 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
                                 Me
                             </div>
                             <div className="flex flex-col">
-                                <span className="font-semibold">나</span>
+                                <span className="font-semibold">(나) {myAssignment.nickname}</span>
                                 <span className="text-sm text-[#F9F9F9]">{myAssignment.fileName}일단 아무거나</span>
                             </div>
                         </div>
@@ -188,8 +208,8 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
                                     onClick={() => {
                                         console.log('과제 리스트', assignmentList);
                                         assignment.assignmentId
-                                        ? navigate(`/studies/${studyData.studyId}/processes/${process.id}/assignments/${assignment.assignmentId}`)
-                                        : alert('아직 할당되지 않은 과제입니다.')
+                                            ? navigate(`/studies/${studyData.studyId}/processes/${process.id}/assignments/${assignment.assignmentId}`)
+                                            : alert('아직 할당되지 않은 과제입니다.')
                                     }}
                                     className="shrink-0 w-80 aspect-square bg-[#272727] rounded-2xl p-6 flex flex-col justify-between hover:opacity-70 transition-colors cursor-pointer"
                                 >
@@ -198,6 +218,8 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
                                             processId={process.id}
                                             memberId={assignment.memberId}
                                             initialDescription={assignment.assignmentDescription}
+                                            assignmentId={assignment.assignmentId}
+                                            myRole={studyData.myRole}
                                         />
                                         <div className={`bg-[#3E3E3E] px-2 text-sm rounded-full text-white
                                             ${AssignmentStatus(assignment) === '기간초과' && 'text-[#FF2935]'}
@@ -250,25 +272,41 @@ interface AssignmentInputProps {
     processId: number;
     memberId: number;
     initialDescription: string;
+    assignmentId: number | null;
+    myRole: 'HOST' | 'GUEST';
 }
 
-const AssignmentInput = ({ processId, memberId, initialDescription }: AssignmentInputProps) => {
+const AssignmentInput = ({ processId, memberId, initialDescription, assignmentId, myRole }: AssignmentInputProps) => {
     const [description, setDescription] = useState(initialDescription || '');
 
-    const { mutate } = useAssignAssignmentMutation(processId); // 실제 Mutation 훅 사용
+    useEffect(() => {
+        setDescription(initialDescription || '');
+    }, [initialDescription]);
+
+    const { mutate: assignMutate } = useAssignAssignmentMutation(processId);
+    const { mutate: updateMutate } = useUpdateAssignmentMutation(processId); 
 
     const handleSave = () => {
         // 변경 사항이 없거나 내용이 비어있으면 API 호출 스킵
         if (description === initialDescription) return;
 
+
         // API 호출 로직
         console.log("API Call Triggered:", { processId, assigneeId: memberId, description });
 
-        mutate({
-            processId,
-            assigneeId: memberId,
+        if (!assignmentId) {
+            assignMutate({
+                processId,
+                assigneeId: memberId,
+                description
+            });
+            return;
+        }
+
+        updateMutate({
+            assignmentId,
             description
-        });
+        })
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -287,6 +325,7 @@ const AssignmentInput = ({ processId, memberId, initialDescription }: Assignment
             onBlur={handleSave}
             onKeyDown={handleKeyDown}
             onClick={(e) => e.stopPropagation()}
+            disabled={myRole === 'GUEST'}
             className="text-3xl font-semibold mt-6 placeholder:text-white bg-transparent outline-none w-full text-white"
             placeholder="눌러서 과제 할당"
         />
