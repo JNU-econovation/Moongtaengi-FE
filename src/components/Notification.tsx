@@ -91,7 +91,7 @@ export const Notification = ({ notificationMode, setNotificationMode }: Params) 
                                 notificationData?.notifications.map((quest, index) => (
                                     <NotificationItem
                                         key={index}
-                                        category={'일일 퀘스트'}
+                                        category={'스터디'}
                                         message={quest.message}
                                     />
                                 ))

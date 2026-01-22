@@ -2,7 +2,7 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image'
 import { Markdown } from 'tiptap-markdown';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react'; // useEffect 추가
 import downArrow from "../assets/icons/common/down-arrow.svg";
 import hamburgerBar from "../assets/icons/assignmentEdit/hamburgerBarIcon.svg";
 import boldIcon from "../assets/icons/assignmentEdit/boldIcon.svg";
@@ -21,28 +21,35 @@ import { useAssignmentSingleQuery } from '../hooks/queries/useAssignmentSingleQu
 export const AssignmentEdit = () => {
     const navigate = useNavigate();
     const { studyId, processId, assignmentId } = useParams<"studyId" | "processId" | "assignmentId">();
+
+    // 1. 데이터 조회 훅 (최상단)
     const { data: assignmentData } = useAssignmentSingleQuery(Number(assignmentId));
-    const {mutate: submitMutate, isPending: isSubmitPending} = useSendAssignmentMutation(Number(assignmentId));
-    const uploadFile = useUploadFile();
 
     const [_, forceUpdate] = useState(0);
-
     const [commentOpen, setCommentOpen] = useState(false);
-
     const [fileName, setFileName] = useState('');
     const [fileUrl, setFileUrl] = useState('');
 
-    // 파일 임베딩을 요청하기 위한 ref
+    // 2. 뮤테이션 훅 (조건문보다 위에 있어야 함)
+    // 데이터가 아직 없으면 null을 넘겨서 안전하게 처리
+    const { mutate: submitMutate, isPending: isSubmitPending } = useSendAssignmentMutation(
+        assignmentData?.submissionId ?? null,
+        Number(assignmentId)
+    );
+
+    const uploadFile = useUploadFile();
     const imageInputRef = useRef<HTMLInputElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    // 3. 에디터 훅 (조건문보다 위에 있어야 함)
     const editor = useEditor({
         extensions: [
             StarterKit,
             Markdown,
             Image,
         ],
-        content: '',
+        // 초기 로딩 시엔 undefined일 수 있음. 아래 useEffect에서 데이터 동기화 처리
+        content: assignmentData?.submissionContent || '',
         editorProps: {
             attributes: {
                 class: 'max-w-none min-h-[400px] p-2 focus:outline-none',
@@ -53,11 +60,29 @@ export const AssignmentEdit = () => {
         }
     });
 
+    // 4. [중요] 데이터가 로딩되면 에디터 내용과 state 업데이트
+    useEffect(() => {
+        if (assignmentData && editor) {
+            // 에디터 내용 설정 (이미 내용이 있다면 덮어쓰지 않도록 주의하거나, 로딩 직후 한 번만 실행되게 제어)
+            // 여기서는 단순하게 데이터가 있고 에디터가 비어있을 때만 채우는 예시입니다.
+            if (editor.isEmpty) {
+                editor.commands.setContent(assignmentData.submissionContent);
+            }
 
-    if (!editor) {
-        return null;
+            // 파일 정보 state 동기화
+            if (assignmentData.submissionFileName) setFileName(assignmentData.submissionFileName);
+            if (assignmentData.submissionFileUrl) setFileUrl(assignmentData.submissionFileUrl);
+        }
+    }, [assignmentData, editor]);
+
+
+    // 5. Hooks 호출이 끝난 후에 조건부 렌더링 (Loading 처리)
+    // 에디터가 초기화되지 않았거나 데이터가 아직 없으면 로딩 중 표시
+    if (!editor || !assignmentData) {
+        return <div className="h-full flex items-center justify-center text-white">로딩 중...</div>;
     }
 
+    // --- 핸들러 함수들 ---
     const handleDropImage = async (e: React.DragEvent) => {
         e.preventDefault();
 
@@ -105,15 +130,20 @@ export const AssignmentEdit = () => {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        setFileName(file.name);
+
         try {
             const url = await uploadFile(file);
 
             if (url) {
-                setFileName(file.name);
                 setFileUrl(url);
+            } else {
+                throw new Error("Upload failed");
             }
         } catch (error) {
             console.error(error);
+            setFileName('');
+            setFileUrl('');
         } finally {
             if (fileInputRef.current) fileInputRef.current.value = '';
         }
@@ -128,8 +158,6 @@ export const AssignmentEdit = () => {
             alert('내용을 입력해주세요.');
             return;
         }
-
-        console.log((editor.storage as any).markdown.getMarkdown());
 
         submitMutate({
             assignmentId: Number(assignmentId),
@@ -187,12 +215,12 @@ export const AssignmentEdit = () => {
                         onDrop={(e) => handleDropImage(e)}
                         onDragOver={(e) => e.preventDefault()}
                         className="flex-1 overflow-y-auto bg-[#272727] p-6 rounded-md
-                        [&::-webkit-scrollbar]:w-1
-                        hover:[&::-webkit-scrollbar]:w-2
-                        [&::-webkit-scrollbar-track]:bg-transparent
-                        [&::-webkit-scrollbar-thumb]:bg-[#555]
-                        [&::-webkit-scrollbar-thumb]:rounded-full
-                        [&::-webkit-scrollbar-button]:hidden"
+                            [&::-webkit-scrollbar]:w-1
+                            hover:[&::-webkit-scrollbar]:w-2
+                            [&::-webkit-scrollbar-track]:bg-transparent
+                            [&::-webkit-scrollbar-thumb]:bg-[#555]
+                            [&::-webkit-scrollbar-thumb]:rounded-full
+                            [&::-webkit-scrollbar-button]:hidden"
                     >
                         <EditorContent editor={editor} />
                     </div>

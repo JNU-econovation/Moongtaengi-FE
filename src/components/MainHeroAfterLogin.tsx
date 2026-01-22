@@ -2,7 +2,6 @@
 // import mainMoongs from "../assets/images/main/main-moongs.png";
 
 import { useMainQuery } from "../hooks/queries/useMainQuery";
-import { useAuthStore } from "../stores/useAuthStore";
 import MainButton from "./MainButton";
 
 interface HeroProps {
@@ -11,7 +10,6 @@ interface HeroProps {
 
 export default function MainHeroAfterLogin({ isLogin }: HeroProps) {
 
-    const userNickname = useAuthStore((s) => s.userNickname);
     const { data } = useMainQuery();
 
     if (!data) return null;
@@ -21,7 +19,7 @@ export default function MainHeroAfterLogin({ isLogin }: HeroProps) {
 
             {/* Left: Text Content */}
             <div className="flex-1 flex flex-col justify-center md:ml-20 2xl:ml-34 z-10 text-white md:scale-100 2xl:scale-110">
-                <span className="font-semibold text-lg">{userNickname} 님, 안녕하세요.</span>
+                <span className="font-semibold text-lg">{data.nickname} 님, 안녕하세요.</span>
                 <p className="md:text-6xl 2xl:text-7xl font-semibold leading-tight mb-8">
                     {data.equippedCollectionName}
                 </p>

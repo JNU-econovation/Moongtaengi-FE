@@ -71,9 +71,9 @@ const Process = () => {
   }, []);
 
 
-  if (isStudyLoading || isProcessLoading) return <div className='h-screen bg-custom-bg text-white'>로딩 중...</div>;
+  if (isStudyLoading || isProcessLoading) return <div className='h-full bg-custom-bg text-white'>로딩 중...</div>;
   if (!studyData) return null;
-  if (processData && processData.length === 0) return <div className='h-screen bg-custom-bg text-white'>아직 프로세스가 생성되지 않았습니다.</div>
+  if (processData && processData.length === 0) return <div className='h-full bg-custom-bg text-white'>아직 프로세스가 생성되지 않았습니다.</div>
 
   return (
     <div className="min-h-full bg-custom-bg text-white flex flex-col items-center">
