@@ -12,7 +12,7 @@ interface Params {
 const sendAssignmentApi = async ({ assignmentId, content, fileName, fileUrl }: Params) => {
     const token = getTokenFromSession();
 
-    await axios.post(import.meta.env.VITE_API_ASSIGNMENT_SUBMIT,
+    await axios.post(import.meta.env.VITE_API_SUBMIT_ASSIGNMENT,
         {
             assignmentId: assignmentId,
             content: content,
