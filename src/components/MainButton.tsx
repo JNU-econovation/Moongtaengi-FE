@@ -11,7 +11,7 @@ export default function MainButton({ islogin, shortcutStudyId, totalExperience }
 
     if (!islogin) return <LoginButton />
 
-    if (!shortcutStudyId) return <CreateStudyButton  />
+    if (!shortcutStudyId) return <CreateStudyButton />
 
     return <ProgressButton totalExperience={totalExperience ?? 0} shortcutStudyId={shortcutStudyId} />
 }
@@ -60,7 +60,8 @@ const ProgressButton = ({ totalExperience, shortcutStudyId }: ProgressButton) =>
                 style={{ width: `${progress}%` }}
             />
             <span className="relative z-10 w-full h-full flex items-center justify-center px-10 md:py-3 2xl:py-4 text-2xl font-semibold text-white">
-                스터디 바로가기
+                <span className="group-hover:hidden">스터디 바로가기</span>
+                <span className="hidden group-hover:block">{totalExperience}xp</span>
             </span>
         </button>
     )
