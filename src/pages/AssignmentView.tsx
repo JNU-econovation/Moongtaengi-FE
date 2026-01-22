@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown"; // 마크다운 렌더링용 라이�
 import downArrow from "../assets/icons/common/down-arrow.svg";
 import hamburgerBar from "../assets/icons/assignmentEdit/hamburgerBarIcon.svg";
 import { useAssignmentSingleQuery } from "../hooks/queries/useAssignmentSingleQuery";
+import { useEmojiMutation } from "../hooks/mutations/useEmojiMutation";
 
 // 목데이터: 마크다운 문자열
 const MOCK_MARKDOWN = `
@@ -22,19 +23,21 @@ const MOCK_MARKDOWN = `
 - **컬러 팔레트**: 다크 모드 기반의 퍼플 포인트
 `;
 
-// 목데이터: 리액션 정보
-const MOCK_REACTIONS = [
-    { emoji: "❤️", count: 7 },
-    { emoji: "👏", count: 6 },
-    { emoji: "😮", count: 2 },
-    { emoji: "😢", count: 3 },
-    { emoji: "😍", count: 4 },
-];
+type EmojiType = "HEART" | "CLAP" | "SURPRISED" | "SAD" | "EYES_HEART";
 
+// 목데이터: 리액션 정보
+const MOCK_REACTIONS: { type: EmojiType; emoji: string; count: number }[] = [
+    { type: "HEART", emoji: "❤️", count: 7 },
+    { type: "CLAP", emoji: "👏", count: 6 },
+    { type: "SURPRISED", emoji: "😮", count: 2 },
+    { type: "SAD", emoji: "😢", count: 3 },
+    { type: "EYES_HEART", emoji: "😍", count: 4 },
+];
 export const AssignmentView = () => {
     const navigate = useNavigate();
     const { studyId, processId, assignmentId } = useParams<"studyId" | "processId" | "assignmentId">();
     const { data: assignmentData } = useAssignmentSingleQuery(Number(assignmentId));
+    const { mutate: emojiMutate } = useEmojiMutation();
 
     const [commentOpen, setCommentOpen] = useState(false);
 
@@ -90,6 +93,7 @@ export const AssignmentView = () => {
                     {MOCK_REACTIONS.map((reaction, index) => (
                         <button
                             key={index}
+                            onClick={() => { emojiMutate(reaction.type) }}
                             className="flex flex-col items-center justify-center hover:scale-110 transition-transform cursor-pointer"
                         >
                             <span className="text-2xl">{reaction.emoji}</span>
