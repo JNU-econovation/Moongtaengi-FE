@@ -15,11 +15,13 @@ import { useUploadFile } from '../hooks/useUploadFile';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Comment } from '../components/Comment';
 import { useSendAssignmentMutation } from '../hooks/mutations/useSendAssignmentMutation';
+import { useAssignmentSingleQuery } from '../hooks/queries/useAssignmentSingleQuery';
 
 
 export const AssignmentEdit = () => {
     const navigate = useNavigate();
     const { studyId, processId, assignmentId } = useParams<"studyId" | "processId" | "assignmentId">();
+    const { data: assignmentData } = useAssignmentSingleQuery(Number(assignmentId));
     const {mutate: submitMutate, isPending: isSubmitPending} = useSendAssignmentMutation(Number(assignmentId));
     const uploadFile = useUploadFile();
 
@@ -169,7 +171,9 @@ export const AssignmentEdit = () => {
                 </button>
                 <button
                     onClick={() => { setCommentOpen(!commentOpen) }}
-                    className={`absolute right-8 w-10 h-10 rounded-full ${commentOpen ? 'bg-white' : 'bg-[#2a2a2a]'} flex items-center justify-center hover:opacity-70 cursor-pointer`}>
+                    className={`absolute right-8 w-10 h-10 rounded-full ${commentOpen ? 'bg-white' : 'bg-[#2a2a2a]'} flex items-center justify-center hover:opacity-70 cursor-pointer`}
+                    disabled={!assignmentData?.submissionId}
+                >
                     <img src={hamburgerBar} className='w-[40%]' />
                 </button>
             </div>
@@ -296,8 +300,8 @@ export const AssignmentEdit = () => {
                 </div>
             </div>
 
-            {commentOpen && (
-                <Comment />
+            {commentOpen && assignmentData?.submissionId && (
+                <Comment submissionId={assignmentData.submissionId} />
             )}
         </div>
     );
