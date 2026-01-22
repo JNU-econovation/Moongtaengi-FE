@@ -23,7 +23,8 @@ export const useJoinStudyMutation = () => {
     return useMutation({
         mutationFn: joinStudyApi,
         onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ['collection']})
+            queryClient.invalidateQueries({queryKey: ['collection']});
+            queryClient.invalidateQueries({queryKey: ['notification']});
         },
         onError: (error) => {
             console.error(error);

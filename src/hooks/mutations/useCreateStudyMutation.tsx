@@ -36,6 +36,7 @@ export const useCreateStudyMutation = (setModalMode: (status: "createStudy" | "i
 
             queryClient.invalidateQueries({ queryKey: ['operatingStudyList'] });
             queryClient.invalidateQueries({ queryKey: ['participatingStudyList'] });
+            queryClient.invalidateQueries({ queryKey: ['mainData'] });
 
             setModalMode(null);
 

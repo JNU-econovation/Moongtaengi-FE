@@ -14,6 +14,8 @@ import { AssignmentEdit } from './pages/AssignmentEdit'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Error } from './pages/Error'
 import Collection from './pages/Collection'
+import { AppInitializer } from './components/AppInitializer'
+import { AssignmentView } from './pages/AssignmentView'
 
 const queryClient = new QueryClient();
 
@@ -22,6 +24,8 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+        <AppInitializer />
+
         <Routes>
           <Route element={<NavLayout />}>
             <Route path='/' element={<Main />} />
@@ -31,6 +35,7 @@ function App() {
               <Route path='/studies/:studyId/setting' element={<ProcessSetting />} />
               <Route path='/studies/:studyId/processes/:processId/assignments/:assignmentId' element={<Assignment />} />
               <Route path='/studies/:studyId/processes/:processId/assignments/:assignmentId/edit' element={<AssignmentEdit />} />
+              <Route path='/studies/:studyId/processes/:processId/assignments/:assignmentId/view' element={<AssignmentView />} />
               <Route path='/collections' element={<Collection />} />
             </Route>
           </Route>

@@ -1,5 +1,7 @@
 import { useNavigate, type NavigateFunction } from 'react-router-dom'
 import downArrow from "../assets/icons/common/down-arrow.svg";
+import moongLogoBefore from "../assets/icons/common/moong-logo-before.svg"
+import moongLogoAfter from "../assets/icons/common//moong-logo-after.svg"
 import { useAuthStore } from '../stores/useAuthStore';
 import { useModalModeStore } from '../stores/useModalModeStore';
 import { useEffect, useRef, useState } from 'react';
@@ -78,11 +80,19 @@ export default function Navbar() {
             <nav className="flex items-center justify-between px-6 md:py-2 2xl:py-3 bg-black sticky top-0 z-60 text-white rounded-full mt-7">
 
                 {/* Left Side */}
-                <div className="flex items-center gap-8 ml-10">
+                <div className="flex items-center gap-4 ml-10">
 
                     {/* Logo */}
-                    <h1 onClick={() => { navigate('/') }}
-                        className="md:text-4xl 2xl:text-5xl font-semibold tracking-tighter cursor-pointer">뭉탱이</h1>
+                    <div onClick={() => { navigate('/') }}
+                        className="flex items-center justify-center cursor-pointer"
+                    >
+                        <img
+                            src={
+                                isLogin ? moongLogoAfter : moongLogoBefore
+                            }
+                            className='object-contain w-[80%]'
+                        />
+                    </div>
 
                     {/* Menu Items */}
                     <div className="hidden md:flex gap-3">
@@ -128,7 +138,7 @@ export default function Navbar() {
                                             <div className='h-full flex flex-col gap-1 pr-1.5 overflow-y-auto
                                                 [&::-webkit-scrollbar]:w-0.5
                                                 [&::-webkit-scrollbar-track]:bg-transparent
-                                                [&::-webkit-scrollbar-thumb]:bg-[#555]
+                                                [&::-webkit-scrollbar-thumb]:bg-[#625E5E]
                                                 [&::-webkit-scrollbar-thumb]:rounded-full
                                                 [&::-webkit-scrollbar-button]:hidden'
                                             >

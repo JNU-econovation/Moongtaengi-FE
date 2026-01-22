@@ -14,11 +14,15 @@ import fileIcon from "../assets/icons/assignmentEdit/fileIcon.svg";
 import { useUploadFile } from '../hooks/useUploadFile';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Comment } from '../components/Comment';
+import { useSendAssignmentMutation } from '../hooks/mutations/useSendAssignmentMutation';
+import { useAssignmentSingleQuery } from '../hooks/queries/useAssignmentSingleQuery';
 
 
 export const AssignmentEdit = () => {
     const navigate = useNavigate();
     const { studyId, processId, assignmentId } = useParams<"studyId" | "processId" | "assignmentId">();
+    const { data: assignmentData } = useAssignmentSingleQuery(Number(assignmentId));
+    const {mutate: submitMutate, isPending: isSubmitPending} = useSendAssignmentMutation(Number(assignmentId));
     const uploadFile = useUploadFile();
 
     const [_, forceUpdate] = useState(0);
@@ -26,6 +30,7 @@ export const AssignmentEdit = () => {
     const [commentOpen, setCommentOpen] = useState(false);
 
     const [fileName, setFileName] = useState('');
+    const [fileUrl, setFileUrl] = useState('');
 
     // 파일 임베딩을 요청하기 위한 ref
     const imageInputRef = useRef<HTMLInputElement>(null);
@@ -105,6 +110,7 @@ export const AssignmentEdit = () => {
 
             if (url) {
                 setFileName(file.name);
+                setFileUrl(url);
             }
         } catch (error) {
             console.error(error);
@@ -113,10 +119,25 @@ export const AssignmentEdit = () => {
         }
     }
 
-    // const handleLog = () => {
-    //     console.log(editor.storage.markdown.getMarkdown());
-    // }
+    const handleSubmit = () => {
+        if (!editor || !assignmentId) return;
 
+        const content = (editor.storage as any).markdown.getMarkdown();
+
+        if (!content.trim()) {
+            alert('내용을 입력해주세요.');
+            return;
+        }
+
+        console.log((editor.storage as any).markdown.getMarkdown());
+
+        submitMutate({
+            assignmentId: Number(assignmentId),
+            content: content,
+            fileName: fileName,
+            fileUrl: fileUrl
+        });
+    }
 
     // 툴바 버튼 스타일 클래스
     const buttonBaseClass = "flex items-center justify-center text-2xl hover:opacity-70 transition-colors cursor-pointer";
@@ -141,7 +162,7 @@ export const AssignmentEdit = () => {
             />
 
             {/* 뒤로가기, 댓글 */}
-            <div className='relative w-full h-24 flex items-center md:mb-2 2xl:mb-10 z-50'>
+            <div className='relative w-full h-24 flex items-center md:mb-2 2xl:mb-10 z-40'>
                 <button
                     onClick={() => { navigate(`/studies/${studyId}/processes/${processId}/assignments/${assignmentId}`) }}
                     className="absolute left-8 w-10 h-10 rounded-full bg-[#272727] flex items-center justify-center hover:opacity-70 cursor-pointer"
@@ -150,7 +171,9 @@ export const AssignmentEdit = () => {
                 </button>
                 <button
                     onClick={() => { setCommentOpen(!commentOpen) }}
-                    className={`absolute right-8 w-10 h-10 rounded-full ${commentOpen ? 'bg-white' : 'bg-[#2a2a2a]'} flex items-center justify-center hover:opacity-70 cursor-pointer`}>
+                    className={`absolute right-8 w-10 h-10 rounded-full ${commentOpen ? 'bg-white' : 'bg-[#2a2a2a]'} flex items-center justify-center hover:opacity-70 cursor-pointer`}
+                    disabled={!assignmentData?.submissionId}
+                >
                     <img src={hamburgerBar} className='w-[40%]' />
                 </button>
             </div>
@@ -261,22 +284,24 @@ export const AssignmentEdit = () => {
                             >
                                 <img src={fileIcon} className='w-[8%] mr-1' />
                                 <span>
-                                    {fileName ? fileName : '파일을 임베드 하세요(PDF, Google Docs...)'}
+                                    {fileName ? fileName : '파일을 임베드 하세요(PDF 등...)'}
                                 </span>
                             </button>
                         </div>
 
                         {/* 등록 버튼 */}
                         <button
-                            className="bg-white text-[#6D6D6D] px-4 py-1.5 rounded text-sm font-semibold hover:text-black transition-colors cursor-pointer">
-                            등록
+                            onClick={handleSubmit}
+                            className="bg-white text-[#6D6D6D] px-4 py-1.5 rounded text-sm font-semibold hover:text-black transition-colors cursor-pointer"
+                        >
+                            {isSubmitPending ? '등록 중...' : '등록'}
                         </button>
                     </div>
                 </div>
             </div>
 
-            {commentOpen && (
-                <Comment />
+            {commentOpen && assignmentData?.submissionId && (
+                <Comment submissionId={assignmentData.submissionId} />
             )}
         </div>
     );

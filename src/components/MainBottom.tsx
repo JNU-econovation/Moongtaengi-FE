@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useTopRunnerQuery } from "../hooks/queries/useTopRunnerQuery";
 
 export default function MainBottom() {
 
-    const [studyList] = useState([1,2,3,4,5]);
+    const { data } = useTopRunnerQuery();
+
+    console.log('top runners', data);
+
+    if (!data) return <>로딩 중...</>;
 
     return (
         <div className="px-8 py-4 bg-[#272727]">
@@ -13,21 +17,38 @@ export default function MainBottom() {
             </div>
 
             {/* Scrollable Square List */}
-            <div className="flex md:gap-3 2xl:gap-6 overflow-x-auto pb-6 scrollbar-hide">
-                {studyList.map((item) => (
-                    <div key={item}
-                         className="flex-shrink-0 ml-10 md:w-64 md:h-64 2xl:w-80 2xl:h-80 bg-black rounded-2xl relative transition-colors cursor-pointer group">
+            <div className={`flex md:gap-3 2xl:gap-6 overflow-x-auto pb-6 
+                [&::-webkit-scrollbar]:w-0.5
+                [&::-webkit-scrollbar-track]:bg-transparent
+                [&::-webkit-scrollbar-thumb]:bg-[#625E5E]
+                [&::-webkit-scrollbar-thumb]:rounded-full
+                [&::-webkit-scrollbar-button]:hidden`}
+            >
+                {data.topRunners.map((item, index) => (
+                    <div
+                        key={index}
+                        className="flex flex-col items-center gap-3 ml-10"
+                    >
+                        <div className="relative shrink-0 md:w-64 md:h-64 2xl:w-80 2xl:h-80 rounded-2xl transition-colors group">
+                            {/* Badge */}
+                            <div className="absolute top-4 left-4 px-3 py-1 bg-gradient-to-b from-custom-gradient-blue to-custom-gradient-green text-black text-xs font-semibold rounded-full z-10">
+                                TOP {index + 1}
+                            </div>
 
-                        {/* Badge */}
-                        <div className="absolute top-4 left-4 px-3 py-1 bg-gradient-to-b from-custom-gradient-blue to-custom-gradient-green text-black text-xs font-semibold rounded-full z-10">
-                            TOP {item}
+                            {/* Content Placeholder inside black card */}
+                            <div className="w-full h-full flex items-center justify-center">
+                                <div className="w-full h-full rounded-xl flex items-center justify-center transition-colors">
+                                    <img
+                                        src={item.profileIconUrl}
+                                        alt="Top Runner"
+                                        className="object-contain"
+                                    />
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Content Placeholder inside black card */}
-                        <div className="w-full h-full flex items-center justify-center">
-                            <div className="w-full h-full bg-black rounded-xl flex items-center justify-center group-hover:bg-[#121212] transition-colors">
-                                <span className="text-zinc-700">No Content</span>
-                            </div>
+                        <div className="text-lg">
+                            {item.nickname}
                         </div>
                     </div>
                 ))}

@@ -5,11 +5,15 @@ import downArrow from "../assets/icons/common/down-arrow.svg";
 import hamburgerBar from "../assets/icons/assignmentEdit/hamburgerBarIcon.svg";
 import { useState } from "react";
 import { Comment } from "../components/Comment";
+import { useAssignmentSingleQuery } from "../hooks/queries/useAssignmentSingleQuery";
 
 export const Assignment = () => {
     const navigate = useNavigate();
 
     const { studyId, processId, assignmentId } = useParams<"studyId" | "processId" | "assignmentId">();
+
+    const { data: assignmentData } = useAssignmentSingleQuery(Number(assignmentId));
+    console.log(assignmentData);
 
     const [commentOpen, setCommentOpen] = useState(false);
 
@@ -41,7 +45,7 @@ export const Assignment = () => {
 
             <main className="relative w-full h-full flex flex-col">
 
-                <div className='relative w-full py-12 flex items-center z-50'>
+                <div className='relative w-full py-12 flex items-center z-40'>
                     {/* 뒤로가기, 댓글 버튼 */}
                     <button
                         onClick={() => { navigate(`/studies/${studyId}`) }}
@@ -50,7 +54,9 @@ export const Assignment = () => {
                     </button>
                     <button
                         onClick={() => { setCommentOpen(!commentOpen) }}
-                        className={`absolute right-8 w-10 h-10 rounded-full ${commentOpen ? 'bg-white' : 'bg-[#2a2a2a]'} flex items-center justify-center hover:opacity-70 cursor-pointer`}>
+                        className={`absolute right-8 w-10 h-10 rounded-full ${commentOpen ? 'bg-white' : 'bg-[#2a2a2a]'} flex items-center justify-center hover:opacity-70 cursor-pointer`}
+                        disabled={!assignmentData?.submissionId}
+                    >    
                         <img src={hamburgerBar} className='w-[40%] invert' />
                     </button>
                 </div>
@@ -60,21 +66,28 @@ export const Assignment = () => {
                     {/* 텍스트 영역 */}
                     <div className="flex-1 flex flex-col items-start" >
                         <div className="flex flex-col gap-4 mb-20">
-                            <p className="text-custom-gradient-blue text-4xl">스터디 명</p>
-                            <p className="text-7xl">부여받은 과제 이름</p>
+                            <p className="text-custom-gradient-blue text-4xl">
+                                {assignmentData?.studyName}
+                            </p>
+                            <p className="text-7xl">
+                                {assignmentData?.assignmentDescription}
+                            </p>
                         </div>
 
                         <p className="font-semibold mb-4">
-                            현재 레벨: Pro
+                            현재 레벨: {assignmentData?.memberTitle}
                         </p>
 
                         <div className="flex items-center justify-center gap-3">
-                            <div className="border rounded-full w-15 h-15 flex items-center justify-center">
-                                이미지
+                            <div className="rounded-full w-15 h-15 flex items-center justify-center">
+                                <img
+                                    src={assignmentData?.profileIcon}
+                                    className="object-contain"
+                                />
                             </div>
                             <div className="font-semibold text-lg">
-                                <p>사용자 1</p>
-                                <p className="text-[#A0A0A0]">과제 작성일</p>
+                                <p>{assignmentData?.nickname}</p>
+                                <p className="text-[#A0A0A0]">{assignmentData?.submitTime}</p>
                             </div>
                         </div>
                     </div>
@@ -93,16 +106,22 @@ export const Assignment = () => {
                 {/* 이동 버튼 */}
                 <div className="pt-6 w-full flex justify-center">
                     <button
-                        onClick={() => { navigate(`/studies/${studyId}/processes/${processId}/assignments/${assignmentId}/edit`) }}
+                        onClick={() => { 
+                            assignmentData?.isOwner
+                            ? navigate(`/studies/${studyId}/processes/${processId}/assignments/${assignmentId}/edit`) 
+                            : assignmentData?.submissionId
+                                ? navigate(`/studies/${studyId}/processes/${processId}/assignments/${assignmentId}/view`)
+                                : alert('아직 한 번도 작성되지 않은 과제입니다.');
+                        }}
                         className="bg-white text-[#6D6D6D] font-semibold px-6 py-4 rounded-full hover:opacity-70 cursor-pointer"
                     >
-                        스터디 과제 작성하기
+                        {assignmentData?.isOwner ? '스터디 과제 작성하기' : '과제 확인하기'}
                     </button>
                 </div>
             </main>
 
-            {commentOpen && (
-                <Comment />
+            {commentOpen && assignmentData?.submissionId && (
+                <Comment submissionId={assignmentData.submissionId} />
             )}
         </div>
     )
