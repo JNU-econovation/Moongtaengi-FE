@@ -5,12 +5,21 @@ import { useQuery } from "@tanstack/react-query";
 interface DataType {
     studyId: number;
     studyName: string;
-    submissionId: number | null;
     assignmentDescription: string;
+    submissionId: number | null;
     memberTitle: string;
     nickname: string;
     submitTime: string | null;
     isOwner: boolean;
+    submissionContent: string;
+    submissionFileName: string;
+    submissionFileUrl: string;
+    profileIcon: string;
+    reactions: {
+        emojiType: "HEART" | "CLAP" | "SURPRISED" | "SAD" | "EYES_HEART";
+        count: number;
+        isClicked: boolean;
+    }[];
 }
 
 const assignmentSingleGetApi = async (assignmentId: number): Promise<DataType> => {

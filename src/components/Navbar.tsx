@@ -80,7 +80,7 @@ export default function Navbar() {
             <nav className="flex items-center justify-between px-6 md:py-2 2xl:py-3 bg-black sticky top-0 z-60 text-white rounded-full mt-7">
 
                 {/* Left Side */}
-                <div className="flex items-center gap-8 ml-10">
+                <div className="flex items-center gap-4 ml-10">
 
                     {/* Logo */}
                     <div onClick={() => { navigate('/') }}

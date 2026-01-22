@@ -79,8 +79,11 @@ export const Assignment = () => {
                         </p>
 
                         <div className="flex items-center justify-center gap-3">
-                            <div className="border rounded-full w-15 h-15 flex items-center justify-center">
-                                이미지
+                            <div className="rounded-full w-15 h-15 flex items-center justify-center">
+                                <img
+                                    src={assignmentData?.profileIcon}
+                                    className="object-contain"
+                                />
                             </div>
                             <div className="font-semibold text-lg">
                                 <p>{assignmentData?.nickname}</p>
