@@ -56,7 +56,7 @@ export const Assignment = () => {
                         onClick={() => { setCommentOpen(!commentOpen) }}
                         className={`absolute right-8 w-10 h-10 rounded-full ${commentOpen ? 'bg-white' : 'bg-[#2a2a2a]'} flex items-center justify-center hover:opacity-70 cursor-pointer`}
                         disabled={!assignmentData?.submissionId}
-                    >    
+                    >
                         <img src={hamburgerBar} className='w-[40%] invert' />
                     </button>
                 </div>
@@ -79,15 +79,16 @@ export const Assignment = () => {
                         </p>
 
                         <div className="flex items-center justify-center gap-3">
-                            <div className="rounded-full w-15 h-15 flex items-center justify-center">
+                            <div className="max-w-15 max-h-15 rounded-full overflow-hidden relative">
                                 <img
                                     src={assignmentData?.profileIcon}
-                                    className="object-contain"
+                                    className='w-full h-full object-cover object-center'
+                                    alt="profile"
                                 />
                             </div>
                             <div className="font-semibold text-lg">
                                 <p>{assignmentData?.nickname}</p>
-                                <p className="text-[#A0A0A0]">{assignmentData?.submitTime}</p>
+                                <p className="text-[#A0A0A0]">{assignmentData?.submitTime?.split("T")[0]}</p>
                             </div>
                         </div>
                     </div>
@@ -106,12 +107,12 @@ export const Assignment = () => {
                 {/* 이동 버튼 */}
                 <div className="pt-6 w-full flex justify-center">
                     <button
-                        onClick={() => { 
+                        onClick={() => {
                             assignmentData?.isOwner
-                            ? navigate(`/studies/${studyId}/processes/${processId}/assignments/${assignmentId}/edit`) 
-                            : assignmentData?.submissionId
-                                ? navigate(`/studies/${studyId}/processes/${processId}/assignments/${assignmentId}/view`)
-                                : alert('아직 한 번도 작성되지 않은 과제입니다.');
+                                ? navigate(`/studies/${studyId}/processes/${processId}/assignments/${assignmentId}/edit`)
+                                : assignmentData?.submissionId
+                                    ? navigate(`/studies/${studyId}/processes/${processId}/assignments/${assignmentId}/view`)
+                                    : alert('아직 한 번도 작성되지 않은 과제입니다.');
                         }}
                         className="bg-white text-[#6D6D6D] font-semibold px-6 py-4 rounded-full hover:opacity-70 cursor-pointer"
                     >

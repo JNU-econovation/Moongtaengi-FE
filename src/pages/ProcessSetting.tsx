@@ -5,6 +5,8 @@ import { useProcessQuery } from '../hooks/queries/useProcessQuery';
 import { useCreateProcessMutation } from '../hooks/mutations/useCreateProcessMutation';
 import { useUpdateStudyMutation } from '../hooks/mutations/useUpdateStudyMutation';
 import { useUpdateProcessMutation } from '../hooks/mutations/useUpdateProcessMutation';
+import copyIcon from '../assets/icons/processSetting/copyIcon.svg';
+import { useAuthStore } from '../stores/useAuthStore';
 
 interface StudyData {
     name: string;
@@ -43,6 +45,8 @@ const ProcessSetting = () => {
     const { data: studySourceData, isLoading: isStudyLoading } = useStudyQuery(studyId ?? '');
     const { data: processSourceData, isLoading: isProcessLoading } = useProcessQuery(studyId ?? '');
 
+    const userNickname = useAuthStore((s) => s.userNickname);
+
     const [studyData, setStudyData] = useState<StudyData>({
         name: '',
         topic: '',
@@ -59,7 +63,7 @@ const ProcessSetting = () => {
 
     const isEditMode = location.state?.isEdit || (processSourceData && processSourceData.length > 0);
 
-    
+
     if (!studyId) return null;
 
     // 맨 위 버튼
@@ -110,6 +114,19 @@ const ProcessSetting = () => {
 
         createProcessMutate({ studyId, processForm });
     }
+
+    // 초대코드 복사
+    const handleCopy = async () => {
+        const code = studySourceData?.studyInviteCode;
+        if (code) {
+            try {
+                await navigator.clipboard.writeText(code);
+                alert('초대코드가 복사되었습니다.');
+            } catch (err) {
+                console.error('복사 실패', err);
+            }
+        }
+    };
 
     // 스케줄 테이블 행 추가 버튼
     const handleAddSchedule = () => {
@@ -193,7 +210,7 @@ const ProcessSetting = () => {
 
             {/* Header Section */}
             <div className="flex justify-between items-center font-semibold mb-4">
-                <h1 className="text-4xl">스터디명 입력</h1>
+                <h1 className="text-4xl">스터디 상세 설정</h1>
                 <button
                     onClick={handleTopButton}
                     className="bg-[#272727] hover:opacity-70 text-white px-5 py-1.5 rounded text-md transition-colors cursor-pointer">
@@ -222,7 +239,8 @@ const ProcessSetting = () => {
                                         : '등록 중...'
                                     : isEditMode
                                         ? '수정하기'
-                                        : '등록하기'}
+                                        : '등록하기'
+                                }
                             </button>
                         </div>
                         <div className="bg-[#393939] h-40 p-3 rounded text-sm flex flex-col justify-center gap-2">
@@ -305,11 +323,24 @@ const ProcessSetting = () => {
                         <h2 className="text-2xl mb-2">초대코드</h2>
                         <div className="relative flex gap-4 text-2xl">
                             <div className="flex-4 bg-[#393939] h-12 flex items-center justify-center rounded">
-                                스터디장 닉네임
+                                {userNickname}
                             </div>
-                            <div className="flex-7 bg-[#393939] h-12 flex items-center justify-center px-6 rounded">
-                                <span>초대코드: 23423</span>
-                                <div className="absolute right-5 w-5 h-5 border-2 border-gray-500 rounded-sm cursor-pointer hover:opacity-70" title="copy"></div>
+                            <div className="relative flex-7 bg-[#393939] h-12 flex items-center justify-center px-6 rounded">
+                                <span>초대코드: {studySourceData?.studyInviteCode}</span>
+
+                                {/* 복사 버튼 영역 */}
+                                <button
+                                    onClick={handleCopy}
+                                    className="absolute right-5 w-5 h-5 cursor-pointer hover:opacity-70 flex items-center justify-center bg-transparent border-none p-0"
+                                    title="클립보드에 복사"
+                                    type="button"
+                                >
+                                    <img
+                                        src={copyIcon}
+                                        className='w-full h-full object-contain'
+                                        alt="copy"
+                                    />
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -417,7 +448,7 @@ const ProcessSetting = () => {
                                     {/* Delete */}
                                     <div className="col-span-1 bg-[#393939] font-semibold text-2xl flex items-center justify-center rounded hover:opacity-70">
                                         <button
-                                            onClick={() => {handleDeleteSchedule(process.processOrder)}}
+                                            onClick={() => { handleDeleteSchedule(process.processOrder) }}
                                             className='w-full h-full cursor-pointer'
                                         >
                                             -
