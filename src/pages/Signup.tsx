@@ -1,28 +1,23 @@
 import { useState } from 'react';
 import bannerBg from '../assets/images/signup/banner-bg.png';
 import bannerMoong from '../assets/images/signup/banner-moong.png';
-import { useCheckCode } from '../hooks/useCheckCode';
 import { useSendUserData } from '../hooks/useSendUserData';
 import { useCheckName } from '../hooks/useCheckName';
 
 export default function Signup() {
 
     const { checkName, isPending: isCheckNameLoading } = useCheckName();
-    const { checkCode, isPending: isCheckCodeLoading } = useCheckCode();
-    const { sendUserData, isSendUserDataPending, isJoinStudyPending } = useSendUserData();
+    const { sendUserData, isSendUserDataPending} = useSendUserData();
 
     const [name, setName] = useState<string>("");
     const [verified, setVerified] = useState<boolean>(false);
-    const [code, setCode] = useState<string>("");
-    const [codeStatus, setCodeStatus] = useState<boolean>(false);
 
     const [nameAlert, setNameAlert] = useState<string>("");
-    const [codeAlert, setCodeAlert] = useState<string>("");
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (verified) {
-            sendUserData({ verified, codeStatus, name, code });
+            sendUserData({ verified, name });
         }
     }
 
@@ -31,7 +26,7 @@ export default function Signup() {
             <div className="flex w-full max-w-[500px] flex-col justify-center md:scale-85 2xl:scale-100">
 
                 {/* 헤더 영역 */}
-                <div className="mb-8 text-left text-white">
+                <div className="mb-14 text-left text-white">
                     <h1 className="mb-2 text-6xl font-semibold">뭉탱이</h1>
                     <p className="text-3xl">
                         작은 루틴이<br />
@@ -41,7 +36,7 @@ export default function Signup() {
 
                 <form onSubmit={handleSubmit} className='flex w-full flex-col'>
                     {/* 닉네임 입력 그룹 */}
-                    <div className="mb-5 flex flex-col">
+                    <div className="mb-10 flex flex-col">
                         <label className="text-[15px] text-white">닉네임</label>
                         <p className="mb-1 text-[11px] text-[#A1A1A1]">
                             최대 한글 7자 이내로 등록해주세요 (특수기호 입력 불가능)
@@ -72,50 +67,15 @@ export default function Signup() {
                         {nameAlert && <p className="mt-1 text-[11px] text-[#C6343C]">{nameAlert}</p>}
                     </div>
 
-                    {/* 초대코드 입력 그룹 */}
-                    <div className="mb-10 flex flex-col">
-                        <label className="text-[15px] text-white">스터디 합류하기</label>
-                        <p className="mb-1 text-[11px] text-[#A1A1A1]">
-                            초대 받은 경우 초대 코드를 입력 후 스터디를 바로 시작해보세요
-                        </p>
-                        <div className="flex w-full gap-2">
-                            <input
-                                type="text"
-                                value={code}
-                                placeholder="(선택) 초대코드를 입력해주세요"
-                                onChange={(e) => {
-                                    setCodeStatus(false);
-                                    setCode(e.target.value);
-                                }}
-                                className={`h-11 w-full rounded bg-[#2C2C2C] px-2 text-sm text-white outline-none placeholder:text-[#A1A1A1] hover:border-b hover:border-b-[#0CD1EF] focus:border focus:border-[#0CD1EF] transition-colors
-                                ${codeAlert && !codeStatus ? 'border border-[#C6343C]' : 'border border-transparent'}`}
-                            />
-                            <button
-                                type='button'
-                                onClick={() => { checkCode({ code, setCodeStatus, setCodeAlert }) }}
-                                className={`h-11 w-40 whitespace-nowrap rounded text-xs transition-colors flex items-center justify-center cursor-pointer
-                                ${codeStatus
-                                        ? 'bg-white text-[#2C2C2C]'
-                                        : 'bg-[#2C2C2C] text-white hover:bg-white hover:text-[#2C2C2C]'
-                                    }`}
-                            >
-                                {isCheckCodeLoading  ? '확인 중...' : '초대코드 확인'}
-                            </button>
-                        </div>
-                        {codeAlert && <p className="mt-1 text-[11px] text-[#C6343C]">{codeAlert}</p>}
-                    </div>
-
                     {/* 배너 카드 */}
                     <div className="relative mb-10 flex h-50 w-full overflow-hidden rounded-lg bg-[#F7F7F7]">
                         {/* 텍스트 영역 */}
                         <div className="z-20 flex flex-col justify-center pl-3">
                             <p className="mb-1 text-2xl font-bold leading-tight text-[#212121]">
-                                함께 공부할 친구가<br />
-                                당신을 초대했어요
+                                귀여운 스터디<br /> 친구 뭉탱이와 함께 하세요
                             </p>
                             <p className="text-[11px] text-[#A1A1A1]">
-                                친구에게 받은 초대 코드를 입력하면<br />
-                                스타터 뭉탱이를 드려요
+                                닉네임은 과제 업로드, 게시글 등<br /> 커뮤니티 활동에 사용됩니다
                             </p>
                         </div>
 
@@ -149,7 +109,7 @@ export default function Signup() {
                                 : 'bg-gray-600 text-gray-400'
                             }`}
                     >
-                        {(isSendUserDataPending || isJoinStudyPending) ? '가입 중...' : '회원가입 완료'}
+                        {isSendUserDataPending ? '가입 중...' : '회원가입 완료'}
                     </button>
                 </form>
             </div>

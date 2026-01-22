@@ -2,6 +2,10 @@ import { useRef, useState } from "react";
 import { useSendCommentMutation } from "../hooks/mutations/useSendCommetMutation";
 import { useCommentQuery } from "../hooks/queries/useCommentQuery";
 import { useQueryClient } from "@tanstack/react-query";
+import upArrow from '../assets/icons/comment/up-arrow.svg';
+import { formatDateToDot } from "../utils/formatDateToDot";
+import { useParams } from "react-router-dom";
+import { useAssignmentSingleQuery } from "../hooks/queries/useAssignmentSingleQuery";
 
 interface Params {
     submissionId: number;
@@ -9,12 +13,14 @@ interface Params {
 
 export const Comment = ({ submissionId }: Params) => {
 
-    const { data=[] } = useCommentQuery(submissionId);
+    const { assignmentId } = useParams<"assignmentId">();
+    const {data: assignmentData} = useAssignmentSingleQuery(Number(assignmentId));
+    const { data: commentList = [] } = useCommentQuery(submissionId);
     const { mutate } = useSendCommentMutation();
 
     const queryClient = useQueryClient();
 
-    console.log(data);
+    console.log(commentList);
 
     const [commentInput, setCommentInput] = useState('');
 
@@ -37,7 +43,7 @@ export const Comment = ({ submissionId }: Params) => {
         mutate({ submissionId, commentInput }, {
             onSuccess: () => {
                 setCommentInput('');
-                queryClient.invalidateQueries({queryKey: ['comment']})
+                queryClient.invalidateQueries({ queryKey: ['comment'] })
                 console.log('댓글 업로드 성공');
             },
             onError: (error) => {
@@ -51,37 +57,47 @@ export const Comment = ({ submissionId }: Params) => {
 
             <header className='md:px-4 md:py-6 2xl:p-6 pt-8 shrink-0'>
                 <div className='flex flex-col gap-1'>
-                    <p className='text-3xl'>UI 개설</p>
-                    <p>매코미통닭발</p>
+                    <p className='text-3xl'>{assignmentData?.assignmentDescription}</p>
+                    <p>{assignmentData?.nickname}</p>
                 </div>
             </header>
 
             <main className='flex-1 min-h-0 flex flex-col gap-2 md:p-4 2xl:p-6'>
                 <p className='text-white text-sm'>
-                    {data?.length}개의 댓글들
+                    {commentList?.length}개의 댓글들
                 </p>
-                <div className={`flex-1 overflow-y-auto md:max-h-100 2xl:max-h-133 pr-1 flex flex-col items-center md:gap-1 2xl:gap-2 
+                <div className={`flex-1 overflow-y-auto md:max-h-100 2xl:max-h-154 pr-1 flex flex-col items-center md:gap-1 2xl:gap-2 
                                 [&::-webkit-scrollbar]:w-1
                                 [&::-webkit-scrollbar-track]:bg-transparent
                                 [&::-webkit-scrollbar-thumb]:bg-[#555]
                                 [&::-webkit-scrollbar-thumb]:rounded-full
                                 [&::-webkit-scrollbar-button]:hidden `}
                 >
-                    {data.map((comment, index) => (
+                    {commentList.map((comment, index) => (
                         <div
                             key={index}
                             className='w-full p-2 bg-[#393939] rounded'
                         >
-                            <div className='flex'>
-                                <div className='shrink-0 border w-10 h-10 rounded-full'>
+                            <div className='flex gap-2'>
+                                <div className="max-w-10 max-h-10 rounded-full overflow-hidden relative">
                                     <img
                                         src={comment.profileImageUrl}
-                                        alt="프로필"
-                                        className="object-contain"
+                                        className='w-full h-full object-cover object-center'
+                                        alt="profile"
                                     />
                                 </div>
-                                <div className='flex-1 bg-black'>
-                                    {comment.content}
+                                <div className='flex-1 flex flex-col'>
+                                    <div className="flex gap-2">
+                                        <div className="font-semibold">
+                                            {comment.nickname}
+                                        </div>
+                                        <div className="text-[#6D6D6D]">
+                                            {formatDateToDot(comment.createdAt.split("T")[0])}
+                                        </div>
+                                    </div>
+                                    <div className="flex-1">
+                                        {comment.content}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -104,8 +120,12 @@ export const Comment = ({ submissionId }: Params) => {
                     />
                     <button
                         onClick={handleSubmit}
-                        className='absolute md:bottom-5 2xl:bottom-6 right-6 text-black cursor-pointer'>
-                        d^
+                        className='absolute md:bottom-5 2xl:bottom-6 right-5 text-black cursor-pointer'
+                    >
+                        <img
+                            src={upArrow}
+                            className="object-contain"
+                        />
                     </button>
                 </div>
             </footer>

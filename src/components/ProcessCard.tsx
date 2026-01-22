@@ -6,6 +6,7 @@ import { useAuthStore } from '../stores/useAuthStore';
 import { useEffect, useState } from 'react';
 import { useAssignAssignmentMutation } from '../hooks/mutations/useAssignAssignmentMutation';
 import { useUpdateAssignmentMutation } from '../hooks/mutations/useUpdateAssignmentMutation';
+import { useApproveAssignmentMutation } from '../hooks/mutations/useApproveAssignmentMutation';
 
 interface ProcessType {
     id: number;
@@ -29,6 +30,7 @@ interface AssignmentType {
     fileUrl: string;
     status: 'WAITING' | 'SUBMITTED' | 'APPROVED' | null;
     isLate: boolean;
+    profileIconUrl: string;
 }
 
 interface Params {
@@ -60,7 +62,8 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
     const userId = useAuthStore((s) => s.userId);
     const nickname = useAuthStore((s) => s.userNickname);
     const { data: assignmentList = [] } = useAssignmentListQuery(process.id);
-    
+    const { mutate } = useApproveAssignmentMutation(process.id);
+
     console.log('과제 리스트', assignmentList);
 
     if (!userId) return null;
@@ -77,6 +80,7 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
             fileUrl: '',
             status: null,
             isLate: false,
+            profileIconUrl: ''
         }
 
     const otherAssignmentList: AssignmentType[] = assignmentList.filter((assignment) => (assignment.memberId !== userId));
@@ -98,7 +102,7 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
 
                 <div className="flex gap-2 text-sm text-white font-semibold">
                     {studyData.myRole === 'HOST' && (
-                        <button 
+                        <button
                             onClick={() => { navigate(`/studies/${studyData.studyId}/setting`, { state: { idEdit: true } }) }}
                             className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70 cursor-pointer"
                         >
@@ -161,23 +165,58 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
                                 assignmentId={myAssignment.assignmentId}
                                 myRole={studyData.myRole}
                             />
-                            <div className={`bg-[#3E3E3E] px-2 text-sm rounded-full text-white
+                            <div className='flex gap-1'>
+                                <div className={`bg-[#3E3E3E] px-2 text-sm rounded-full
                                 ${AssignmentStatus(myAssignment) === '기간초과' && 'text-[#FF2935]'}
                                 ${AssignmentStatus(myAssignment) === '제출완료' && 'text-[#2FE9FD]'}`}
-                            >
-                                {AssignmentStatus(myAssignment)}
+                                >
+                                    {AssignmentStatus(myAssignment)}
+                                </div>
+                                {
+                                    myAssignment.status === 'APPROVED' && (
+                                        <div className={`bg-[#3E3E3E] px-2 text-sm rounded-full`}>승인</div>
+                                    )
+                                }
                             </div>
+                            {
+                                studyData.myRole === 'HOST' && AssignmentStatus(myAssignment) === '제출완료' && (
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            mutate(myAssignment.assignmentId ?? 0);
+                                        }}
+                                        className='bg-[#3E3E3E] px-2 text-sm rounded-full text-white cursor-pointer'
+                                    >승인하기</button>
+                                )
+                            }
                         </div>
                         <div
                             ref={(el) => { itemRefs.current[process.processOrder] = el; }}
                             className="flex items-center gap-2 mt-4 pt-4"
                         >
-                            <div className="w-10 h-10 bg-[#AFAEAE] rounded-full flex items-center justify-center">
-                                Me
+                            <div className="max-w-10 max-h-10 rounded-full overflow-hidden relative">
+                                <img
+                                    src={myAssignment.profileIconUrl}
+                                    className='w-full h-full object-cover object-center'
+                                    alt="profile"
+                                />
                             </div>
                             <div className="flex flex-col">
                                 <span className="font-semibold">(나) {myAssignment.nickname}</span>
-                                <span className="text-sm text-[#F9F9F9]">{myAssignment.fileName}일단 아무거나</span>
+                                {myAssignment.fileUrl ? (
+                                    <a
+                                        href={myAssignment.fileUrl}
+                                        download={myAssignment.fileName}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="text-sm text-[#F9F9F9] hover:underline hover:text-blue-300 transition-colors cursor-pointer truncate block"
+                                    >
+                                        {myAssignment.fileName}
+                                    </a>
+                                ) : (
+                                    <span className="text-sm text-[#F9F9F9]">파일 없음</span>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -227,12 +266,29 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3 mt-4 pt-4">
-                                        <div className="w-10 h-10 bg-[#AFAEAE] rounded-full flex items-center justify-center">
-                                            Me
+                                        <div className="max-w-10 max-h-10 rounded-full overflow-hidden relative">
+                                            <img
+                                                src={assignment.profileIconUrl}
+                                                className='w-full h-full object-cover object-center'
+                                                alt="profile"
+                                            />
                                         </div>
                                         <div className="flex flex-col">
                                             <span className="font-semibold">{assignment.nickname}</span>
-                                            <span className="text-sm text-[#F9F9F9]">{assignment.fileName} 일단 아무거나</span>
+                                            {assignment.fileUrl ? (
+                                                <a
+                                                    href={assignment.fileUrl}
+                                                    download={assignment.fileName}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="text-sm text-[#F9F9F9] hover:underline hover:text-blue-300 transition-colors cursor-pointer truncate block"
+                                                >
+                                                    {assignment.fileName}
+                                                </a>
+                                            ) : (
+                                                <span className="text-sm text-[#F9F9F9]">파일 없음</span>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -282,7 +338,7 @@ const AssignmentInput = ({ processId, memberId, initialDescription, assignmentId
     }, [initialDescription]);
 
     const { mutate: assignMutate } = useAssignAssignmentMutation(processId);
-    const { mutate: updateMutate } = useUpdateAssignmentMutation(processId); 
+    const { mutate: updateMutate } = useUpdateAssignmentMutation(processId);
 
     const handleSave = () => {
         // 변경 사항이 없거나 내용이 비어있으면 API 호출 스킵
