@@ -7,24 +7,6 @@ import fileIcon from "../assets/icons/assignmentEdit/fileIcon.svg";
 import { useAssignmentSingleQuery } from "../hooks/queries/useAssignmentSingleQuery";
 import { useEmojiMutation } from "../hooks/mutations/useEmojiMutation";
 
-// 목데이터: 마크다운 문자열
-const MOCK_MARKDOWN = `
-## 필요 없는 UI를 제거하여
-# 가시성을 높이려고 했습니다
-
-전체적인 느낌을 보라색으로 가져가서 작업했어요. 
-사용자가 집중할 수 있도록 불필요한 요소를 배제하고, 핵심 콘텐츠가 돋보이도록 레이아웃을 구성했습니다.
-
-![예시 이미지](https://via.placeholder.com/600x300/5f4b8b/ffffff?text=Example+Image)
-
----
-===
-
-- **심플한 디자인**: 복잡한 메뉴 제거
-- **컬러 팔레트**: 다크 모드 기반의 퍼플 포인트
-`;
-
-// 목데이터: 리액션 정보
 const EMOJI_LIST = [
     { type: "HEART", icon: "❤️" },
     { type: "CLAP", icon: "👏" },
@@ -32,7 +14,6 @@ const EMOJI_LIST = [
     { type: "SAD", icon: "😢" },
     { type: "EYES_HEART", icon: "😍" },
 ] as const;
-
 
 export const AssignmentView = () => {
     const navigate = useNavigate();
