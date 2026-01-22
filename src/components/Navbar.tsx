@@ -168,9 +168,9 @@ export default function Navbar() {
                             )}
                         </div>
 
-                        <button className="px-3 2xl:py-1.5 text-sm bg-custom-gray rounded-full hover:opacity-70 transition cursor-pointer">
+                        {/* <button className="px-3 2xl:py-1.5 text-sm bg-custom-gray rounded-full hover:opacity-70 transition cursor-pointer">
                             마이페이지
-                        </button>
+                        </button> */}
 
                         <button
                             onClick={() => { navigate('/collections') }}
