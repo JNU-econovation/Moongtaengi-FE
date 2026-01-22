@@ -128,7 +128,7 @@ export default function Navbar() {
                                             <div className='h-full flex flex-col gap-1 pr-1.5 overflow-y-auto
                                                 [&::-webkit-scrollbar]:w-0.5
                                                 [&::-webkit-scrollbar-track]:bg-transparent
-                                                [&::-webkit-scrollbar-thumb]:bg-[#555]
+                                                [&::-webkit-scrollbar-thumb]:bg-[#625E5E]
                                                 [&::-webkit-scrollbar-thumb]:rounded-full
                                                 [&::-webkit-scrollbar-button]:hidden'
                                             >
