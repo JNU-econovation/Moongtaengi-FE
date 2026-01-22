@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getTokenFromSession } from "../../utils/getTokenFromSession"
 import { useQuery } from "@tanstack/react-query";
 
 interface RunnerData {
@@ -10,15 +9,7 @@ interface RunnerData {
 }
 
 const topRunnerApi = async (): Promise<RunnerData> => {
-    const token = getTokenFromSession();
-
-    const response = await axios.get<RunnerData>(import.meta.env.VITE_API_TOP_RUNNER,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }
-    )
+    const response = await axios.get<RunnerData>(import.meta.env.VITE_API_TOP_RUNNER)
 
     return response.data;
 }
@@ -26,7 +17,6 @@ const topRunnerApi = async (): Promise<RunnerData> => {
 export const useTopRunnerQuery = () => {
     return useQuery({
         queryKey: ['topRunner'],
-        queryFn: topRunnerApi,
-        enabled: !!getTokenFromSession()
+        queryFn: topRunnerApi
     })
 }

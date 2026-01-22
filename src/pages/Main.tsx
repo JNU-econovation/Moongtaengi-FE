@@ -11,9 +11,10 @@ const Main = () => {
         <>
             {isLogin
                 ? <MainHeroAfterLogin isLogin={isLogin} />
-                : <MainHeroBeforeLogin isLogin={isLogin} />}
+                : <MainHeroBeforeLogin isLogin={isLogin} />
+            }
+            
             <MainBottom />
-
         </>
     )
 }

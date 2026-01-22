@@ -4,7 +4,9 @@ export default function MainBottom() {
 
     const { data } = useTopRunnerQuery();
 
-    if (!data) return null;
+    console.log('top runners', data);
+
+    if (!data) return <>없는데?</>;
 
     return (
         <div className="px-8 py-4 bg-[#272727]">
@@ -23,11 +25,11 @@ export default function MainBottom() {
                 [&::-webkit-scrollbar-button]:hidden`}
             >
                 {data.topRunners.map((item, index) => (
-                    <div className="flex flex-col items-center gap-3 ml-10">
-                        <div
-                            key={index}
-                            className="relative shrink-0 md:w-64 md:h-64 2xl:w-80 2xl:h-80 rounded-2xl transition-colors group"
-                        >
+                    <div
+                        key={index}
+                        className="flex flex-col items-center gap-3 ml-10"
+                    >
+                        <div className="relative shrink-0 md:w-64 md:h-64 2xl:w-80 2xl:h-80 rounded-2xl transition-colors group">
                             {/* Badge */}
                             <div className="absolute top-4 left-4 px-3 py-1 bg-gradient-to-b from-custom-gradient-blue to-custom-gradient-green text-black text-xs font-semibold rounded-full z-10">
                                 TOP {index + 1}
