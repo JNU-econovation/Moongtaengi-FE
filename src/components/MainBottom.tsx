@@ -6,7 +6,7 @@ export default function MainBottom() {
 
     console.log('top runners', data);
 
-    if (!data) return <>없는데?</>;
+    if (!data) return <>로딩 중...</>;
 
     return (
         <div className="px-8 py-4 bg-[#272727]">
