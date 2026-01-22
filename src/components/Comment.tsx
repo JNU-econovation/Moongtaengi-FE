@@ -1,13 +1,20 @@
 import { useRef, useState } from "react";
 import { useSendCommentMutation } from "../hooks/mutations/useSendCommetMutation";
+import { useCommentQuery } from "../hooks/queries/useCommentQuery";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Params {
     submissionId: number;
 }
 
-export const Comment = ({submissionId}: Params) => {
+export const Comment = ({ submissionId }: Params) => {
 
+    const { data=[] } = useCommentQuery(submissionId);
     const { mutate } = useSendCommentMutation();
+
+    const queryClient = useQueryClient();
+
+    console.log(data);
 
     const [commentInput, setCommentInput] = useState('');
 
@@ -27,9 +34,10 @@ export const Comment = ({submissionId}: Params) => {
 
         console.log(commentInput)
 
-        mutate({submissionId, commentInput}, {
+        mutate({ submissionId, commentInput }, {
             onSuccess: () => {
                 setCommentInput('');
+                queryClient.invalidateQueries({queryKey: ['comment']})
                 console.log('댓글 업로드 성공');
             },
             onError: (error) => {
@@ -49,7 +57,9 @@ export const Comment = ({submissionId}: Params) => {
             </header>
 
             <main className='flex-1 min-h-0 flex flex-col gap-2 md:p-4 2xl:p-6'>
-                <p className='text-white text-sm'>2개의 댓글들</p>
+                <p className='text-white text-sm'>
+                    {data?.length}개의 댓글들
+                </p>
                 <div className={`flex-1 overflow-y-auto md:max-h-100 2xl:max-h-133 pr-1 flex flex-col items-center md:gap-1 2xl:gap-2 
                                 [&::-webkit-scrollbar]:w-1
                                 [&::-webkit-scrollbar-track]:bg-transparent
@@ -57,17 +67,21 @@ export const Comment = ({submissionId}: Params) => {
                                 [&::-webkit-scrollbar-thumb]:rounded-full
                                 [&::-webkit-scrollbar-button]:hidden `}
                 >
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(() => (
-                        <div className='w-full p-2 bg-[#393939] rounded'>
+                    {data.map((comment, index) => (
+                        <div
+                            key={index}
+                            className='w-full p-2 bg-[#393939] rounded'
+                        >
                             <div className='flex'>
                                 <div className='shrink-0 border w-10 h-10 rounded-full'>
-                                    아이콘
+                                    <img
+                                        src={comment.profileImageUrl}
+                                        alt="프로필"
+                                        className="object-contain"
+                                    />
                                 </div>
                                 <div className='flex-1 bg-black'>
-                                    dfasfasdfadsf
-                                </div>
-                                <div className='shrink-0'>
-                                    ❤️
+                                    {comment.content}
                                 </div>
                             </div>
                         </div>
