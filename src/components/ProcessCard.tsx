@@ -105,8 +105,6 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
                             수정하기
                         </button>
                     )}
-                    <button onClick={() => { }}
-                        className="bg-[#272727] px-3 py-1 rounded-full hover:opacity-70 cursor-pointer">나의 과제 모아보기</button>
                 </div>
             </div>
 
