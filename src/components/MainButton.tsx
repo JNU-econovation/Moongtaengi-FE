@@ -13,7 +13,7 @@ export default function MainButton({ islogin, shortcutStudyId, totalExperience }
 
     if (!shortcutStudyId) return <CreateStudyButton  />
 
-    return <ProgressButton totalExperience={totalExperience ?? 0} />
+    return <ProgressButton totalExperience={totalExperience ?? 0} shortcutStudyId={shortcutStudyId} />
 }
 
 
@@ -43,15 +43,16 @@ const CreateStudyButton = () => {
 
 interface ProgressButton {
     totalExperience: number;
+    shortcutStudyId: number;
 }
 
-const ProgressButton = ({ totalExperience }: ProgressButton) => {
+const ProgressButton = ({ totalExperience, shortcutStudyId }: ProgressButton) => {
     const navigate = useNavigate();
     const progress = totalExperience / 300 * 100;
 
     return (
         <button
-            onClick={() => { navigate('/currentProject') }}
+            onClick={() => { navigate(`/studies/${shortcutStudyId}`) }}
             className="relative w-80 rounded-full md:border-1 2xl:border-2 border-white cursor-pointer overflow-hidden bg-custom-bg hover:opacity-70 transition group"
         >
             <div

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useTopRunnerQuery } from "../hooks/queries/useTopRunnerQuery";
 
 export default function MainBottom() {
