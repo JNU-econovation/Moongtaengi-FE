@@ -264,7 +264,23 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
                                         >
                                             {AssignmentStatus(assignment)}
                                         </div>
+                                        {
+                                            assignment.status === 'APPROVED' && (
+                                                <div className={`bg-[#3E3E3E] px-2 text-sm rounded-full`}>승인</div>
+                                            )
+                                        }
                                     </div>
+                                    {
+                                        studyData.myRole === 'HOST' && AssignmentStatus(assignment) === '제출완료' && (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    mutate(assignment.assignmentId ?? 0);
+                                                }}
+                                                className='bg-[#3E3E3E] px-2 text-sm rounded-full text-white cursor-pointer'
+                                            >승인하기</button>
+                                        )
+                                    }
                                     <div className="flex items-center gap-3 mt-4 pt-4">
                                         <div className="max-w-10 max-h-10 rounded-full overflow-hidden relative">
                                             <img
