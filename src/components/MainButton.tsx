@@ -13,7 +13,7 @@ export default function MainButton({ islogin, shortcutStudyId, totalExperience }
 
     if (!shortcutStudyId) return <CreateStudyButton  />
 
-    return <ProgressButton totalExperience={totalExperience} />
+    return <ProgressButton totalExperience={totalExperience ?? 0} />
 }
 
 

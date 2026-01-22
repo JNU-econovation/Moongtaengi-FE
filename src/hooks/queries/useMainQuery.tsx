@@ -14,11 +14,6 @@ interface MainData {
     shortcutStudyId: number | null;
 
     equippedCollectionBackgroundUrl: string;
-
-    topRunners: {
-        nickname: string;
-        profileIconUrl: string;
-    }[];
 }
 
 const mainDataApi = async (): Promise<MainData> => {

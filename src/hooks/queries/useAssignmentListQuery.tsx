@@ -12,6 +12,7 @@ interface DataType {
     fileUrl: string;
     status: 'WAITING' | 'SUBMITTED' | 'APPROVED' | null;
     isLate: boolean;
+    profileIconUrl: string;
 }
 
 const assignmentListApi = async (processId: number): Promise<DataType[]> => {
