@@ -45,7 +45,7 @@ export const Assignment = () => {
 
             <main className="relative w-full h-full flex flex-col">
 
-                <div className='relative w-full py-12 flex items-center z-50'>
+                <div className='relative w-full py-12 flex items-center z-40'>
                     {/* 뒤로가기, 댓글 버튼 */}
                     <button
                         onClick={() => { navigate(`/studies/${studyId}`) }}
