@@ -128,7 +128,7 @@ export const AssignmentEdit = () => {
         }
 
         console.log((editor.storage as any).markdown.getMarkdown());
-        
+
         submitMutate({
             assignmentId: Number(assignmentId),
             content: content,
@@ -160,7 +160,7 @@ export const AssignmentEdit = () => {
             />
 
             {/* 뒤로가기, 댓글 */}
-            <div className='relative w-full h-24 flex items-center md:mb-2 2xl:mb-10 z-50'>
+            <div className='relative w-full h-24 flex items-center md:mb-2 2xl:mb-10 z-40'>
                 <button
                     onClick={() => { navigate(`/studies/${studyId}/processes/${processId}/assignments/${assignmentId}`) }}
                     className="absolute left-8 w-10 h-10 rounded-full bg-[#272727] flex items-center justify-center hover:opacity-70 cursor-pointer"
@@ -280,7 +280,7 @@ export const AssignmentEdit = () => {
                             >
                                 <img src={fileIcon} className='w-[8%] mr-1' />
                                 <span>
-                                    {fileName ? fileName : '파일을 임베드 하세요(PDF, Google Docs...)'}
+                                    {fileName ? fileName : '파일을 임베드 하세요(PDF 등...)'}
                                 </span>
                             </button>
                         </div>
@@ -288,8 +288,9 @@ export const AssignmentEdit = () => {
                         {/* 등록 버튼 */}
                         <button
                             onClick={handleSubmit}
-                            className="bg-white text-[#6D6D6D] px-4 py-1.5 rounded text-sm font-semibold hover:text-black transition-colors cursor-pointer">
-                            등록
+                            className="bg-white text-[#6D6D6D] px-4 py-1.5 rounded text-sm font-semibold hover:text-black transition-colors cursor-pointer"
+                        >
+                            {isSubmitPending ? '등록 중...' : '등록'}
                         </button>
                     </div>
                 </div>

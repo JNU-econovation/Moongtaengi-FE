@@ -54,7 +54,9 @@ export const Assignment = () => {
                     </button>
                     <button
                         onClick={() => { setCommentOpen(!commentOpen) }}
-                        className={`absolute right-8 w-10 h-10 rounded-full ${commentOpen ? 'bg-white' : 'bg-[#2a2a2a]'} flex items-center justify-center hover:opacity-70 cursor-pointer`}>
+                        className={`absolute right-8 w-10 h-10 rounded-full ${commentOpen ? 'bg-white' : 'bg-[#2a2a2a]'} flex items-center justify-center hover:opacity-70 cursor-pointer`}
+                        disabled={!assignmentData?.submissionId}
+                    >    
                         <img src={hamburgerBar} className='w-[40%] invert' />
                     </button>
                 </div>
@@ -115,8 +117,8 @@ export const Assignment = () => {
                 </div>
             </main>
 
-            {commentOpen && (
-                <Comment />
+            {commentOpen && assignmentData?.submissionId && (
+                <Comment submissionId={assignmentData.submissionId} />
             )}
         </div>
     )
