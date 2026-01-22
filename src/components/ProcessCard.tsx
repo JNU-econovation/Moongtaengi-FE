@@ -167,8 +167,8 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
                             />
                             <div className='flex gap-1'>
                                 <div className={`bg-[#3E3E3E] px-2 text-sm rounded-full
-                                ${AssignmentStatus(myAssignment) === '기간초과' && 'text-[#FF2935]'}
-                                ${AssignmentStatus(myAssignment) === '제출완료' && 'text-[#2FE9FD]'}`}
+                                    ${AssignmentStatus(myAssignment) === '기간초과' && 'text-[#FF2935]'}
+                                    ${AssignmentStatus(myAssignment) === '제출완료' && 'text-[#2FE9FD]'}`}
                                 >
                                     {AssignmentStatus(myAssignment)}
                                 </div>
@@ -258,29 +258,31 @@ export const ProcessCard = ({ studyData, processData, process, scrollRefs, itemR
                                             assignmentId={assignment.assignmentId}
                                             myRole={studyData.myRole}
                                         />
-                                        <div className={`bg-[#3E3E3E] px-2 text-sm rounded-full text-white
-                                            ${AssignmentStatus(assignment) === '기간초과' && 'text-[#FF2935]'}
-                                            ${AssignmentStatus(assignment) === '제출완료' && 'text-[#2FE9FD]'}`}
-                                        >
-                                            {AssignmentStatus(assignment)}
+                                        <div className='flex gap-1'>
+                                            <div className={`bg-[#3E3E3E] px-2 text-sm rounded-full
+                                                ${AssignmentStatus(assignment) === '기간초과' && 'text-[#FF2935]'}
+                                                ${AssignmentStatus(assignment) === '제출완료' && 'text-[#2FE9FD]'}`}
+                                            >
+                                                {AssignmentStatus(assignment)}
+                                            </div>
+                                            {
+                                                assignment.status === 'APPROVED' && (
+                                                    <div className={`bg-[#3E3E3E] px-2 text-sm rounded-full`}>승인</div>
+                                                )
+                                            }
                                         </div>
                                         {
-                                            assignment.status === 'APPROVED' && (
-                                                <div className={`bg-[#3E3E3E] px-2 text-sm rounded-full`}>승인</div>
+                                            studyData.myRole === 'HOST' && AssignmentStatus(assignment) === '제출완료' && (
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        mutate(assignment.assignmentId ?? 0);
+                                                    }}
+                                                    className='bg-[#3E3E3E] px-2 text-sm rounded-full text-white cursor-pointer'
+                                                >승인하기</button>
                                             )
                                         }
                                     </div>
-                                    {
-                                        studyData.myRole === 'HOST' && AssignmentStatus(assignment) === '제출완료' && (
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    mutate(assignment.assignmentId ?? 0);
-                                                }}
-                                                className='bg-[#3E3E3E] px-2 text-sm rounded-full text-white cursor-pointer'
-                                            >승인하기</button>
-                                        )
-                                    }
                                     <div className="flex items-center gap-3 mt-4 pt-4">
                                         <div className="max-w-10 max-h-10 rounded-full overflow-hidden relative">
                                             <img
