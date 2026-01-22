@@ -36,6 +36,16 @@ const Process = () => {
     }
   };
 
+  // 페이지 새로고침
+  useEffect(() => {
+    const hasReloaded = sessionStorage.getItem("hasReloaded");
+
+    if (!hasReloaded) {
+      sessionStorage.setItem("hasReloaded", "true");
+      window.location.reload();
+    }
+  }, []);
+
 
   useEffect(() => {
     if (isStudyLoading || isProcessLoading) return;
@@ -47,7 +57,7 @@ const Process = () => {
 
     // 프로세스 데이터가 없으면 상세 설정 페이지로 리다이렉트
     if (processData && processData.length === 0 && studyData?.myRole === 'HOST') {
-      navigate(`/studies/${studyId}/setting`, {replace: true});
+      navigate(`/studies/${studyId}/setting`, { replace: true });
     }
 
   }, [isStudyLoading, isProcessLoading, studyData, processData]);
@@ -67,7 +77,7 @@ const Process = () => {
 
   // 전역 데이터 캐시 쿼리
   useEffect(() => {
-    queryClient.invalidateQueries({queryKey: ['userGlobalData']});
+    queryClient.invalidateQueries({ queryKey: ['userGlobalData'] });
   }, []);
 
 
