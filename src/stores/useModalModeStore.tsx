@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
 interface ModalState {
-    modalMode: "createStudy" | "inviteCode" | null;
-    setModalMode: (status: "createStudy" | "inviteCode" | null) => void;
+    modalMode: "createStudy" | "inviteCode" | "ECONO" | null;
+    setModalMode: (status: "createStudy" | "inviteCode" | "ECONO" | null) => void;
 }
 
 export const useModalModeStore = create<ModalState>((set) => ({

@@ -6,7 +6,7 @@ import { useCreateProcessMutation } from '../hooks/mutations/useCreateProcessMut
 import { useUpdateStudyMutation } from '../hooks/mutations/useUpdateStudyMutation';
 import { useUpdateProcessMutation } from '../hooks/mutations/useUpdateProcessMutation';
 import copyIcon from '../assets/icons/processSetting/copyIcon.svg';
-import { useAuthStore } from '../stores/useAuthStore';
+import { useGlobalUserDataQuery } from '../hooks/queries/useGlobalUserDataQuery';
 
 interface StudyData {
     name: string;
@@ -42,10 +42,9 @@ const ProcessSetting = () => {
     const location = useLocation();
     const { studyId } = useParams<{ studyId: string }>();
 
+    const { data: globalUserData } = useGlobalUserDataQuery();
     const { data: studySourceData, isLoading: isStudyLoading } = useStudyQuery(studyId ?? '');
     const { data: processSourceData, isLoading: isProcessLoading } = useProcessQuery(studyId ?? '');
-
-    const userNickname = useAuthStore((s) => s.userNickname);
 
     const [studyData, setStudyData] = useState<StudyData>({
         name: '',
@@ -323,7 +322,7 @@ const ProcessSetting = () => {
                         <h2 className="text-2xl mb-2">초대코드</h2>
                         <div className="relative flex gap-4 text-2xl">
                             <div className="flex-4 bg-[#393939] h-12 flex items-center justify-center rounded">
-                                {userNickname}
+                                {globalUserData?.nickname}
                             </div>
                             <div className="relative flex-7 bg-[#393939] h-12 flex items-center justify-center px-6 rounded">
                                 <span>초대코드: {studySourceData?.studyInviteCode}</span>

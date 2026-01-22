@@ -1,10 +1,16 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation } from "@tanstack/react-query"
 import { getTokenFromSession } from "../../utils/getTokenFromSession";
 import axios from "axios";
 
-const joinStudyApi = async (formData: string) => {
+interface JoinData {
+    codeType: 'STUDY' | 'ECONO' | 'SPECIAL';
+    message: string;
+}
+
+const joinStudyApi = async (formData: string): Promise<JoinData> => {
     const token = getTokenFromSession();
-    await axios.post(import.meta.env.VITE_API_JOIN_STUDY,
+
+    const response = await axios.post<JoinData>(import.meta.env.VITE_API_JOIN_STUDY,
         {
             inviteCode: formData
         },
@@ -15,19 +21,13 @@ const joinStudyApi = async (formData: string) => {
             },
         }
     )
+
+    return response.data;
 }
 
 export const useJoinStudyMutation = () => {
-    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: joinStudyApi,
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ['collection']});
-            queryClient.invalidateQueries({queryKey: ['notification']});
-        },
-        onError: (error) => {
-            console.error(error);
-        }
     })
 }
