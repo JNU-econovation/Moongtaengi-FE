@@ -14,11 +14,13 @@ import fileIcon from "../assets/icons/assignmentEdit/fileIcon.svg";
 import { useUploadFile } from '../hooks/useUploadFile';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Comment } from '../components/Comment';
+import { useSendAssignmentMutation } from '../hooks/mutations/useSendAssignmentMutation';
 
 
 export const AssignmentEdit = () => {
     const navigate = useNavigate();
     const { studyId, processId, assignmentId } = useParams<"studyId" | "processId" | "assignmentId">();
+    const {mutate: submitMutate, isPending: isSubmitPending} = useSendAssignmentMutation(Number(assignmentId));
     const uploadFile = useUploadFile();
 
     const [_, forceUpdate] = useState(0);
@@ -26,6 +28,7 @@ export const AssignmentEdit = () => {
     const [commentOpen, setCommentOpen] = useState(false);
 
     const [fileName, setFileName] = useState('');
+    const [fileUrl, setFileUrl] = useState('');
 
     // 파일 임베딩을 요청하기 위한 ref
     const imageInputRef = useRef<HTMLInputElement>(null);
@@ -105,6 +108,7 @@ export const AssignmentEdit = () => {
 
             if (url) {
                 setFileName(file.name);
+                setFileUrl(url);
             }
         } catch (error) {
             console.error(error);
@@ -113,10 +117,25 @@ export const AssignmentEdit = () => {
         }
     }
 
-    // const handleLog = () => {
-    //     console.log(editor.storage.markdown.getMarkdown());
-    // }
+    const handleSubmit = () => {
+        if (!editor || !assignmentId) return;
 
+        const content = (editor.storage as any).markdown.getMarkdown();
+
+        if (!content.trim()) {
+            alert('내용을 입력해주세요.');
+            return;
+        }
+
+        console.log((editor.storage as any).markdown.getMarkdown());
+        
+        submitMutate({
+            assignmentId: Number(assignmentId),
+            content: content,
+            fileName: fileName,
+            fileUrl: fileUrl
+        });
+    }
 
     // 툴바 버튼 스타일 클래스
     const buttonBaseClass = "flex items-center justify-center text-2xl hover:opacity-70 transition-colors cursor-pointer";
@@ -268,6 +287,7 @@ export const AssignmentEdit = () => {
 
                         {/* 등록 버튼 */}
                         <button
+                            onClick={handleSubmit}
                             className="bg-white text-[#6D6D6D] px-4 py-1.5 rounded text-sm font-semibold hover:text-black transition-colors cursor-pointer">
                             등록
                         </button>
