@@ -46,7 +46,7 @@ const Process = () => {
     }
 
     // 프로세스 데이터가 없으면 상세 설정 페이지로 리다이렉트
-    if (processData && processData.length === 0) {
+    if (processData && processData.length === 0 && studyData?.myRole === 'HOST') {
       navigate(`/studies/${studyId}/setting`, {replace: true});
     }
 
@@ -73,6 +73,7 @@ const Process = () => {
 
   if (isStudyLoading || isProcessLoading) return <div className='h-screen bg-custom-bg text-white'>로딩 중...</div>
   if (!studyData) return null
+  if (processData && processData.length === 0) return <div className='h-screen bg-custom-bg text-white'>아직 프로세스가 생성되지 않았습니다.</div>
 
   return (
     <div className="min-h-full bg-custom-bg text-white flex flex-col items-center">

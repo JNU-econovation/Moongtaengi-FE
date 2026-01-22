@@ -1,5 +1,7 @@
 import { useNavigate, type NavigateFunction } from 'react-router-dom'
 import downArrow from "../assets/icons/common/down-arrow.svg";
+import moongLogoBefore from "../assets/icons/common/moong-logo-before.svg"
+import moongLogoAfter from "../assets/icons/common//moong-logo-after.svg"
 import { useAuthStore } from '../stores/useAuthStore';
 import { useModalModeStore } from '../stores/useModalModeStore';
 import { useEffect, useRef, useState } from 'react';
@@ -81,8 +83,16 @@ export default function Navbar() {
                 <div className="flex items-center gap-8 ml-10">
 
                     {/* Logo */}
-                    <h1 onClick={() => { navigate('/') }}
-                        className="md:text-4xl 2xl:text-5xl font-semibold tracking-tighter cursor-pointer">뭉탱이</h1>
+                    <div onClick={() => { navigate('/') }}
+                        className="flex items-center justify-center cursor-pointer"
+                    >
+                        <img
+                            src={
+                                isLogin ? moongLogoAfter : moongLogoBefore
+                            }
+                            className='object-contain w-[80%]'
+                        />
+                    </div>
 
                     {/* Menu Items */}
                     <div className="hidden md:flex gap-3">
