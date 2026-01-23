@@ -33,6 +33,8 @@ export const InviteCode = () => {
                     setModalMode(null);
                 } else if (response.codeType === "ECONO") {
                     setModalMode('ECONO');
+                } else {
+                    setModalMode(null);
                 }
                 
             },
