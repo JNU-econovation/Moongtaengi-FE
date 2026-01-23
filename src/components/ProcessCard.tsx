@@ -3,10 +3,11 @@ import cardPrimaryMoong from '../assets/images/process/card-primary-moong.png';
 import { formatDateToWord } from "../utils/formatDateToWord";
 import { useAssignmentListQuery } from '../hooks/queries/useAssignmentListQuery';
 import { useAuthStore } from '../stores/useAuthStore';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAssignAssignmentMutation } from '../hooks/mutations/useAssignAssignmentMutation';
 import { useUpdateAssignmentMutation } from '../hooks/mutations/useUpdateAssignmentMutation';
 import { useApproveAssignmentMutation } from '../hooks/mutations/useApproveAssignmentMutation';
+import editIcon from '../assets/icons/common/edit-Icon.svg';
 
 interface ProcessType {
     id: number;
@@ -350,56 +351,86 @@ interface AssignmentInputProps {
 
 const AssignmentInput = ({ processId, memberId, initialDescription, assignmentId, myRole }: AssignmentInputProps) => {
     const [description, setDescription] = useState(initialDescription || '');
+    const [isFocused, setIsFocused] = useState(false);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         setDescription(initialDescription || '');
     }, [initialDescription]);
 
+    // 입력 모드일 때 높이 자동 조절 (최대 2줄까지만)
+    useEffect(() => {
+        if (isFocused && textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            // text-3xl(line-height: 2.25rem = 36px) 기준 2줄 = 72px
+            const scrollHeight = textareaRef.current.scrollHeight;
+            const maxHeight = 72; // 2줄 높이 제한 (필요시 72~80 사이로 미세조정)
+            
+            textareaRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
+        }
+    }, [description, isFocused]);
+
     const { mutate: assignMutate } = useAssignAssignmentMutation(processId);
     const { mutate: updateMutate } = useUpdateAssignmentMutation(processId);
 
     const handleSave = () => {
-        // 변경 사항이 없거나 내용이 비어있으면 API 호출 스킵
+        setIsFocused(false);
         if (description === initialDescription) return;
 
-
-        // API 호출 로직
-        console.log("API Call Triggered:", { processId, assigneeId: memberId, description });
-
+        // API 호출 로직 생략 (동일)
         if (!assignmentId) {
-            assignMutate({
-                processId,
-                assigneeId: memberId,
-                description
-            });
-            return;
+            assignMutate({ processId, assigneeId: memberId, description });
+        } else {
+            updateMutate({ assignmentId, description });
         }
-
-        updateMutate({
-            assignmentId,
-            description
-        })
     };
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.nativeEvent.isComposing) return; // 한글 조합 중 중복 이벤트 방지
-
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.nativeEvent.isComposing) return;
         if (e.key === 'Enter') {
-            e.currentTarget.blur(); // 포커스를 해제하여 onBlur 이벤트를 트리거함
+            e.preventDefault();
+            e.currentTarget.blur();
         }
     };
 
     return (
-        <input
-            type='text'
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            onBlur={handleSave}
-            onKeyDown={handleKeyDown}
-            onClick={(e) => e.stopPropagation()}
-            disabled={myRole === 'GUEST'}
-            className="text-3xl font-semibold mt-6 placeholder:text-white bg-transparent outline-none w-full text-white"
-            placeholder="눌러서 과제 할당"
-        />
+        <div className='relative w-[85%]'>
+            {isFocused ? (
+                /* 입력 모드: 최대 2줄 제한 + 내부 스크롤 */
+                <textarea
+                    ref={textareaRef}
+                    autoFocus
+                    rows={1}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    onBlur={handleSave}
+                    onKeyDown={handleKeyDown}
+                    onClick={(e) => e.stopPropagation()}
+                    disabled={myRole === 'GUEST'}
+                    // max-h-[4.5rem]: Tailwind text-3xl의 line-height(2.25rem) * 2 = 4.5rem (약 72px)
+                    className="text-3xl font-semibold mt-6 placeholder:text-white bg-transparent outline-none w-full text-white resize-none max-h-[4.5rem] pr-8 block overflow-y-hidden"
+                    placeholder="눌러서 과제 할당"
+                />
+            ) : (
+                /* 보기 모드: 2줄 넘어가면 말줄임표(...) */
+                <div
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (myRole !== 'GUEST') setIsFocused(true);
+                    }}
+                    className={`text-3xl font-semibold mt-6 w-full text-white pr-8 break-all whitespace-pre-wrap cursor-pointer line-clamp-2 ${
+                        !description ? 'text-white/50' : ''
+                    }`}
+                >
+                    {description || "눌러서 과제 할당"}
+                </div>
+            )}
+            
+            <img
+                src={editIcon}
+                // 입력창이 1줄이든 2줄이든, 아이콘은 항상 부모의 우측 하단(마지막 줄 옆)에 위치
+                className='absolute right-0 bottom-3 pointer-events-none' 
+            />
+        </div>
     );
 };
