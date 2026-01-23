@@ -1,9 +1,11 @@
 import signupCheck from '../assets/icons/signup/signup-check.png'
 import { useNavigate } from 'react-router-dom'
+import { useGlobalUserDataQuery } from '../hooks/queries/useGlobalUserDataQuery';
 
 const SignupCheck = () => {
 
     const navigate = useNavigate();
+    const {data} = useGlobalUserDataQuery();
 
     return (
         <div className='w-full min-h-screen flex items-center justify-center bg-custom-bg '>
@@ -21,7 +23,7 @@ const SignupCheck = () => {
                     <img src={signupCheck} className='w-30 mb-15'></img>
                     <p className='text-4xl mb-10'>회원가입이 완료되었습니다.</p>
                     <p className='text-center text-xl'>
-                        xxxxxx님, 뭉탱이의 회원이 되신 것을 환영합니다.<br/>
+                        {data?.nickname}님, 뭉탱이의 회원이 되신 것을 환영합니다.<br/>
                         이제 뭉탱이와 함께 한 걸음씩 성장해요.
                     </p>
                 </div>
