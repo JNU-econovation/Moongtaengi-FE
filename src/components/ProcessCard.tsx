@@ -365,7 +365,7 @@ const AssignmentInput = ({ processId, memberId, initialDescription, assignmentId
             // text-3xl(line-height: 2.25rem = 36px) 기준 2줄 = 72px
             const scrollHeight = textareaRef.current.scrollHeight;
             const maxHeight = 72; // 2줄 높이 제한 (필요시 72~80 사이로 미세조정)
-            
+
             textareaRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
         }
     }, [description, isFocused]);
@@ -418,19 +418,20 @@ const AssignmentInput = ({ processId, memberId, initialDescription, assignmentId
                         e.stopPropagation();
                         if (myRole !== 'GUEST') setIsFocused(true);
                     }}
-                    className={`text-3xl font-semibold mt-6 w-full text-white pr-8 break-all whitespace-pre-wrap cursor-pointer line-clamp-2 ${
-                        !description ? 'text-white/50' : ''
-                    }`}
+                    className={`text-3xl font-semibold mt-6 w-full text-white pr-8 break-all whitespace-pre-wrap cursor-pointer line-clamp-2 ${!description ? 'text-white/50' : ''
+                        }`}
                 >
                     {description || "눌러서 과제 할당"}
                 </div>
             )}
-            
-            <img
-                src={editIcon}
-                // 입력창이 1줄이든 2줄이든, 아이콘은 항상 부모의 우측 하단(마지막 줄 옆)에 위치
-                className='absolute right-0 bottom-3 pointer-events-none' 
-            />
+
+            {myRole === 'HOST' && (
+                <img
+                    src={editIcon}
+                    // 입력창이 1줄이든 2줄이든, 아이콘은 항상 부모의 우측 하단(마지막 줄 옆)에 위치
+                    className='absolute right-0 bottom-3 pointer-events-none'
+                />
+            )}
         </div>
     );
 };

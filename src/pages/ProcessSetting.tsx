@@ -383,7 +383,8 @@ const ProcessSetting = () => {
                                 [&::-webkit-scrollbar-thumb]:bg-[#555]
                                 [&::-webkit-scrollbar-thumb]:rounded-full
                                 [&::-webkit-scrollbar-button]:hidden    
-                            `}>
+                            `}
+                        >
                             {processData?.map((process, index) => (
 
                                 <div key={process.processOrder} className="grid grid-cols-21 gap-2 px-1 text-sm h-10 shrink-0">
