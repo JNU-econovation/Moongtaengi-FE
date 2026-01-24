@@ -111,6 +111,13 @@ export const Comment = ({ submissionId }: Params) => {
                         ref={textareaRef}
                         rows={1}
                         value={commentInput}
+                        onKeyDown={(e) => {
+                            if (e.nativeEvent.isComposing) return;
+                            if (e.key === 'Enter') {
+                                handleSubmit();
+                                e.currentTarget.blur();
+                            }
+                        }}
                         onChange={(e) => {
                             setCommentInput(e.target.value);
                             handleResizeHeight();
